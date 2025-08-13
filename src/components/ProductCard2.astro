@@ -1,0 +1,201 @@
+---
+/**
+ * Professional Review Card Design - Blue Border Style
+ * Based on professional review sites like Ahrefs example
+ */
+
+export interface Props {
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  imageAlt: string;
+  affiliateUrl: string;
+  rating?: number;
+  reviewCount?: number;
+  brand?: string;
+  features?: string[];
+  pros?: string[];
+  cons?: string[];
+  badge?: string;
+  buttonText?: string;
+}
+
+const {
+  title,
+  description,
+  price,
+  originalPrice,
+  image,
+  imageAlt,
+  affiliateUrl,
+  rating,
+  reviewCount,
+  brand,
+  features,
+  pros,
+  cons,
+  badge,
+  buttonText,
+} = Astro.props;
+
+const discountPercent =
+  originalPrice && price
+    ? Math.round(
+        ((parseFloat(originalPrice.replace("$", "")) -
+          parseFloat(price.replace("$", ""))) /
+          parseFloat(originalPrice.replace("$", ""))) *
+          100,
+      )
+    : null;
+---
+
+<!-- Clean Professional Card with Image - Theme System -->
+<article
+  class="theme-card relative mb-8"
+  style="border: 3px solid var(--color-primary-accessible); border-radius: var(--radius-lg);"
+>
+  <!-- Badge in top-left corner -->
+  {
+    badge && (
+      <div class="absolute -top-2 left-6 z-10">
+        <span
+          class="text-white text-sm font-bold px-4 py-1"
+          style="background: var(--color-primary-accessible); border-radius: var(--radius-md);"
+        >
+          {badge}
+        </span>
+      </div>
+    )
+  }
+
+  <!-- Speech bubble pointer -->
+  <div
+    class="absolute -bottom-4 left-8 w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[16px]"
+    style="border-top-color: var(--color-primary-accessible);"
+  >
+  </div>
+
+  <div style="padding: var(--card-padding);">
+    <!-- Product Image -->
+    <div class="text-center mb-6">
+      <img
+        src={image}
+        alt={imageAlt}
+        width={96}
+        height={96}
+        class="w-24 h-24 object-cover mx-auto"
+        style="border-radius: var(--radius-lg);"
+        loading="lazy"
+      />
+    </div>
+
+    <!-- Title -->
+    <h3
+      class="text-xl font-bold mb-4 text-center"
+      style="color: var(--text-primary); font-family: var(--font-heading);"
+    >
+      {title}
+    </h3>
+
+    <!-- Description -->
+    <p
+      class="leading-relaxed mb-4 text-center"
+      style="color: var(--text-secondary);"
+    >
+      {description}
+    </p>
+
+    <!-- Features List -->
+    {
+      features && features.length > 0 && (
+        <div class="mb-6">
+          <h4
+            class="text-lg font-semibold mb-3"
+            style="color: var(--text-primary);"
+          >
+            Features:
+          </h4>
+          <ul class="space-y-2">
+            {features.slice(0, 3).map((feature) => (
+              <li
+                class="flex items-center"
+                style="color: var(--text-secondary);"
+              >
+                <svg
+                  class="w-4 h-4 mr-3 flex-shrink-0"
+                  style="color: var(--color-primary-accessible);"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <!-- Price Section -->
+    {
+      price && (
+        <div class="mb-6 text-center">
+          <span
+            class="text-2xl font-bold"
+            style="color: var(--color-primary-accessible); font-family: var(--font-heading);"
+          >
+            {price}
+          </span>
+          {originalPrice && (
+            <span
+              class="text-lg line-through ml-2"
+              style="color: var(--text-muted-accessible);"
+            >
+              {originalPrice}
+            </span>
+          )}
+          {discountPercent && (
+            <div
+              class="text-sm font-medium mt-1"
+              style="color: var(--color-accent);"
+            >
+              Save {discountPercent}%!
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    <!-- CTA Button -->
+    <div class="text-center">
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="theme-button-primary inline-flex items-center gap-2 px-8 py-3"
+        style="color: white;"
+      >
+        {buttonText || "View Deal"}
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</article>

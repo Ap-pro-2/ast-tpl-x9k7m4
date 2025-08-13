@@ -1,0 +1,63 @@
+---
+/**
+ * Comparison Block - Works with single dynamic collection
+ * Usage: <ComparisonBlock id="best-laptops-2024" />
+ * Dashboard-friendly: No config changes needed
+ */
+import { getEntry } from "astro:content";
+import ComparisonTable from "../ComparisonTable.astro";
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get comparison from collection
+const comparison = await getEntry("affiliateComparisons", id);
+
+if (!comparison || !comparison.data.active) {
+  console.warn(`ComparisonBlock: Comparison "${id}" not found or inactive`);
+  return null;
+}
+
+// Get all products for this comparison (simple reference resolution)
+const productPromises = comparison.data.products.map(async (productRef) => {
+  // Handle both string IDs and reference objects
+  const productId = typeof productRef === 'string' ? productRef : productRef.id;
+  const product = await getEntry("affiliateProducts", productId);
+  if (!product) return null;
+
+  return {
+    title: product.data.title,
+    price: product.data.price,
+    originalPrice: product.data.originalPrice,
+    image: product.data.image,
+    imageAlt: product.data.imageAlt,
+    affiliateUrl: product.data.affiliateUrl,
+    rating: product.data.rating,
+    reviewCount: product.data.reviewCount,
+    badge: product.data.badge,
+    features: product.data.features || [],
+    pros: product.data.pros || [],
+    cons: product.data.cons || [],
+    buttonText: product.data.buttonText,
+  };
+});
+
+const products = await Promise.all(productPromises);
+
+// Filter out null products and ensure type safety
+const validProducts = products.filter(
+  (product): product is NonNullable<typeof product> => product !== null,
+);
+
+if (validProducts.length === 0) {
+  console.warn(
+    `ComparisonBlock: No valid products found for comparison "${id}"`,
+  );
+  return null;
+}
+---
+
+<ComparisonTable title={comparison.data.title} products={validProducts} />

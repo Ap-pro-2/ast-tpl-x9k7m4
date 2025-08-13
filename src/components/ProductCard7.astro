@@ -1,0 +1,177 @@
+---
+/**
+ * ProductCard7 - "Minimal Conversion Machine"
+ * Clean, focused, irresistible CTA
+ */
+
+import OptimizedImage from './ui/OptimizedImage.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  imageAlt: string;
+  affiliateUrl: string;
+  rating?: number;
+  reviewCount?: number;
+  brand?: string;
+  features?: string[];
+  pros?: string[];
+  cons?: string[];
+  badge?: string;
+  buttonText?: string;
+}
+
+const {
+  title,
+  description,
+  price,
+  originalPrice,
+  image,
+  imageAlt,
+  affiliateUrl,
+  rating,
+  reviewCount,
+  brand,
+  features,
+  pros,
+  cons,
+  badge,
+  buttonText,
+} = Astro.props;
+
+const discountPercent =
+  originalPrice && price
+    ? Math.round(
+        ((parseFloat(originalPrice.replace("$", "")) -
+          parseFloat(price.replace("$", ""))) /
+          parseFloat(originalPrice.replace("$", ""))) *
+          100,
+      )
+    : null;
+---
+
+<!-- Minimal Conversion Machine -->
+<article class="theme-card mb-8 text-center relative" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);">
+  <!-- Floating Badge -->
+  {badge && (
+    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+      <span class="text-white text-sm font-bold px-6 py-2" style="background: linear-gradient(135deg, var(--color-primary-accessible), var(--color-accent)); border-radius: var(--radius-full); box-shadow: var(--shadow-md);">
+        ✨ {badge}
+      </span>
+    </div>
+  )}
+
+  <div style="padding: calc(var(--card-padding) * 1.5);">
+    <!-- Hero Image -->
+    <div class="mb-6">
+      <OptimizedImage
+        src={image}
+        alt={imageAlt}
+        width={160}
+        height={160}
+        class="w-40 h-40 object-cover mx-auto shadow-lg"
+        style="border-radius: var(--radius-full);"
+        loading="lazy"
+      />
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-2xl font-bold mb-4" style="color: var(--text-primary); font-family: var(--font-heading);">
+      {title}
+    </h3>
+
+    <!-- Brand -->
+    {brand && (
+      <p class="text-lg font-medium mb-4" style="color: var(--color-primary-accessible);">
+        {brand}
+      </p>
+    )}
+
+    <!-- Rating Stars -->
+    {rating && (
+      <div class="flex justify-center items-center gap-2 mb-4">
+        <div class="flex">
+          {Array.from({ length: 5 }, (_, i) => (
+            <svg
+              class={`w-6 h-6 ${i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"}`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
+        </div>
+        <span class="text-xl font-bold" style="color: var(--text-primary);">
+          {rating}
+        </span>
+      </div>
+    )}
+
+    <!-- Social Proof -->
+    {reviewCount && (
+      <p class="text-lg font-medium mb-6" style="color: var(--text-secondary);">
+        {reviewCount}+ reviews
+      </p>
+    )}
+
+    <!-- Description -->
+    <p class="text-lg leading-relaxed mb-6 max-w-md mx-auto" style="color: var(--text-secondary);">
+      {description}
+    </p>
+
+    <!-- Price Section -->
+    <div class="mb-8">
+      {price && (
+        <div class="flex items-center justify-center gap-3 mb-2">
+          <span class="text-4xl font-bold" style="color: var(--color-primary-accessible); font-family: var(--font-heading);">
+            {price}
+          </span>
+          {originalPrice && (
+            <span class="text-2xl line-through" style="color: var(--text-muted-accessible);">
+              {originalPrice}
+            </span>
+          )}
+        </div>
+      )}
+      {discountPercent && (
+        <p class="text-lg font-bold text-green-600 mb-2">
+          💰 You Save {discountPercent}%!
+        </p>
+      )}
+    </div>
+
+    <!-- Top Benefits -->
+    {pros && pros.length > 0 && (
+      <div class="mb-8">
+        <div class="max-w-sm mx-auto">
+          {pros.slice(0, 2).map((pro) => (
+            <div class="flex items-center justify-center gap-3 mb-3">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span class="font-medium" style="color: var(--text-primary);">
+                {pro}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Irresistible CTA -->
+    <div class="space-y-4">
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="theme-button-primary w-full block py-5 text-xl font-bold transform hover:scale-105 transition-transform"
+        style="color: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);"
+      >
+        {buttonText || "View Deal"}
+      </a>
+    </div>
+  </div>
+</article>

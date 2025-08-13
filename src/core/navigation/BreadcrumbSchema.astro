@@ -1,0 +1,122 @@
+---
+/**
+ * BreadcrumbSchema Component
+ * 
+ * Generates JSON-LD structured data for breadcrumb navigation following schema.org BreadcrumbList specification.
+ * This component helps improve SEO by providing search engines with clear navigation hierarchy information.
+ * 
+ * Usage:
+ * ```astro
+ * ---
+ * import BreadcrumbSchema from '../components/navigation/BreadcrumbSchema.astro';
+ * import { generateBreadcrumbs } from '../components/navigation/breadcrumbUtils.ts';
+ * 
+ * const breadcrumbs = generateBreadcrumbs(Astro.url.pathname, pageData);
+ * ---
+ * 
+ * <html>
+ *   <head>
+ *     <BreadcrumbSchema items={breadcrumbs} />
+ *   </head>
+ *   <body>
+ *     <!-- Your page content -->
+ *   </body>
+ * </html>
+ * ```
+ * 
+ * For blog posts:
+ * ```astro
+ * ---
+ * import BreadcrumbSchema from '../components/navigation/BreadcrumbSchema.astro';
+ * import { getBlogPostBreadcrumbs } from '../components/navigation/breadcrumbUtils.ts';
+ * 
+ * const breadcrumbs = getBlogPostBreadcrumbs(post);
+ * ---
+ * 
+ * <BreadcrumbSchema items={breadcrumbs} />
+ * ```
+ * 
+ * @component
+ */
+import type { BreadcrumbItem } from './breadcrumbUtils.ts';
+
+export interface Props {
+  /** Array of breadcrumb items to generate structured data for */
+  items: BreadcrumbItem[];
+  /** Base URL for resolving relative URLs (defaults to Astro.site) */
+  baseUrl?: string;
+}
+
+const { items, baseUrl = Astro.site?.toString() || 'https://example.com' } = Astro.props;
+
+// Validate and filter breadcrumb items for structured data
+// Only include items with URLs (exclude current page items)
+const validItems = items.filter(item => {
+  // Must have a name
+  if (!item.name || typeof item.name !== 'string' || item.name.trim() === '') {
+    return false;
+  }
+  
+  // Must have a URL and not be the current page
+  if (!item.url || item.isCurrentPage) {
+    return false;
+  }
+  
+  return true;
+});
+
+// Generate JSON-LD structured data following schema.org BreadcrumbList specification
+// Reference: https://schema.org/BreadcrumbList
+const breadcrumbListData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": validItems.map((item, index) => {
+    // Ensure URL is absolute for structured data
+    let itemUrl: string;
+    try {
+      if (item.url!.startsWith('http://') || item.url!.startsWith('https://')) {
+        itemUrl = item.url!;
+      } else {
+        itemUrl = new URL(item.url!, baseUrl).toString();
+      }
+    } catch (error) {
+      console.warn('Invalid URL in breadcrumb item:', item.url, error);
+      itemUrl = new URL(item.url!, baseUrl).toString();
+    }
+
+    return {
+      "@type": "ListItem",
+      "position": item.position || (index + 1),
+      "name": item.name.trim(),
+      "item": itemUrl
+    };
+  })
+};
+
+// Only render if we have valid breadcrumb items
+const shouldRender = validItems.length > 0;
+
+// Validate JSON-LD structure for Google Rich Results compatibility
+if (shouldRender && process.env.NODE_ENV === 'development') {
+  // Basic validation checks
+  const hasValidStructure = breadcrumbListData["@context"] === "https://schema.org" &&
+                           breadcrumbListData["@type"] === "BreadcrumbList" &&
+                           Array.isArray(breadcrumbListData.itemListElement) &&
+                           breadcrumbListData.itemListElement.length > 0;
+  
+  if (!hasValidStructure) {
+    console.warn('BreadcrumbSchema: Invalid structured data structure');
+  }
+  
+  // Validate each item
+  breadcrumbListData.itemListElement.forEach((item, index) => {
+    if (!item.name || !item.item || !item.position) {
+      console.warn(`BreadcrumbSchema: Invalid item at position ${index}:`, item);
+    }
+  });
+}
+---
+
+{shouldRender && (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbListData)} />
+)}

@@ -1,0 +1,209 @@
+---
+/**
+ * Clean Blog Card Component - Theme System Integrated
+ * Professional UI/UX using only your theme system
+ */
+
+import { formatDate } from '../../core/blogLogic';
+import { getEntry } from 'astro:content';
+import OptimizedImage from './OptimizedImage.astro';
+
+interface Props {
+  post: any;
+}
+
+const { post } = Astro.props;
+
+// Get author and category data safely
+let author = null;
+let category = null;
+
+try {
+  if (post.data.author) {
+    const authorId = typeof post.data.author === 'string' ? post.data.author : post.data.author.id;
+    author = await getEntry('authors', authorId);
+  }
+  if (post.data.category) {
+    const categoryId = typeof post.data.category === 'string' ? post.data.category : post.data.category.id;
+    category = await getEntry('categories', categoryId);
+  }
+} catch (error) {
+  console.warn('Could not load author/category:', error);
+}
+
+// Handle tags properly - they can be strings or objects
+const tags = post.data.tags || [];
+const tagNames = tags.map((tag: any) => {
+  if (typeof tag === 'string') return tag;
+  if (tag?.id) return tag.id;
+  if (tag?.data?.name) return tag.data.name;
+  return null;
+}).filter(Boolean);
+---
+
+<article class="blog-card theme-card overflow-hidden group">
+  
+  <!-- Post Image -->
+  {post.data.image?.url && (
+    <div class="relative aspect-[16/9] overflow-hidden">
+      <OptimizedImage 
+        src={post.data.image.url} 
+        alt={post.data.image.alt || post.data.title}
+        width={830}
+        height={467}
+        loading="lazy"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      
+      <!-- Category Badge -->
+      {category && (
+        <div class="absolute top-4 left-4">
+          <a href={`/categories/${category.data.slug}`}
+             class="theme-badge font-semibold text-xs px-3 py-1 hover:opacity-80 transition-opacity"
+             aria-label={`View all posts in ${category.data.name} category`}>
+            {category.data.name}
+          </a>
+        </div>
+      )}
+    </div>
+  )}
+  
+  <!-- Post Content -->
+  <div class="p-6 flex flex-col h-full">
+    
+    <!-- Category (if no image) -->
+    {!post.data.image?.url && category && (
+      <div class="mb-3">
+        <a href={`/categories/${category.data.slug}`}
+           class="theme-badge font-semibold text-xs px-3 py-1 hover:opacity-80 transition-opacity"
+           aria-label={`View all posts in ${category.data.name} category`}>
+          {category.data.name}
+        </a>
+      </div>
+    )}
+    
+    <!-- Title -->
+    <h3 class="text-xl font-bold mb-3 leading-tight line-clamp-2" 
+        style="color: var(--text-primary); font-family: var(--font-heading);">
+      <a href={`/blog/${post.id}`} 
+         class="hover:opacity-80 transition-opacity duration-300"
+         style="color: inherit;"
+         aria-label={`Read full article: ${post.data.title}`}>
+        {post.data.title}
+      </a>
+    </h3>
+    
+    <!-- Description -->
+    {post.data.description && (
+      <p class="mb-4 leading-relaxed line-clamp-3 flex-grow" 
+         style="color: var(--text-secondary);">
+        {post.data.description}
+      </p>
+    )}
+    
+    <!-- Tags -->
+    {tagNames.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-4">
+        {tagNames.slice(0, 2).map((tag: string) => (
+          <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+             class="text-xs px-2 py-1 font-medium rounded-full hover:opacity-80 transition-opacity" 
+             style="color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 10%, transparent);"
+             aria-label={`View all posts tagged with ${tag}`}>
+            #{tag}
+          </a>
+        ))}
+        {tagNames.length > 2 && (
+          <a href="/tags"
+             class="text-xs px-2 py-1 font-medium rounded-full hover:opacity-80 transition-opacity" 
+             style="color: var(--text-muted); background: var(--bg-tertiary);"
+             aria-label={`View all tags - ${tagNames.length - 2} more tags available`}>
+            +{tagNames.length - 2}
+          </a>
+        )}
+      </div>
+    )}
+    
+    <!-- Meta Info & Button -->
+    <div class="flex items-center justify-between mt-auto pt-4" 
+         style="border-top: 1px solid var(--border-light);">
+      
+      <!-- Author Info -->
+      <div class="flex items-center gap-3">
+        {author && (
+          <>
+            <div class="w-8 h-8 text-white flex items-center justify-center text-sm font-bold rounded-full"
+                 style="background: var(--color-primary);">
+              {author.data.name.charAt(0)}
+            </div>
+            <div>
+              <div class="text-sm font-medium" style="color: var(--text-primary);">
+                {author.data.name}
+              </div>
+              <time datetime={post.data.pubDate.toISOString()} class="theme-date text-xs">
+                {formatDate(post.data.pubDate)}
+              </time>
+            </div>
+          </>
+        )}
+      </div>
+      
+      <!-- Theme Button -->
+      <a href={`/blog/${post.id}`} 
+         class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+         aria-label={`Read the full article: ${post.data.title}`}>
+        <span>Read Article</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  /* Line clamping */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Blog card styling */
+  .blog-card {
+    transition: all var(--animation-duration) var(--animation-easing);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  /* Ensure equal height cards */
+  .blog-card .p-6 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .blog-card .flex-col {
+      gap: 1rem;
+    }
+    
+    .blog-card .theme-button-primary {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+</style>

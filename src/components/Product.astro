@@ -1,0 +1,65 @@
+---
+// Simple wrapper for ProductCard that can be easily used in MDX
+import ProductCard from "./ProductCard.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  imageAlt?: string;
+  url: string;
+  rating?: number;
+  reviews?: number;
+  brand?: string;
+  features?: string;
+  pros?: string;
+  cons?: string;
+  badge?: string;
+  buttonText?: string;
+}
+
+const {
+  title,
+  description,
+  price,
+  originalPrice,
+  image,
+  imageAlt = title,
+  url,
+  rating,
+  reviews,
+  brand,
+  features,
+  pros,
+  cons,
+  badge,
+  buttonText,
+} = Astro.props;
+
+// Parse comma-separated strings into arrays
+const featuresArray = features
+  ? features.split(",").map((f) => f.trim())
+  : undefined;
+const prosArray = pros ? pros.split(",").map((p) => p.trim()) : undefined;
+const consArray = cons ? cons.split(",").map((c) => c.trim()) : undefined;
+---
+
+<ProductCard
+  title={title}
+  description={description}
+  price={price}
+  originalPrice={originalPrice}
+  image={image}
+  imageAlt={imageAlt}
+  affiliateUrl={url}
+  rating={rating}
+  reviewCount={reviews}
+  brand={brand}
+  features={featuresArray}
+  pros={prosArray}
+  cons={consArray}
+  badge={badge}
+  buttonText={buttonText}
+/>

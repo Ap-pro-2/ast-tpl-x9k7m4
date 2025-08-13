@@ -1,0 +1,32 @@
+{
+  "id": "counter-culture-coffee-beans",
+  "title": "Counter Culture Coffee - Hologram Blend",
+  "description": "A bright, complex blend showcasing seasonal coffees with notes of fruit and floral undertones.",
+  "price": "$15.95",
+  "originalPrice": "$18.95",
+  "image": "https://images.pexels.com/photos/894695/pexels-photo-894695.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Counter Culture coffee beans package",
+  "affiliateUrl": "https://counterculturecoffee.com/shop/coffee/hologram",
+  "category": "coffee-beans",
+  "rating": 4.5,
+  "reviewCount": 1567,
+  "brand": "Counter Culture Coffee",
+  "features": [
+    "Seasonal rotating blend",
+    "Light-medium roast",
+    "Fruit and floral notes",
+    "Sustainably sourced"
+  ],
+  "pros": [
+    "Complex flavor profile",
+    "Seasonal variety",
+    "Sustainable practices"
+  ],
+  "cons": [
+    "Flavor changes seasonally",
+    "May be too bright for some",
+    "Limited availability"
+  ],
+  "badge": "Seasonal Special",
+  "buttonText": "Try This Blend"
+}

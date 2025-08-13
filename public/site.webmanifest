@@ -1,0 +1,28 @@
+{
+  "name": "AstroPress Coffee - Lightning-Fast Coffee Blog Platform",
+  "short_name": "AstroPress Coffee",
+  "description": "Discover the perfect brew with AstroPress Coffee. Expert guides, brewing techniques, and coffee culture insights.",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#8B4513",
+  "background_color": "#FFF8F0",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}

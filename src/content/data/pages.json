@@ -1,0 +1,141 @@
+[
+  {
+    "id": "all-tags",
+    "title": "All Tags",
+    "slug": "tags",
+    "description": "Explore all coffee tags and topics on AstroPress Coffee.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Coffee Tags & Topics | AstroPress Coffee Blog",
+      "description": "Discover all coffee tags and topics on AstroPress Coffee. Find articles about brewing techniques, coffee origins, equipment reviews, and expert tips.",
+      "keywords": [
+        "coffee tags",
+        "coffee topics",
+        "brewing techniques",
+        "coffee origins",
+        "coffee blog",
+        "coffee guides"
+      ],
+      "ogImage": "/images/seo/coffee-tags-main-og.jpg",
+      "canonical": "/tags"
+    }
+  },
+  {
+    "id": "all-categories",
+    "title": "All Categories",
+    "slug": "categories",
+    "description": "Browse all coffee categories on AstroPress Coffee.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Coffee Categories & Topics | AstroPress Coffee Blog",
+      "description": "Browse all coffee categories on AstroPress Coffee. From brewing guides to coffee culture, find expertly organized content for every coffee enthusiast.",
+      "keywords": [
+        "coffee categories",
+        "brewing guides",
+        "coffee culture",
+        "coffee tips",
+        "coffee blog",
+        "coffee education"
+      ],
+      "ogImage": "/images/seo/coffee-categories-main-og.jpg",
+      "canonical": "/categories"
+    }
+  },
+  {
+    "id": "all-authors",
+    "title": "All Authors",
+    "slug": "authors",
+    "description": "Meet the coffee experts and writers at AstroPress Coffee.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Coffee Experts & Writers | AstroPress Coffee Authors",
+      "description": "Meet the talented coffee experts, baristas, and writers behind AstroPress Coffee. Discover their expertise and browse their latest coffee articles and guides.",
+      "keywords": [
+        "coffee experts",
+        "coffee writers",
+        "baristas",
+        "coffee authors",
+        "coffee professionals",
+        "coffee blog team"
+      ],
+      "ogImage": "/images/seo/coffee-authors-og.jpg",
+      "canonical": "/authors"
+    }
+  },
+  {
+    "id": "blog-main",
+    "title": "Blog",
+    "slug": "blog",
+    "description": "Expert coffee guides, brewing techniques, and coffee culture insights.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Coffee Blog | Expert Guides & Brewing Techniques | AstroPress",
+      "description": "Discover expert coffee guides, brewing techniques, equipment reviews, and coffee culture insights. Your ultimate resource for everything coffee.",
+      "keywords": [
+        "coffee blog",
+        "coffee guides",
+        "brewing techniques",
+        "coffee reviews",
+        "coffee culture",
+        "barista tips",
+        "coffee education"
+      ],
+      "ogImage": "/images/seo/coffee-blog-main-og.jpg",
+      "canonical": "/blog"
+    }
+  },
+  {
+    "id": "privacy-policy",
+    "title": "Privacy Policy",
+    "slug": "legal/privacy",
+    "description": "How we collect, use, and protect your personal information when you visit our website.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Privacy Policy | AstroPress Coffee - Data Protection & Privacy",
+      "description": "Learn how AstroPress Coffee collects, uses, and protects your personal information. Our comprehensive privacy policy ensures your data security and privacy rights.",
+      "keywords": [
+        "privacy policy",
+        "data protection",
+        "personal information",
+        "cookies",
+        "user rights",
+        "data security"
+      ],
+      "ogImage": "/images/seo/privacy-policy-og.jpg",
+      "canonical": "/legal/privacy"
+    }
+  },
+  {
+    "id": "terms-of-service",
+    "title": "Terms of Service",
+    "slug": "legal/terms",
+    "description": "The terms and conditions that govern your use of our website and services.",
+    "content": "",
+    "published": false,
+    "noindex": false,
+    "seo": {
+      "title": "Terms of Service | AstroPress Coffee - Website Terms & Conditions",
+      "description": "Read the terms and conditions that govern your use of AstroPress Coffee website and services. Understand your rights and responsibilities as a user.",
+      "keywords": [
+        "terms of service",
+        "terms and conditions",
+        "website terms",
+        "user agreement",
+        "legal terms",
+        "service conditions"
+      ],
+      "ogImage": "/images/seo/terms-service-og.jpg",
+      "canonical": "/legal/terms"
+    }
+  }
+]

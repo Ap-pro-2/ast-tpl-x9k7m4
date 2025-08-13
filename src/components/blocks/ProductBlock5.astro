@@ -1,0 +1,43 @@
+---
+/**
+ * Product Block 5 - Editor's Pick Conversion Beast
+ * Usage: <ProductBlock5 id="acaia-pearl-scale" />
+ * High-converting design with urgency and social proof
+ */
+import { getEntry } from 'astro:content';
+import ProductCard5 from '../ProductCard5.astro';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get product from single dynamic collection
+const product = await getEntry('affiliateProducts', id);
+
+if (!product) {
+  console.warn(`ProductBlock5: Product "${id}" not found`);
+  return null;
+}
+
+const data = product.data;
+---
+
+<ProductCard5
+  title={data.title}
+  description={data.description}
+  price={data.price}
+  originalPrice={data.originalPrice}
+  image={data.image}
+  imageAlt={data.imageAlt}
+  affiliateUrl={data.affiliateUrl}
+  rating={data.rating}
+  reviewCount={data.reviewCount}
+  brand={data.brand}
+  features={data.features}
+  pros={data.pros}
+  cons={data.cons}
+  badge={data.badge}
+  buttonText={data.buttonText}
+/>

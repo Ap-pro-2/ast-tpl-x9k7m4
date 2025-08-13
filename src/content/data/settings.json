@@ -1,0 +1,112 @@
+[
+  {
+    "id": "site-config",
+    "siteName": "AstroPress",
+    "siteTitle": "AstroPress Coffee - Lightning-Fast Coffee Blog Platform",
+    "siteDescription": "Discover the perfect brew with AstroPress Coffee. Expert guides, brewing techniques, and coffee culture insights powered by the fastest blog platform.",
+    "siteUrl": "https://yourdomain.com",
+    "author": "AstroPress Team",
+    "email": "hello@yourdomain.com",
+    "logo": "",
+    "imageDomain": "https://images.yourdomain.com",
+    "defaultOgImage": "",
+    "social": {
+      "twitter": "",
+      "github": "",
+      "linkedin": "",
+      "facebook": "",
+      "instagram": "",
+      "youtube": "",
+      "tiktok": "",
+      "discord": "",
+      "reddit": ""
+    },
+    "contact": {
+      "email": "hello@yourdomain.com",
+      "alias": "AstroPress Team"
+    },
+    "favicons": {
+      "icon32": "",
+      "icon16": "",
+      "appleTouchIcon": "",
+      "mainIcon": "",
+      "manifest": "/site.webmanifest"
+    },
+    "performance": {
+      "preconnectUrls": [
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com"
+      ]
+    },
+    "analytics": {
+      "googleAnalytics": ""
+    },
+    "rss": {
+      "enabled": true,
+      "itemsPerPage": 20
+    },
+    "themeSettings": {
+      "colors": {
+        "primary": "#8B4513",
+        "primaryLight": "#A0522D",
+        "primaryDark": "#654321",
+        "secondary": "#6B5B73",
+        "accent": "#D2691E",
+        "textPrimary": "#1A0F0A",
+        "textSecondary": "#2F1B14",
+        "textMuted": "#5D4037",
+        "textAccent": "#8B4513",
+        "bgPrimary": "#FFF8F0",
+        "bgSecondary": "#F5F0E8",
+        "bgTertiary": "#EDE4D3",
+        "surfaceCard": "#FEFCF7",
+        "surfaceOverlay": "#F8F3E9",
+        "borderDefault": "#D4C4A8",
+        "borderLight": "#E8DCC6",
+        "borderAccent": "#C4A484"
+      },
+      "typography": {
+        "fontHeading": "\"Josefin Sans\", sans-serif",
+        "fontBody": "\"Josefin Sans\", sans-serif",
+        "fontMono": "ui-monospace, \"Cascadia Code\", \"Source Code Pro\", Menlo, Consolas, monospace",
+        "textXs": "0.75rem",
+        "textSm": "0.875rem",
+        "textBase": "1rem",
+        "textLg": "1.125rem",
+        "textXl": "1.25rem",
+        "text2xl": "1.5rem",
+        "text3xl": "1.875rem",
+        "text4xl": "2.25rem"
+      },
+      "spacing": {
+        "containerMaxWidth": "1200px",
+        "sectionPadding": "4rem 0",
+        "cardPadding": "1.5rem",
+        "buttonPadding": "0.5rem 1rem"
+      },
+      "borderRadius": {
+        "sm": "0.25rem",
+        "md": "0.375rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+      "shadows": {
+        "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "md": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "lg": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+      },
+      "animation": {
+        "duration": "200ms",
+        "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "transitions": {
+        "pageStyle": "smooth",
+        "speed": "medium",
+        "loadingStyle": "progress",
+        "reducedMotion": "respect"
+      }
+    }
+  }
+]

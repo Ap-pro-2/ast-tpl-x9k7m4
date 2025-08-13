@@ -1,0 +1,43 @@
+---
+/**
+ * Product Block 3 - Gaming Mouse Style Design
+ * Usage: <ProductBlock3 id="acaia-pearl-scale" />
+ * Uses ProductCard3 component for image left, content right layout
+ */
+import { getEntry } from 'astro:content';
+import ProductCard3 from '../ProductCard3.astro';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get product from single dynamic collection
+const product = await getEntry('affiliateProducts', id);
+
+if (!product) {
+  console.warn(`ProductBlock3: Product "${id}" not found`);
+  return null;
+}
+
+const data = product.data;
+---
+
+<ProductCard3
+  title={data.title}
+  description={data.description}
+  price={data.price}
+  originalPrice={data.originalPrice}
+  image={data.image}
+  imageAlt={data.imageAlt}
+  affiliateUrl={data.affiliateUrl}
+  rating={data.rating}
+  reviewCount={data.reviewCount}
+  brand={data.brand}
+  features={data.features}
+  pros={data.pros}
+  cons={data.cons}
+  badge={data.badge}
+  buttonText={data.buttonText}
+/>

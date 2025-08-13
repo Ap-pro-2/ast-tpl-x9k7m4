@@ -1,0 +1,346 @@
+---
+// Table of Contents Component - Responsive & Theme-Aware
+export interface Props {
+  headings: Array<{
+    depth: number;
+    slug: string;
+    text: string;
+  }>;
+  title?: string;
+  minDepth?: number;
+  maxDepth?: number;
+}
+
+const { 
+  headings = [], 
+  title = "In This Article",
+  minDepth = 2,
+  maxDepth = 2 
+} = Astro.props;
+
+// Filter headings based on depth preferences
+const filteredHeadings = headings.filter(
+  heading => heading.depth >= minDepth && heading.depth <= maxDepth
+);
+
+// Don't render if no valid headings
+if (filteredHeadings.length === 0) return null;
+---
+
+<div 
+  class="table-of-contents theme-card mb-8 lg:mb-12"
+  style="border: 1px solid var(--border-light); background: var(--surface-card);"
+>
+  <!-- TOC Header -->
+  <button 
+    class="toc-header toc-toggle w-full px-4 sm:px-6 py-4 border-b text-left"
+    style="border-color: var(--border-light); background: var(--bg-secondary);"
+    aria-expanded="false"
+    aria-controls="toc-content"
+  >
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <!-- List Icon -->
+        <div 
+          class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background: var(--color-primary); color: white;"
+        >
+          <svg 
+            class="w-4 h-4" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 6h16M4 10h16M4 14h16M4 18h16"
+            />
+          </svg>
+        </div>
+        
+        <!-- Title -->
+        <h2 
+          class="text-lg sm:text-xl font-bold m-0"
+          style="color: var(--text-primary); font-family: var(--font-heading);"
+        >
+          {title}
+        </h2>
+      </div>
+      
+      <!-- Chevron Icon -->
+      <svg 
+        class="toc-chevron w-5 h-5 transition-transform duration-200"
+        style="color: var(--text-secondary);"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
+  </button>
+
+  <!-- TOC Navigation -->
+  <nav 
+    id="toc-content" 
+    class="toc-nav px-4 sm:px-6 py-4 hidden" 
+    aria-label="Table of contents"
+  >
+    <ol class="toc-list space-y-2 list-none m-0 p-0">
+      {filteredHeadings.map((heading) => {
+        const indentLevel = heading.depth - minDepth;
+        const paddingLeft = indentLevel * 1.25; // 1.25rem per level
+        
+        return (
+          <li 
+            class="toc-item"
+            style={`padding-left: ${paddingLeft}rem;`}
+          >
+            <a 
+              href={`#${heading.slug}`}
+              class="toc-link group flex items-start gap-2 py-2 px-3 rounded-md text-sm sm:text-base transition-all duration-200 hover:no-underline"
+              style="color: var(--text-secondary);"
+              data-toc-link
+              data-target={heading.slug}
+            >
+              <!-- Bullet Point -->
+              <span 
+                class="toc-bullet flex-shrink-0 w-1.5 h-1.5 rounded-full mt-2 transition-all duration-200"
+                style="background: var(--text-muted);"
+              />
+              
+              <!-- Heading Text -->
+              <span class="toc-text leading-relaxed transition-colors duration-200">
+                {heading.text}
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+</div>
+
+<!-- TOC Styles -->
+<style>
+  .table-of-contents {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+
+  .table-of-contents:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .toc-header {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .toc-header:hover {
+    background: var(--bg-hover) !important;
+  }
+
+  .toc-chevron.expanded {
+    transform: rotate(180deg);
+  }
+
+  .toc-link {
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+
+  .toc-link:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transform: translateX(2px);
+  }
+
+  .toc-link:hover .toc-bullet {
+    background: var(--color-primary);
+    transform: scale(1.2);
+  }
+
+  .toc-link:hover .toc-text {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* Active state for current section */
+  .toc-link.active {
+    background: var(--bg-secondary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .toc-link.active .toc-bullet {
+    background: var(--color-primary);
+    transform: scale(1.3);
+  }
+
+  .toc-link.active .toc-text {
+    color: var(--color-primary);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .toc-header {
+      padding: 1rem;
+    }
+    
+    .toc-nav {
+      padding: 1rem;
+    }
+    
+    .toc-item {
+      padding-left: 0.75rem !important;
+    }
+    
+    .toc-item[style*="1.25rem"] {
+      padding-left: 0.75rem !important;
+    }
+    
+    .toc-item[style*="2.5rem"] {
+      padding-left: 1.5rem !important;
+    }
+  }
+
+  /* Smooth scrolling for anchor links */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Ensure headings have proper spacing for anchor navigation */
+  :target {
+    scroll-margin-top: 2rem;
+  }
+</style>
+
+<!-- TOC Interactive Behavior -->
+<script>
+  function initTableOfContents() {
+    const tocToggle = document.querySelector('.toc-toggle') as HTMLButtonElement | null;
+    const tocContent = document.getElementById('toc-content') as HTMLElement | null;
+    const tocChevron = document.querySelector('.toc-chevron') as HTMLElement | null;
+    const tocLinks = document.querySelectorAll('[data-toc-link]') as NodeListOf<HTMLAnchorElement>;
+    const headings = document.querySelectorAll('h2[id], h3[id], h4[id], h5[id], h6[id]') as NodeListOf<HTMLElement>;
+    
+    // Clean up any existing event listeners to prevent duplicates
+    if (tocToggle && (tocToggle as any)._tocInitialized) {
+      return; // Already initialized
+    }
+    
+    // Toggle functionality
+    if (tocToggle && tocContent && tocChevron) {
+      const toggleHandler = function(e: Event) {
+        e.preventDefault();
+        
+        const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          // Collapse
+          tocContent.classList.add('hidden');
+          tocToggle.setAttribute('aria-expanded', 'false');
+          tocChevron.classList.remove('expanded');
+        } else {
+          // Expand
+          tocContent.classList.remove('hidden');
+          tocToggle.setAttribute('aria-expanded', 'true');
+          tocChevron.classList.add('expanded');
+        }
+      };
+      
+      tocToggle.addEventListener('click', toggleHandler);
+      (tocToggle as any)._tocInitialized = true; // Mark as initialized
+    }
+    
+    if (tocLinks.length === 0 || headings.length === 0) return;
+
+    // Create intersection observer for active section highlighting
+    const observerOptions: IntersectionObserverInit = {
+      rootMargin: '-20% 0px -70% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        if (!id) return;
+        
+        const tocLink = document.querySelector(`[data-target="${id}"]`) as HTMLAnchorElement;
+        
+        if (tocLink) {
+          if (entry.isIntersecting) {
+            // Remove active class from all links
+            tocLinks.forEach(link => link.classList.remove('active'));
+            // Add active class to current link
+            tocLink.classList.add('active');
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe all headings
+    headings.forEach(heading => {
+      observer.observe(heading);
+    });
+
+    // Smooth scroll behavior for TOC links
+    tocLinks.forEach(link => {
+      link.addEventListener('click', function(e: Event) {
+        e.preventDefault();
+        const targetId = this.getAttribute('data-target');
+        if (!targetId) return;
+        
+        const targetElement = document.getElementById(targetId) as HTMLElement;
+        
+        if (targetElement) {
+          const offsetTop = targetElement.offsetTop - 80; // Account for fixed header
+          window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+          });
+          
+          // Update URL hash
+          history.pushState(null, '', `#${targetId}`);
+        }
+      });
+    });
+
+    // Handle direct hash navigation on page load
+    if (window.location.hash) {
+      setTimeout(() => {
+        const targetElement = document.querySelector(window.location.hash) as HTMLElement;
+        if (targetElement) {
+          const offsetTop = targetElement.offsetTop - 80;
+          window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }
+
+  // Initialize on page load (works with view transitions)
+  document.addEventListener('astro:page-load', initTableOfContents);
+  
+  // Also initialize immediately if DOM is already ready (for first page load)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTableOfContents);
+  } else {
+    initTableOfContents();
+  }
+</script>

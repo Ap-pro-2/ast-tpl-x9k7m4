@@ -1,0 +1,89 @@
+---
+export const prerender = true;
+
+import { getCollection } from "astro:content";
+import { getSiteSettings, getPublishedPages } from "../../core/blogLogic";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumb from "../../components/navigation/Breadcrumb.astro";
+import { generateBreadcrumbs } from "../../core/navigation/breadcrumbUtils";
+import fs from 'fs';
+import path from 'path';
+
+// Get static paths from pages collection (legal pages)
+export async function getStaticPaths() {
+  const publishedPages = await getPublishedPages();
+  const legalPages = publishedPages.filter(page => 
+    page.id.includes('privacy') || page.id.includes('terms')
+  );
+  
+  return legalPages.map((page) => ({
+    params: { slug: page.data.slug.replace('legal/', '') },
+    props: { pageData: page.data, pageId: page.id },
+  }));
+}
+
+const { pageData, pageId } = Astro.props;
+const settings = await getSiteSettings();
+
+// Read the MDX content directly
+const mdxFileName = pageId.includes('privacy') ? 'privacy.mdx' : 'terms.mdx';
+const mdxPath = path.join(process.cwd(), 'src/content/legal', mdxFileName);
+const rawMdxContent = fs.readFileSync(mdxPath, 'utf-8');
+
+// Simple markdown to HTML conversion for basic content
+const processedContent = rawMdxContent
+  .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+  .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+  .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*(.+?)\*/g, '<em>$1</em>')
+  .replace(/\n\n/g, '</p><p>')
+  .replace(/^(?!<h|<\/p>)(.+)$/gm, '<p>$1</p>')
+  .replace(/<p><\/p>/g, '');
+
+// Enhanced SEO data from pages collection
+const seoData = {
+  pageTitle: pageData.seo?.title || `${pageData.title} | ${settings.siteName}`,
+  description: pageData.seo?.description || pageData.description || `${pageData.title} - Legal information`,
+  keywords: pageData.seo?.keywords || [],
+  ogImage: pageData.seo?.ogImage || settings.defaultOgImage,
+  ogImageAlt: `${pageData.title} - AstroPress Coffee`,
+  canonicalUrl: pageData.seo?.canonical || `${settings.siteUrl}/legal/${pageData.slug.replace('legal/', '')}`
+};
+
+const breadcrumbs = generateBreadcrumbs(`/legal/${pageData.title}`);
+---
+
+<BaseLayout 
+  pageTitle={seoData.pageTitle} 
+  description={seoData.description}
+  keywords={seoData.keywords}
+  ogImage={seoData.ogImage}
+  ogImageAlt={seoData.ogImageAlt}
+  canonicalUrl={seoData.canonicalUrl}
+>
+  <div class="py-16">
+    <div class="container max-w-4xl">
+      <Breadcrumb items={breadcrumbs} />
+      
+      <div class="theme-card p-8 md:p-12">
+        <h1 class="text-3xl md:text-4xl font-bold mb-6" style="color: var(--text-primary); font-family: var(--font-heading)">{pageData.title}</h1>
+        
+        <div class="prose prose-lg max-w-none" 
+             style="--tw-prose-headings: var(--text-primary); --tw-prose-body: var(--text-secondary); --tw-prose-links: var(--text-accent); --tw-prose-strong: var(--text-primary); --tw-prose-ul: var(--text-secondary); --tw-prose-ol: var(--text-secondary); --tw-prose-li: var(--text-secondary);">
+          <div set:html={processedContent} />
+        </div>
+        
+        <div class="mt-12 pt-6 text-center" style="border-top: 1px solid var(--border-default)">
+          <a href="/" 
+             class="inline-flex items-center font-medium transition-colors" 
+             style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
+             onmouseover="this.style.color='var(--color-primary-dark)'"
+             onmouseout="this.style.color='var(--text-accent)'">
+            ← Back to home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

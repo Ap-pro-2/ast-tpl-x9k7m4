@@ -1,0 +1,55 @@
+---
+// Responsive Table Wrapper Component
+// Provides horizontal scrolling for tables on mobile devices
+---
+
+<div class="table-wrapper">
+  <slot />
+</div>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 2rem 0;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+  }
+  
+  .table-wrapper :global(table) {
+    margin: 0;
+    min-width: 600px;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Coffee-themed scrollbar styling */
+  .table-wrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .table-wrapper::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+  }
+  
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: var(--radius-sm);
+  }
+  
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-accent));
+  }
+  
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    .table-wrapper {
+      margin: 1.5rem -1rem;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+</style>

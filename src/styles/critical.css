@@ -1,0 +1,93 @@
+/* Critical CSS - Above the fold styles only */
+/* This CSS is inlined to prevent render-blocking */
+
+/* Essential base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Critical typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Essential layout */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Critical card styling for above-fold content */
+.theme-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+}
+
+/* Essential button styles */
+.theme-button-primary {
+  background: var(--color-primary-accessible);
+  color: var(--bg-primary);
+  padding: var(--button-padding);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Essential image styles */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Critical link styles */
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+/* Essential list reset */
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Critical responsive utilities */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+}

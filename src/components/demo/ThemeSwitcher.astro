@@ -1,0 +1,1407 @@
+---
+/**
+ * DEMO THEME SWITCHER COMPONENT - MODAL VERSION
+ *
+ * This component is for demonstration purposes only.
+ * It shows as an icon that opens a modal for theme selection.
+ *
+ * TO REMOVE THIS DEMO:
+ * 1. Delete this file: src/components/demo/ThemeSwitcher.astro
+ * 2. Remove the import and component usage from BaseLayout.astro
+ *
+ * The theme system will continue to work with your configured theme
+ * in src/config/user-theme.ts
+ */
+
+import { themePresets } from "../../config/theme";
+
+// Available theme presets for demo
+const availableThemes = [
+  {
+    key: "professional",
+    name: "Professional Blue",
+    description: "Clean and professional",
+  },
+  { key: "dark", name: "Dark Mode", description: "Easy on the eyes" },
+  { key: "nature", name: "Nature Green", description: "Fresh and natural" },
+  {
+    key: "creative",
+    name: "Creative Purple",
+    description: "Bold and artistic",
+  },
+  { key: "warm", name: "Warm Orange", description: "Energetic and friendly" },
+  {
+    key: "coffee",
+    name: "Coffee Theme",
+    description: "Current configured theme",
+  },
+  { key: "ocean", name: "Ocean Blue", description: "Deep and calming" },
+  { key: "sunset", name: "Sunset Pink", description: "Vibrant and modern" },
+  { key: "forest", name: "Forest Dark", description: "Rich and earthy" },
+  { key: "minimal", name: "Minimal Gray", description: "Clean and simple" },
+  { key: "neon", name: "Neon Cyber", description: "Futuristic and bold" },
+  {
+    key: "vintage",
+    name: "Vintage Sepia",
+    description: "Classic and timeless",
+  },
+  { key: "luxury", name: "Luxury Gold", description: "Elegant and premium" },
+  { key: "midnight", name: "Midnight Blue", description: "Sophisticated dark" },
+  { key: "cherry", name: "Cherry Blossom", description: "Soft and delicate" },
+  { key: "arctic", name: "Arctic Ice", description: "Cool and crisp" },
+  { key: "cyberpunk", name: "Cyberpunk", description: "Neon and electric" },
+  { key: "autumn", name: "Autumn Leaves", description: "Warm fall colors" },
+  {
+    key: "lavender",
+    name: "Lavender Dreams",
+    description: "Soft purple vibes",
+  },
+  { key: "emerald", name: "Emerald City", description: "Rich green luxury" },
+  { key: "coral", name: "Coral Reef", description: "Tropical and bright" },
+  { key: "slate", name: "Slate Storm", description: "Modern dark gray" },
+  { key: "rose", name: "Rose Gold", description: "Elegant pink tones" },
+  { key: "mint", name: "Mint Fresh", description: "Cool and refreshing" },
+  { key: "volcano", name: "Volcano Fire", description: "Hot red and orange" },
+  { key: "galaxy", name: "Galaxy Space", description: "Deep space purple" },
+  { key: "lime", name: "Lime Zest", description: "Electric green energy" },
+  { key: "bronze", name: "Bronze Age", description: "Metallic warmth" },
+  { key: "sapphire", name: "Sapphire Blue", description: "Deep blue elegance" },
+  { key: "monochrome", name: "Monochrome", description: "Pure black & white" },
+] as const;
+---
+
+<!-- Theme Switcher Icon Button -->
+<button
+  class="theme-switcher-icon"
+  id="theme-switcher-btn"
+  title="Change Theme"
+  aria-label="Open theme selector"
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <circle cx="12" cy="12" r="5"></circle>
+    <path
+      d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+    ></path>
+  </svg>
+</button>
+
+<!-- Theme Switcher Modal -->
+<div class="theme-modal-overlay" id="theme-modal-overlay">
+  <div class="theme-modal" id="theme-modal">
+    <div class="theme-modal-header">
+      <h3>🎨 Choose Theme</h3>
+      <button
+        class="theme-modal-close"
+        id="theme-modal-close"
+        aria-label="Close theme selector"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="theme-grid">
+      {
+        availableThemes.map((theme) => (
+          <button
+            class="theme-option"
+            data-theme={theme.key}
+            title={theme.description}
+          >
+            <div class="theme-preview" data-theme-preview={theme.key} />
+            <div class="theme-info">
+              <span class="theme-name">{theme.name}</span>
+              <span class="theme-desc">{theme.description}</span>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="demo-note">
+      <p>
+        💡 <strong>Demo:</strong> Remove this component when ready to deploy!
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Theme Switcher Icon Button */
+  .theme-switcher-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-easing);
+    z-index: 1000;
+    box-shadow: var(--shadow-lg);
+    color: var(--text-primary);
+  }
+
+  .theme-switcher-icon:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .theme-switcher-icon:active {
+    transform: translateY(0);
+  }
+
+  /* Mobile positioning adjustments */
+  @media (max-width: 768px) {
+    .theme-switcher-icon {
+      top: 80px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      z-index: 999;
+    }
+  }
+
+  /* Small mobile screens */
+  @media (max-width: 480px) {
+    .theme-switcher-icon {
+      top: 70px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .theme-switcher-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* Modal Overlay */
+  .theme-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+
+  .theme-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Modal */
+  .theme-modal {
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-2xl);
+    width: 90vw;
+    max-width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+
+  .theme-modal-overlay.active .theme-modal {
+    transform: scale(1) translateY(0);
+  }
+
+  /* Modal Header */
+  .theme-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .theme-modal-header h3 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: var(--font-heading);
+  }
+
+  .theme-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: all var(--animation-duration) var(--animation-easing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-modal-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  /* Theme Grid */
+  .theme-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-easing);
+    text-align: left;
+    width: 100%;
+  }
+
+  .theme-option:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+
+  .theme-option.active {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+
+  .theme-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-default);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Theme preview colors */
+  .theme-preview[data-theme-preview="professional"] {
+    background: linear-gradient(45deg, #3b82f6, #60a5fa);
+  }
+
+  .theme-preview[data-theme-preview="dark"] {
+    background: linear-gradient(45deg, #111827, #60a5fa);
+  }
+
+  .theme-preview[data-theme-preview="nature"] {
+    background: linear-gradient(45deg, #10b981, #34d399);
+  }
+
+  .theme-preview[data-theme-preview="creative"] {
+    background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+  }
+
+  .theme-preview[data-theme-preview="warm"] {
+    background: linear-gradient(45deg, #f97316, #fb923c);
+  }
+
+  .theme-preview[data-theme-preview="coffee"] {
+    background: linear-gradient(45deg, #8b4513, #d2691e);
+  }
+
+  .theme-preview[data-theme-preview="ocean"] {
+    background: linear-gradient(45deg, #0ea5e9, #38bdf8);
+  }
+
+  .theme-preview[data-theme-preview="sunset"] {
+    background: linear-gradient(45deg, #ec4899, #f472b6);
+  }
+
+  .theme-preview[data-theme-preview="forest"] {
+    background: linear-gradient(45deg, #064e3b, #10b981);
+  }
+
+  .theme-preview[data-theme-preview="minimal"] {
+    background: linear-gradient(45deg, #374151, #9ca3af);
+  }
+
+  .theme-preview[data-theme-preview="neon"] {
+    background: linear-gradient(45deg, #0f0f23, #a855f7);
+  }
+
+  .theme-preview[data-theme-preview="vintage"] {
+    background: linear-gradient(45deg, #92400e, #fef3c7);
+  }
+
+  .theme-preview[data-theme-preview="luxury"] {
+    background: linear-gradient(45deg, #d4af37, #f4e4bc);
+  }
+
+  .theme-preview[data-theme-preview="midnight"] {
+    background: linear-gradient(45deg, #0f172a, #6366f1);
+  }
+
+  .theme-preview[data-theme-preview="cherry"] {
+    background: linear-gradient(45deg, #f43f5e, #ffe4e6);
+  }
+
+  .theme-preview[data-theme-preview="arctic"] {
+    background: linear-gradient(45deg, #0891b2, #bae6fd);
+  }
+
+  .theme-preview[data-theme-preview="cyberpunk"] {
+    background: linear-gradient(45deg, #ff0080, #00ffff);
+  }
+
+  .theme-preview[data-theme-preview="autumn"] {
+    background: linear-gradient(45deg, #dc2626, #f59e0b);
+  }
+
+  .theme-preview[data-theme-preview="lavender"] {
+    background: linear-gradient(45deg, #a855f7, #faf5ff);
+  }
+
+  .theme-preview[data-theme-preview="emerald"] {
+    background: linear-gradient(45deg, #059669, #ecfdf5);
+  }
+
+  .theme-preview[data-theme-preview="coral"] {
+    background: linear-gradient(45deg, #ff6b6b, #ffa726);
+  }
+
+  .theme-preview[data-theme-preview="slate"] {
+    background: linear-gradient(45deg, #0f172a, #64748b);
+  }
+
+  .theme-preview[data-theme-preview="rose"] {
+    background: linear-gradient(45deg, #f43f5e, #d4af37);
+  }
+
+  .theme-preview[data-theme-preview="mint"] {
+    background: linear-gradient(45deg, #10b981, #f0fdf4);
+  }
+
+  .theme-preview[data-theme-preview="volcano"] {
+    background: linear-gradient(45deg, #dc2626, #f97316);
+  }
+
+  .theme-preview[data-theme-preview="galaxy"] {
+    background: linear-gradient(45deg, #1e1b4b, #7c3aed);
+  }
+
+  .theme-preview[data-theme-preview="lime"] {
+    background: linear-gradient(45deg, #65a30d, #f7fee7);
+  }
+
+  .theme-preview[data-theme-preview="bronze"] {
+    background: linear-gradient(45deg, #cd7f32, #fef3c7);
+  }
+
+  .theme-preview[data-theme-preview="sapphire"] {
+    background: linear-gradient(45deg, #1e40af, #eff6ff);
+  }
+
+  .theme-preview[data-theme-preview="monochrome"] {
+    background: linear-gradient(45deg, #000000, #ffffff);
+  }
+
+  .theme-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .theme-name {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .theme-desc {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .demo-note {
+    padding: 0.75rem;
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+    border-radius: var(--radius-lg);
+    margin-top: 1rem;
+  }
+
+  .demo-note p {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .demo-theme-switcher {
+      position: relative;
+      top: auto;
+      right: auto;
+      width: 100%;
+      margin: 1rem 0;
+      border-radius: var(--radius-lg);
+    }
+  }
+
+  /* Hide on very small screens */
+  @media (max-width: 480px) {
+    .demo-theme-switcher {
+      display: none;
+    }
+  }
+</style>
+
+<!-- DEMO SCRIPT - Modal Theme Switcher -->
+<script is:inline>
+  /**
+   * MODAL THEME SWITCHER SCRIPT
+   *
+   * This script handles the modal-based theme switcher functionality.
+   * It manages opening/closing the modal and theme switching.
+   *
+   * TO REMOVE THIS DEMO:
+   * Delete this component and this script will be removed with it.
+   */
+
+  // Theme configurations for demo
+  const demoThemes = {
+    professional: {
+      primary: "#3B82F6",
+      primaryLight: "#60A5FA",
+      primaryDark: "#1D4ED8",
+      secondary: "#6B7280",
+      accent: "#10B981",
+
+      // Accessible variants
+      primaryAccessible: "#1D4ED8",
+      primaryAccessibleDark: "#1E40AF",
+      textMutedAccessible: "#4B5563",
+      bgContrastSafe: "#F8F9FA",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#3B82F6",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    dark: {
+      primary: "#60A5FA",
+      primaryLight: "#93C5FD",
+      primaryDark: "#3B82F6",
+      secondary: "#6B7280",
+      accent: "#10B981",
+
+      // Accessible variants for dark theme
+      primaryAccessible: "#93C5FD",
+      primaryAccessibleDark: "#BFDBFE",
+      textMutedAccessible: "#D1D5DB",
+      bgContrastSafe: "#1F2937",
+
+      textPrimary: "#F9FAFB",
+      textSecondary: "#D1D5DB",
+      textMuted: "#9CA3AF",
+      textAccent: "#60A5FA",
+
+      bgPrimary: "#111827",
+      bgSecondary: "#1F2937",
+      bgTertiary: "#374151",
+
+      surfaceCard: "#1F2937",
+      surfaceOverlay: "#374151",
+
+      borderDefault: "#374151",
+      borderLight: "#4B5563",
+      borderAccent: "#6B7280",
+    },
+
+    nature: {
+      primary: "#10B981",
+      primaryLight: "#34D399",
+      primaryDark: "#059669",
+      secondary: "#6B7280",
+      accent: "#F59E0B",
+
+      // Accessible variants
+      primaryAccessible: "#059669",
+      primaryAccessibleDark: "#047857",
+      textMutedAccessible: "#4B5563",
+      bgContrastSafe: "#F8F9FA",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#10B981",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    creative: {
+      primary: "#8B5CF6",
+      primaryLight: "#A78BFA",
+      primaryDark: "#7C3AED",
+      secondary: "#6B7280",
+      accent: "#F59E0B",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#8B5CF6",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    warm: {
+      primary: "#F97316",
+      primaryLight: "#FB923C",
+      primaryDark: "#EA580C",
+      secondary: "#6B7280",
+      accent: "#EF4444",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#F97316",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    coffee: {
+      primary: "#8B4513",
+      primaryLight: "#A0522D",
+      primaryDark: "#654321",
+      secondary: "#6B5B73",
+      accent: "#D2691E",
+      textPrimary: "#1A0F0A",
+      textSecondary: "#2F1B14",
+      textMuted: "#5D4037",
+      textAccent: "#8B4513",
+      bgPrimary: "#FFF8F0",
+      bgSecondary: "#F5F0E8",
+      bgTertiary: "#EDE4D3",
+      surfaceCard: "#FEFCF7",
+      surfaceOverlay: "#F8F3E9",
+      borderDefault: "#D4C4A8",
+      borderLight: "#E8DCC6",
+      borderAccent: "#C4A484",
+      // Note: Accessible variants are generated dynamically in the main theme system
+      primaryAccessible: "#4A2C17",
+      primaryAccessibleDark: "#3D2817",
+      textMutedAccessible: "#3D2817",
+      bgContrastSafe: "#F2EDE3",
+    },
+
+    ocean: {
+      primary: "#0EA5E9",
+      primaryLight: "#38BDF8",
+      primaryDark: "#0284C7",
+      secondary: "#64748B",
+      accent: "#06B6D4",
+
+      textPrimary: "#0F172A",
+      textSecondary: "#334155",
+      textMuted: "#64748B",
+      textAccent: "#0EA5E9",
+
+      bgPrimary: "#F8FAFC",
+      bgSecondary: "#F1F5F9",
+      bgTertiary: "#E2E8F0",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F8FAFC",
+
+      borderDefault: "#CBD5E1",
+      borderLight: "#E2E8F0",
+      borderAccent: "#94A3B8",
+    },
+
+    sunset: {
+      primary: "#EC4899",
+      primaryLight: "#F472B6",
+      primaryDark: "#DB2777",
+      secondary: "#6B7280",
+      accent: "#F59E0B",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#EC4899",
+
+      bgPrimary: "#FEF7FF",
+      bgSecondary: "#FAF5FF",
+      bgTertiary: "#F3E8FF",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FEF7FF",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    forest: {
+      primary: "#059669",
+      primaryLight: "#10B981",
+      primaryDark: "#047857",
+      secondary: "#6B7280",
+      accent: "#D97706",
+
+      textPrimary: "#F9FAFB",
+      textSecondary: "#D1D5DB",
+      textMuted: "#9CA3AF",
+      textAccent: "#10B981",
+
+      bgPrimary: "#064E3B",
+      bgSecondary: "#065F46",
+      bgTertiary: "#047857",
+
+      surfaceCard: "#065F46",
+      surfaceOverlay: "#047857",
+
+      borderDefault: "#047857",
+      borderLight: "#059669",
+      borderAccent: "#10B981",
+    },
+
+    minimal: {
+      primary: "#374151",
+      primaryLight: "#4B5563",
+      primaryDark: "#1F2937",
+      secondary: "#6B7280",
+      accent: "#9CA3AF",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#374151",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+
+    neon: {
+      primary: "#A855F7",
+      primaryLight: "#C084FC",
+      primaryDark: "#9333EA",
+      secondary: "#64748B",
+      accent: "#06B6D4",
+
+      textPrimary: "#F8FAFC",
+      textSecondary: "#E2E8F0",
+      textMuted: "#94A3B8",
+      textAccent: "#C084FC",
+
+      bgPrimary: "#0F0F23",
+      bgSecondary: "#1E1B4B",
+      bgTertiary: "#312E81",
+
+      surfaceCard: "#1E1B4B",
+      surfaceOverlay: "#312E81",
+
+      borderDefault: "#312E81",
+      borderLight: "#3730A3",
+      borderAccent: "#A855F7",
+    },
+
+    vintage: {
+      primary: "#92400E",
+      primaryLight: "#B45309",
+      primaryDark: "#78350F",
+      secondary: "#6B7280",
+      accent: "#DC2626",
+
+      textPrimary: "#1C1917",
+      textSecondary: "#44403C",
+      textMuted: "#78716C",
+      textAccent: "#92400E",
+
+      bgPrimary: "#FEF3C7",
+      bgSecondary: "#FDE68A",
+      bgTertiary: "#FCD34D",
+
+      surfaceCard: "#FFFBEB",
+      surfaceOverlay: "#FEF3C7",
+
+      borderDefault: "#D97706",
+      borderLight: "#F59E0B",
+      borderAccent: "#B45309",
+    },
+
+    luxury: {
+      primary: "#D4AF37",
+      primaryLight: "#F4E4BC",
+      primaryDark: "#B8860B",
+      secondary: "#8B7355",
+      accent: "#CD853F",
+
+      textPrimary: "#1A0F0A",
+      textSecondary: "#2C1810",
+      textMuted: "#5D4037",
+      textAccent: "#B8860B",
+
+      bgPrimary: "#FFFEF7",
+      bgSecondary: "#FAF7F0",
+      bgTertiary: "#F5F0E8",
+
+      surfaceCard: "#FEFDFB",
+      surfaceOverlay: "#F9F6F0",
+
+      borderDefault: "#E8DCC6",
+      borderLight: "#F0E6D2",
+      borderAccent: "#D4C4A8",
+    },
+
+    midnight: {
+      primary: "#6366F1",
+      primaryLight: "#818CF8",
+      primaryDark: "#4F46E5",
+      secondary: "#64748B",
+      accent: "#F59E0B",
+
+      textPrimary: "#F8FAFC",
+      textSecondary: "#CBD5E1",
+      textMuted: "#94A3B8",
+      textAccent: "#6366F1",
+
+      bgPrimary: "#0F172A",
+      bgSecondary: "#1E293B",
+      bgTertiary: "#334155",
+
+      surfaceCard: "#1E293B",
+      surfaceOverlay: "#334155",
+
+      borderDefault: "#475569",
+      borderLight: "#64748B",
+      borderAccent: "#6366F1",
+    },
+
+    cherry: {
+      primary: "#F43F5E",
+      primaryLight: "#FB7185",
+      primaryDark: "#E11D48",
+      secondary: "#6B7280",
+      accent: "#EC4899",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#F43F5E",
+
+      bgPrimary: "#FFF1F2",
+      bgSecondary: "#FFE4E6",
+      bgTertiary: "#FECDD3",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FFF1F2",
+
+      borderDefault: "#FECACA",
+      borderLight: "#FED7D7",
+      borderAccent: "#F87171",
+    },
+
+    arctic: {
+      primary: "#0891B2",
+      primaryLight: "#06B6D4",
+      primaryDark: "#0E7490",
+      secondary: "#64748B",
+      accent: "#8B5CF6",
+
+      textPrimary: "#0F172A",
+      textSecondary: "#334155",
+      textMuted: "#64748B",
+      textAccent: "#0891B2",
+
+      bgPrimary: "#F0F9FF",
+      bgSecondary: "#E0F2FE",
+      bgTertiary: "#BAE6FD",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F0F9FF",
+
+      borderDefault: "#7DD3FC",
+      borderLight: "#A5F3FC",
+      borderAccent: "#0891B2",
+    },
+
+    cyberpunk: {
+      primary: "#FF0080",
+      primaryLight: "#FF33A1",
+      primaryDark: "#CC0066",
+      secondary: "#64748B",
+      accent: "#00FFFF",
+
+      textPrimary: "#00FFFF",
+      textSecondary: "#FF0080",
+      textMuted: "#9CA3AF",
+      textAccent: "#FF0080",
+
+      bgPrimary: "#0A0A0A",
+      bgSecondary: "#1A0A1A",
+      bgTertiary: "#2A1A2A",
+
+      surfaceCard: "#1A0A1A",
+      surfaceOverlay: "#2A1A2A",
+
+      borderDefault: "#FF0080",
+      borderLight: "#FF33A1",
+      borderAccent: "#00FFFF",
+    },
+
+    autumn: {
+      primary: "#DC2626",
+      primaryLight: "#EF4444",
+      primaryDark: "#B91C1C",
+      secondary: "#6B7280",
+      accent: "#F59E0B",
+
+      textPrimary: "#1C1917",
+      textSecondary: "#44403C",
+      textMuted: "#78716C",
+      textAccent: "#DC2626",
+
+      bgPrimary: "#FEF2F2",
+      bgSecondary: "#FEE2E2",
+      bgTertiary: "#FECACA",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FEF2F2",
+
+      borderDefault: "#FCA5A5",
+      borderLight: "#FECACA",
+      borderAccent: "#F87171",
+    },
+
+    lavender: {
+      primary: "#A855F7",
+      primaryLight: "#C084FC",
+      primaryDark: "#9333EA",
+      secondary: "#6B7280",
+      accent: "#EC4899",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#A855F7",
+
+      bgPrimary: "#FAF5FF",
+      bgSecondary: "#F3E8FF",
+      bgTertiary: "#E9D5FF",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FAF5FF",
+
+      borderDefault: "#D8B4FE",
+      borderLight: "#E9D5FF",
+      borderAccent: "#C084FC",
+    },
+
+    emerald: {
+      primary: "#059669",
+      primaryLight: "#10B981",
+      primaryDark: "#047857",
+      secondary: "#6B7280",
+      accent: "#D97706",
+
+      textPrimary: "#064E3B",
+      textSecondary: "#065F46",
+      textMuted: "#047857",
+      textAccent: "#059669",
+
+      bgPrimary: "#ECFDF5",
+      bgSecondary: "#D1FAE5",
+      bgTertiary: "#A7F3D0",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#ECFDF5",
+
+      borderDefault: "#6EE7B7",
+      borderLight: "#A7F3D0",
+      borderAccent: "#34D399",
+    },
+
+    coral: {
+      primary: "#FF6B6B",
+      primaryLight: "#FF8E8E",
+      primaryDark: "#FF4757",
+      secondary: "#6B7280",
+      accent: "#FFA726",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#FF6B6B",
+
+      bgPrimary: "#FFF5F5",
+      bgSecondary: "#FED7D7",
+      bgTertiary: "#FEB2B2",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FFF5F5",
+
+      borderDefault: "#FC8181",
+      borderLight: "#FEB2B2",
+      borderAccent: "#F56565",
+    },
+
+    slate: {
+      primary: "#475569",
+      primaryLight: "#64748B",
+      primaryDark: "#334155",
+      secondary: "#6B7280",
+      accent: "#06B6D4",
+
+      textPrimary: "#F8FAFC",
+      textSecondary: "#CBD5E1",
+      textMuted: "#94A3B8",
+      textAccent: "#64748B",
+
+      bgPrimary: "#0F172A",
+      bgSecondary: "#1E293B",
+      bgTertiary: "#334155",
+
+      surfaceCard: "#1E293B",
+      surfaceOverlay: "#334155",
+
+      borderDefault: "#475569",
+      borderLight: "#64748B",
+      borderAccent: "#94A3B8",
+    },
+
+    rose: {
+      primary: "#F43F5E",
+      primaryLight: "#FB7185",
+      primaryDark: "#E11D48",
+      secondary: "#6B7280",
+      accent: "#D4AF37",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#F43F5E",
+
+      bgPrimary: "#FFF1F2",
+      bgSecondary: "#FFE4E6",
+      bgTertiary: "#FECDD3",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FFF1F2",
+
+      borderDefault: "#FECACA",
+      borderLight: "#FED7D7",
+      borderAccent: "#F87171",
+    },
+
+    mint: {
+      primary: "#10B981",
+      primaryLight: "#34D399",
+      primaryDark: "#059669",
+      secondary: "#6B7280",
+      accent: "#06B6D4",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#10B981",
+
+      bgPrimary: "#F0FDF4",
+      bgSecondary: "#DCFCE7",
+      bgTertiary: "#BBF7D0",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F0FDF4",
+
+      borderDefault: "#86EFAC",
+      borderLight: "#BBF7D0",
+      borderAccent: "#4ADE80",
+    },
+
+    volcano: {
+      primary: "#DC2626",
+      primaryLight: "#EF4444",
+      primaryDark: "#B91C1C",
+      secondary: "#6B7280",
+      accent: "#F97316",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#DC2626",
+
+      bgPrimary: "#FEF2F2",
+      bgSecondary: "#FEE2E2",
+      bgTertiary: "#FECACA",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#FEF2F2",
+
+      borderDefault: "#FCA5A5",
+      borderLight: "#FECACA",
+      borderAccent: "#F87171",
+    },
+
+    galaxy: {
+      primary: "#7C3AED",
+      primaryLight: "#8B5CF6",
+      primaryDark: "#6D28D9",
+      secondary: "#6B7280",
+      accent: "#EC4899",
+
+      textPrimary: "#F8FAFC",
+      textSecondary: "#E2E8F0",
+      textMuted: "#94A3B8",
+      textAccent: "#A78BFA",
+
+      bgPrimary: "#1E1B4B",
+      bgSecondary: "#312E81",
+      bgTertiary: "#3730A3",
+
+      surfaceCard: "#312E81",
+      surfaceOverlay: "#3730A3",
+
+      borderDefault: "#4C1D95",
+      borderLight: "#5B21B6",
+      borderAccent: "#7C3AED",
+    },
+
+    lime: {
+      primary: "#65A30D",
+      primaryLight: "#84CC16",
+      primaryDark: "#4D7C0F",
+      secondary: "#6B7280",
+      accent: "#F59E0B",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#65A30D",
+
+      bgPrimary: "#F7FEE7",
+      bgSecondary: "#ECFCCB",
+      bgTertiary: "#D9F99D",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F7FEE7",
+
+      borderDefault: "#BEF264",
+      borderLight: "#D9F99D",
+      borderAccent: "#A3E635",
+    },
+
+    bronze: {
+      primary: "#CD7F32",
+      primaryLight: "#D4A574",
+      primaryDark: "#B8651F",
+      secondary: "#6B7280",
+      accent: "#DC2626",
+
+      textPrimary: "#1C1917",
+      textSecondary: "#44403C",
+      textMuted: "#78716C",
+      textAccent: "#CD7F32",
+
+      bgPrimary: "#FEF3C7",
+      bgSecondary: "#FDE68A",
+      bgTertiary: "#FCD34D",
+
+      surfaceCard: "#FFFBEB",
+      surfaceOverlay: "#FEF3C7",
+
+      borderDefault: "#F59E0B",
+      borderLight: "#FBBF24",
+      borderAccent: "#D97706",
+    },
+
+    sapphire: {
+      primary: "#1E40AF",
+      primaryLight: "#3B82F6",
+      primaryDark: "#1D4ED8",
+      secondary: "#6B7280",
+      accent: "#06B6D4",
+
+      textPrimary: "#111827",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#1E40AF",
+
+      bgPrimary: "#EFF6FF",
+      bgSecondary: "#DBEAFE",
+      bgTertiary: "#BFDBFE",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#EFF6FF",
+
+      borderDefault: "#93C5FD",
+      borderLight: "#BFDBFE",
+      borderAccent: "#60A5FA",
+    },
+
+    monochrome: {
+      primary: "#000000",
+      primaryLight: "#374151",
+      primaryDark: "#000000",
+      secondary: "#6B7280",
+      accent: "#9CA3AF",
+
+      textPrimary: "#000000",
+      textSecondary: "#374151",
+      textMuted: "#6B7280",
+      textAccent: "#000000",
+
+      bgPrimary: "#FFFFFF",
+      bgSecondary: "#F9FAFB",
+      bgTertiary: "#F3F4F6",
+
+      surfaceCard: "#FFFFFF",
+      surfaceOverlay: "#F9FAFB",
+
+      borderDefault: "#E5E7EB",
+      borderLight: "#F3F4F6",
+      borderAccent: "#D1D5DB",
+    },
+  };
+
+  // Apply theme to CSS custom properties
+  function applyTheme(themeName) {
+    const theme = demoThemes[themeName];
+    if (!theme) return;
+
+    const root = document.documentElement;
+
+    // Apply color variables
+    Object.entries(theme).forEach(([key, value]) => {
+      // Convert camelCase to kebab-case and add appropriate prefix
+      const cssVar = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+
+      if (key.startsWith("text")) {
+        root.style.setProperty(`--${cssVar}`, value);
+      } else if (key.startsWith("bg")) {
+        root.style.setProperty(`--${cssVar}`, value);
+      } else if (key.startsWith("surface")) {
+        root.style.setProperty(`--${cssVar}`, value);
+      } else if (key.startsWith("border")) {
+        root.style.setProperty(`--${cssVar}`, value);
+      } else {
+        // For primary, secondary, accent colors
+        root.style.setProperty(`--color-${cssVar}`, value);
+      }
+    });
+
+    // Auto-generate accessible color variants if not provided
+    const primaryAccessible =
+      theme.primaryAccessible || theme.primaryDark || theme.primary;
+    const primaryAccessibleDark =
+      theme.primaryAccessibleDark || theme.primaryDark || theme.primary;
+    const textMutedAccessible =
+      theme.textMutedAccessible || theme.textSecondary || theme.textMuted;
+    const bgContrastSafe =
+      theme.bgContrastSafe || theme.bgSecondary || theme.bgTertiary;
+
+    // Apply accessible color variants (auto-generated for all themes!)
+    root.style.setProperty("--color-primary-accessible", primaryAccessible);
+    root.style.setProperty(
+      "--color-primary-accessible-dark",
+      primaryAccessibleDark,
+    );
+    root.style.setProperty("--text-muted-accessible", textMutedAccessible);
+    root.style.setProperty("--bg-contrast-safe", bgContrastSafe);
+
+    // Store current theme
+    localStorage.setItem("demo-theme", themeName);
+
+    // Update active state
+    updateActiveTheme(themeName);
+  }
+
+  // Update active theme button
+  function updateActiveTheme(themeName) {
+    const buttons = document.querySelectorAll(".theme-option");
+    buttons.forEach((button) => {
+      button.classList.remove("active");
+      if (button.dataset.theme === themeName) {
+        button.classList.add("active");
+      }
+    });
+  }
+
+  // Modal functionality
+  function openModal() {
+    const overlay = document.getElementById("theme-modal-overlay");
+    if (overlay) {
+      overlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  function closeModal() {
+    const overlay = document.getElementById("theme-modal-overlay");
+    if (overlay) {
+      overlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  }
+
+  // Initialize theme switcher
+  function initThemeSwitcher() {
+    // Load saved theme or default to coffee
+    const savedTheme = localStorage.getItem("demo-theme") || "coffee";
+    applyTheme(savedTheme);
+
+    // Modal trigger button
+    const triggerBtn = document.getElementById("theme-switcher-btn");
+    if (triggerBtn) {
+      triggerBtn.addEventListener("click", openModal);
+    }
+
+    // Modal close button
+    const closeBtn = document.getElementById("theme-modal-close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", closeModal);
+    }
+
+    // Modal overlay click to close
+    const overlay = document.getElementById("theme-modal-overlay");
+    if (overlay) {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+          closeModal();
+        }
+      });
+    }
+
+    // Theme option buttons
+    const themeButtons = document.querySelectorAll(".theme-option");
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const themeName = button.dataset.theme;
+        applyTheme(themeName);
+
+        // Add a subtle animation feedback
+        button.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          button.style.transform = "";
+        }, 150);
+
+        // Close modal after selection
+        setTimeout(() => {
+          closeModal();
+        }, 300);
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeSwitcher);
+  } else {
+    initThemeSwitcher();
+  }
+
+  // Re-initialize after Astro page transitions
+  document.addEventListener("astro:page-load", initThemeSwitcher);
+
+  // Export for potential external use
+  if (typeof window !== "undefined") {
+    window.demoThemeSwitcher = {
+      applyTheme,
+      availableThemes: Object.keys(demoThemes),
+      getCurrentTheme: () => localStorage.getItem("demo-theme") || "coffee",
+    };
+  }
+</script>

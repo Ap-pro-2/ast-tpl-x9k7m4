@@ -1,0 +1,146 @@
+---
+export const prerender = true;
+
+import {
+  getSiteSettings,
+  generateHomepageSEO,
+  getAllPosts,
+  createPaginationData,
+  getTagsWithPostCounts,
+} from "../core/blogLogic";
+import { generateOrganizationSchema } from "../core/seo/schema";
+import Schema from "../core/seo/Schema.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CoffeeHero from "../components/layout/Hero.astro";
+
+import AuthorCard from "../components/ui/AuthorCard.astro";
+import BlogCardHorizontal from "../components/ui/BlogCardHorizontal.astro";
+
+// Use core logic for data
+const settings = await getSiteSettings();
+const seoData = await generateHomepageSEO();
+const allPosts = await getAllPosts();
+const page = createPaginationData(allPosts, 1, 6);
+const tags = await getTagsWithPostCounts();
+
+// Generate organization schema for social media and SEO
+const organizationSchema = generateOrganizationSchema(settings);
+---
+
+<BaseLayout 
+  pageTitle={seoData.pageTitle} 
+  description={seoData.description}
+  ogImage={seoData.ogimage.url}
+  ogImageAlt={seoData.ogimage.alt}
+  canonicalUrl={seoData.canonicalUrl}
+>
+  {
+    settings.imageDomain && (
+      <link rel="preconnect" href={settings.imageDomain} slot="head" />
+    )
+  }
+  
+  <!-- Organization Schema with Social Media Links -->
+  <Schema item={organizationSchema} id="organization-schema" slot="head" />
+
+  <!-- Hero Section -->
+  <CoffeeHero showFeaturedPosts={true} />
+
+  <!-- Main Content Section with Sidebar -->
+  <section class="py-8" style="background: var(--bg-primary)">
+    <div class="container max-w-7xl">
+      <div class="grid lg:grid-cols-3 gap-12 lg:gap-16">
+        <!-- Main Content Area -->
+        <main class="lg:col-span-2">
+          <div>
+            <h2
+              class="text-2xl font-bold mb-8"
+              style="color: var(--text-primary)"
+            >
+              Latest Articles
+            </h2>
+
+            <!-- Blog Cards -->
+            <div class="space-y-6">
+              {page.data.map((post) => <BlogCardHorizontal post={post} />)}
+            </div>
+
+            <!-- Load More Button -->
+            {
+              page.lastPage > 1 && (
+                <div class="mt-12 text-center">
+                  <a
+                    href="/blog"
+                    class="theme-button-primary inline-flex items-center px-6 py-3"
+                  >
+                    Explore More Articles
+                  </a>
+                </div>
+              )
+            }
+          </div>
+        </main>
+
+        <!-- Sticky Sidebar -->
+        <aside
+          class="sticky top-24 self-start space-y-6"
+          style="height: fit-content;"
+        >
+          <!-- Author Card -->
+          <AuthorCard />
+          
+          <!-- Tags Section -->
+          {tags.length > 0 && (
+            <div class="bg-white/50 p-6 backdrop-blur-sm" 
+                 style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: var(--shadow-md)">
+              
+              <div class="flex items-center gap-3 mb-8">
+                <div class="w-1 h-6" style="background: var(--color-primary-accessible); border-radius: var(--radius-full)"></div>
+                <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
+                  Tags
+                </h3>
+              </div>
+              
+              <div class="space-y-3">
+                {tags.slice(0, 6).map((tag) => (
+                  <a 
+                    href={`/tags/${tag.data.slug}`}
+                    class="flex items-center justify-between p-4 transition-all duration-300 hover:shadow-md"
+                    style="background: var(--bg-tertiary); border-radius: var(--radius-lg); border: 1px solid var(--border-light); transition: all var(--animation-duration) var(--animation-easing)"
+                    onmouseover="this.style.backgroundColor='var(--bg-primary)'; this.style.transform='translateX(6px)'; this.style.boxShadow='var(--shadow-md)'"
+                    onmouseout="this.style.backgroundColor='var(--bg-tertiary)'; this.style.transform='translateX(0)'; this.style.boxShadow='none'"
+                    aria-label={`View all posts tagged with ${tag.data.name} (${tag.postCount} posts)`}
+                  >
+                    <span class="font-semibold text-sm" style="color: var(--text-primary)">
+                      #{tag.data.name}
+                    </span>
+                    <span class="text-xs px-3 py-1.5 font-bold" 
+                          style="background: var(--color-primary-accessible); color: white; border-radius: var(--radius-full)"
+                          aria-label={`${tag.postCount} posts`}>
+                      {tag.postCount}
+                    </span>
+                  </a>
+                ))}
+              </div>
+              
+              <!-- View All Tags -->
+              <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-light)">
+                <a href="/tags" 
+                   class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"
+                   style="color: var(--color-primary-accessible); transition: all var(--animation-duration) var(--animation-easing)"
+                   onmouseover="this.style.color='var(--color-primary-accessible-dark)'"
+                   onmouseout="this.style.color='var(--color-primary-accessible)'"
+                   aria-label="Browse all blog tags">
+                  <span>Browse All Tags</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

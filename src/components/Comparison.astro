@@ -1,0 +1,20 @@
+---
+// Simple wrapper for ComparisonTable that can be easily used in MDX
+import ComparisonTable from './ComparisonTable.astro';
+
+export interface Props {
+  title?: string;
+  // Products as JSON string for easy MDX usage
+  products: string;
+}
+
+const { title, products } = Astro.props;
+
+// Parse the products JSON string
+const parsedProducts = JSON.parse(products);
+---
+
+<ComparisonTable
+  title={title}
+  products={parsedProducts}
+/>

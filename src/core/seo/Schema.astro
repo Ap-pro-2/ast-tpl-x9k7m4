@@ -1,0 +1,58 @@
+---
+import type { Thing, WithContext } from 'schema-dts';
+
+export interface Props {
+  item: Thing | Thing[] | WithContext<Thing> | WithContext<Thing>[] | any;
+  id?: string;
+}
+
+const { item, id } = Astro.props;
+
+// Early validation for missing data
+if (!item) {
+  console.warn('Schema component: No schema item provided');
+}
+
+// Handle both single items and arrays
+const schemaData = Array.isArray(item) ? item : [item];
+
+// Add @context if not present and prepare final schema
+const processedSchemaData = schemaData
+  .filter(schema => schema !== null && schema !== undefined)
+  .map(schema => {
+    if (typeof schema !== 'object') {
+      console.warn('Schema component: Invalid schema item detected', schema);
+      return null;
+    }
+    
+    // Add @context if not present
+    return Object.assign({ '@context': 'https://schema.org' }, schema);
+  })
+  .filter(schema => schema !== null);
+
+// Generate the final schema object
+const finalSchema = processedSchemaData.length === 1 
+  ? processedSchemaData[0] 
+  : processedSchemaData;
+
+// Generate JSON-LD string
+let jsonLdOutput = '';
+let shouldRender = false;
+
+if (finalSchema && (Array.isArray(finalSchema) ? finalSchema.length > 0 : true)) {
+  try {
+    jsonLdOutput = JSON.stringify(finalSchema, null, 0);
+    shouldRender = true;
+  } catch (error) {
+    console.error('Schema component: Failed to stringify JSON-LD', error);
+  }
+}
+---
+
+{shouldRender && jsonLdOutput && (
+  <script 
+    type="application/ld+json" 
+    id={id}
+    set:html={jsonLdOutput}
+  />
+)}

@@ -1,0 +1,182 @@
+---
+export const prerender = true;
+
+import { getAuthorsWithPostCounts, getSiteSettings, getPageData } from '../../core/blogLogic';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/navigation/Breadcrumb.astro';
+import AuthorsListSchema from '../../components/seo/AuthorsListSchema.astro';
+import { generateBreadcrumbs } from '../../core/navigation/breadcrumbUtils';
+
+const authorsWithPostCounts = await getAuthorsWithPostCounts();
+const settings = await getSiteSettings();
+const pageData = await getPageData("all-authors");
+const breadcrumbs = generateBreadcrumbs('/authors');
+
+// Enhanced SEO data
+const seoData = {
+  pageTitle: pageData?.seo?.title || "Coffee Experts & Writers | AstroPress Coffee Authors",
+  description: pageData?.seo?.description || `Meet the talented coffee experts, baristas, and writers behind ${settings.siteName}.`,
+  keywords: pageData?.seo?.keywords || ["coffee experts", "coffee writers", "baristas", "coffee authors"],
+  ogImage: pageData?.seo?.ogImage || "/images/seo/coffee-authors-og.jpg",
+  ogImageAlt: "Coffee experts and writers",
+  canonicalUrl: `${settings.siteUrl}/authors`
+};
+
+const currentUrl = `${settings.siteUrl}${Astro.url.pathname}`;
+---
+
+<BaseLayout 
+  pageTitle={seoData.pageTitle} 
+  description={seoData.description}
+  keywords={seoData.keywords}
+  ogImage={seoData.ogImage}
+  ogImageAlt={seoData.ogImageAlt}
+  canonicalUrl={seoData.canonicalUrl}
+>
+  {settings.imageDomain && (
+    <link rel="preconnect" href={settings.imageDomain} slot="head" />
+  )}
+
+  <AuthorsListSchema 
+    authors={authorsWithPostCounts}
+    url={currentUrl}
+    slot="head"
+  />
+
+  <section class="py-6 lg:py-8" style="background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary))">
+    <div class="container max-w-7xl">
+      <Breadcrumb items={breadcrumbs} />
+      
+      <div class="text-center">
+        <!-- Professional Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 mb-6" 
+             style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full); border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent)">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+          </svg>
+          <span class="text-sm font-semibold">Authors</span>
+        </div>
+        
+        <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight" 
+            style="color: var(--text-primary); font-family: var(--font-heading)">
+          Meet Our Authors
+        </h1>
+        
+        <p class="text-lg lg:text-xl max-w-3xl mx-auto mb-8 leading-relaxed" 
+           style="color: var(--text-secondary); font-family: var(--font-body)">
+          Discover the talented writers behind our content. Each author brings unique expertise and insights to our community.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8 lg:py-12" style="background: var(--bg-primary)">
+    <div class="container max-w-7xl">
+      {authorsWithPostCounts.length > 0 ? (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+          {authorsWithPostCounts.map((author) => (
+            <a href={`/authors/${author.data.slug}`} class="group">
+              <article class="h-full text-center transition-all duration-300 hover:shadow-xl" 
+                       style="background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); transition: all var(--animation-duration) var(--animation-easing)"
+                       onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='var(--shadow-lg)'"
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)'">
+                
+                <div class="p-6 lg:p-8">
+                  <!-- Author Avatar -->
+                  <div class="mb-6">
+                    {author.data.avatar ? (
+                      <img 
+                        src={author.data.avatar} 
+                        alt={author.data.name}
+                        loading="lazy"
+                        class="w-20 h-20 mx-auto object-cover"
+                        style="border-radius: var(--radius-full); box-shadow: var(--shadow-md)"
+                      />
+                    ) : (
+                      <div class="w-20 h-20 text-white flex items-center justify-center mx-auto text-2xl font-bold"
+                           style="background: linear-gradient(135deg, var(--color-primary-accessible), var(--color-primary-accessible-dark)); border-radius: var(--radius-full); box-shadow: var(--shadow-md)">
+                        {author.data.name[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <!-- Author Badge -->
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-4" 
+                       style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full)">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-xs font-semibold">Author</span>
+                  </div>
+                  
+                  <!-- Author Name -->
+                  <h2 class="text-xl lg:text-2xl font-bold mb-4 transition-colors" 
+                      style="color: var(--text-primary); font-family: var(--font-heading); transition: color var(--animation-duration) var(--animation-easing)"
+                      onmouseover="this.style.color='var(--text-accent)'"
+                      onmouseout="this.style.color='var(--text-primary)'">
+                    {author.data.name}
+                  </h2>
+                  
+                  <!-- Author Bio -->
+                  {author.data.bio && (
+                    <p class="mb-6 leading-relaxed" style="color: var(--text-secondary); font-family: var(--font-body)">
+                      {author.data.bio}
+                    </p>
+                  )}
+                  
+                  <!-- Article Count -->
+                  <div class="inline-flex items-center gap-2 px-3 py-1 mb-6" 
+                       style="background: var(--bg-tertiary); color: var(--text-muted); border-radius: var(--radius-full)">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-sm font-medium">
+                      {author.postCount} {author.postCount === 1 ? 'article' : 'articles'}
+                    </span>
+                  </div>
+                  
+                  <!-- Read Articles Button -->
+                  <div class="inline-flex items-center gap-2 font-semibold transition-all duration-300 hover:gap-3" 
+                       style="color: var(--color-primary-accessible); transition: all var(--animation-duration) var(--animation-easing)"
+                       onmouseover="this.style.color='var(--color-primary-accessible-dark)'"
+                       onmouseout="this.style.color='var(--color-primary-accessible)'">
+                    <span>Read Articles</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </div>
+                </div>
+              </article>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center max-w-md mx-auto">
+          <div class="w-20 h-20 flex items-center justify-center mx-auto mb-6" 
+               style="background: var(--bg-tertiary); border-radius: var(--radius-full); box-shadow: var(--shadow-sm)">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" style="color: var(--text-muted)">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold mb-4" style="color: var(--text-primary); font-family: var(--font-heading)">No Authors Yet</h2>
+          <p class="leading-relaxed" style="color: var(--text-secondary); font-family: var(--font-body)">
+            We're still building our team of talented writers. Check back soon to meet our authors!
+          </p>
+        </div>
+      )}
+      
+      <div class="mt-8 lg:mt-12 text-center">
+        <a href="/blog" 
+           class="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all duration-300 hover:shadow-lg"
+           style="background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-xl); transition: all var(--animation-duration) var(--animation-easing)"
+           onmouseover="this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-md)'"
+           onmouseout="this.style.background='var(--surface-card)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Back to All Articles</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

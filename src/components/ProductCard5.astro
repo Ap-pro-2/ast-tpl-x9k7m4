@@ -1,0 +1,175 @@
+---
+/**
+ * ProductCard5 - "Editor's Pick" Conversion Beast
+ * Big image, urgent CTA, social proof focused
+ */
+
+import OptimizedImage from './ui/OptimizedImage.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  imageAlt: string;
+  affiliateUrl: string;
+  rating?: number;
+  reviewCount?: number;
+  brand?: string;
+  features?: string[];
+  pros?: string[];
+  cons?: string[];
+  badge?: string;
+  buttonText?: string;
+}
+
+const {
+  title,
+  description,
+  price,
+  originalPrice,
+  image,
+  imageAlt,
+  affiliateUrl,
+  rating,
+  reviewCount,
+  brand,
+  features,
+  pros,
+  cons,
+  badge,
+  buttonText,
+} = Astro.props;
+
+const discountPercent =
+  originalPrice && price
+    ? Math.round(
+        ((parseFloat(originalPrice.replace("$", "")) -
+          parseFloat(price.replace("$", ""))) /
+          parseFloat(originalPrice.replace("$", ""))) *
+          100,
+      )
+    : null;
+---
+
+<!-- Editor's Pick Conversion Beast -->
+<article class="theme-card relative mb-8 overflow-hidden" style="border: 2px solid var(--color-primary-accessible); border-radius: var(--radius-lg);">
+  <!-- Badge -->
+  {badge && (
+    <div class="absolute top-0 right-0 z-20">
+      <div class="text-white text-xs font-bold px-4 py-2 transform rotate-12 translate-x-2 -translate-y-1" style="background: var(--color-accent); border-radius: var(--radius-md);">
+        {badge}
+      </div>
+    </div>
+  )}
+
+  <!-- Hero Image Section -->
+  <div class="relative">
+    <OptimizedImage
+      src={image}
+      alt={imageAlt}
+      width={600}
+      height={256}
+      class="w-full h-64 object-cover"
+      loading="lazy"
+    />
+    
+    <!-- Overlay Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+    
+    <!-- Price Overlay -->
+    {price && (
+      <div class="absolute bottom-4 left-4">
+        <div class="text-white">
+          <div class="text-3xl font-bold" style="font-family: var(--font-heading);">
+            {price}
+          </div>
+          {originalPrice && (
+            <div class="text-lg line-through opacity-80">
+              {originalPrice}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    <!-- Discount Badge -->
+    {discountPercent && (
+      <div class="absolute top-4 left-4">
+        <span class="bg-red-500 text-white text-sm font-bold px-3 py-1" style="border-radius: var(--radius-full);">
+          -{discountPercent}% OFF
+        </span>
+      </div>
+    )}
+  </div>
+
+  <div style="padding: var(--card-padding);">
+    <!-- Title -->
+    <h3 class="text-xl font-bold mb-3" style="color: var(--text-primary); font-family: var(--font-heading);">
+      {title}
+    </h3>
+
+    <!-- Social Proof -->
+    {rating && reviewCount && (
+      <div class="flex items-center gap-2 mb-4">
+        <div class="flex">
+          {Array.from({ length: 5 }, (_, i) => (
+            <svg
+              class={`w-4 h-4 ${i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"}`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
+        </div>
+        <span class="font-semibold" style="color: var(--text-primary);">
+          {rating}
+        </span>
+        <span class="text-sm" style="color: var(--text-muted-accessible);">
+          ({reviewCount} reviews)
+        </span>
+      </div>
+    )}
+
+    <!-- Description -->
+    <p class="leading-relaxed mb-4" style="color: var(--text-secondary);">
+      {description}
+    </p>
+
+    <!-- Top Features -->
+    {features && features.length > 0 && (
+      <div class="mb-6">
+        <div class="grid grid-cols-1 gap-2">
+          {features.slice(0, 2).map((feature) => (
+            <div class="flex items-center text-sm" style="color: var(--text-secondary);">
+              <svg class="w-4 h-4 mr-2" style="color: var(--color-primary-accessible);" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              {feature}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- CTA -->
+    <div class="text-center">
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="theme-button-primary w-full block py-4 text-lg font-bold"
+        style="color: white; border-radius: var(--radius-lg);"
+      >
+        {buttonText || "View Deal"}
+      </a>
+      {discountPercent && (
+        <p class="text-xs mt-2" style="color: var(--text-muted-accessible);">
+          Save {discountPercent}%
+        </p>
+      )}
+    </div>
+  </div>
+</article>

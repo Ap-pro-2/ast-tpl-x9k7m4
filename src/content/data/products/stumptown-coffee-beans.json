@@ -1,0 +1,32 @@
+{
+  "id": "stumptown-coffee-beans",
+  "title": "Stumptown Coffee - Hair Bender Blend",
+  "description": "Stumptown's signature blend with notes of citrus, chocolate, and caramel. Perfect for espresso or drip.",
+  "price": "$16.50",
+  "originalPrice": "$19.50",
+  "image": "https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Stumptown coffee beans bag",
+  "affiliateUrl": "https://stumptowncoffee.com/products/hair-bender",
+  "category": "coffee-beans",
+  "rating": 4.6,
+  "reviewCount": 2847,
+  "brand": "Stumptown Coffee",
+  "features": [
+    "Signature house blend",
+    "Medium-dark roast",
+    "Notes of citrus and chocolate",
+    "Versatile brewing methods"
+  ],
+  "pros": [
+    "Well-balanced flavor",
+    "Great for beginners",
+    "Consistent quality"
+  ],
+  "cons": [
+    "Not single-origin",
+    "Can be too mild for some",
+    "Limited roast date info"
+  ],
+  "badge": "Bestseller",
+  "buttonText": "Order This Blend"
+}

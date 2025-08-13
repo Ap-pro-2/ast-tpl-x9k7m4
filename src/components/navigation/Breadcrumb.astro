@@ -1,0 +1,45 @@
+---
+/**
+ * Pure Breadcrumb Component - No Styling
+ * Multi-purpose foundation ready for any theme
+ */
+
+interface Props {
+  items: Array<{
+    name: string;
+    url?: string;
+  }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="mb-6">
+  <ol class="flex items-center space-x-2 text-sm">
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      return (
+        <li class="flex items-center">
+          {!isLast ? (
+            <a 
+              href={item.url} 
+              class="transition-colors"
+              style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
+              onmouseover="this.style.color='var(--color-primary-dark)'"
+              onmouseout="this.style.color='var(--text-accent)'"
+            >
+              {item.name}
+            </a>
+          ) : (
+            <span class="font-medium" style="color: var(--text-muted)">
+              {item.name}
+            </span>
+          )}
+          {!isLast && (
+            <span class="mx-2" style="color: var(--text-muted)">›</span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

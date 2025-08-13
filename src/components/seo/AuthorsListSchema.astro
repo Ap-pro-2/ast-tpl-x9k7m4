@@ -1,0 +1,41 @@
+---
+/**
+ * AuthorsListSchema Component - Thin Wrapper
+ * Now just calls core logic and renders schema
+ */
+
+ import Schema from '../../core/seo/Schema.astro';
+import { generateAuthorsListSchemaData } from '../../core/seo/generateAuthorsListSchema';
+
+export interface Props {
+  /** Array of authors with post counts */
+  authors: Array<{
+    id: string;
+    data: {
+      name: string;
+      bio?: string;
+      avatar?: string;
+      email?: string;
+      twitter?: string;
+      github?: string;
+      website?: string;
+    };
+    postCount: number;
+  }>;
+  /** Full URL of the authors index page */
+  url: string;
+}
+
+const { authors, url } = Astro.props;
+
+// ✅ Just call core logic - no complex logic here
+const schemaData = await generateAuthorsListSchemaData(authors, url);
+const shouldRender = schemaData && authors && authors.length > 0;
+---
+
+{shouldRender && schemaData && (
+  <Schema 
+    item={schemaData} 
+    id="authors-list-schema"
+  />
+)}

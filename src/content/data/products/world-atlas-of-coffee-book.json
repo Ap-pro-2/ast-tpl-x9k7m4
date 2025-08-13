@@ -1,0 +1,32 @@
+{
+  "id": "world-atlas-of-coffee-book",
+  "title": "World Atlas of Coffee by James Hoffmann",
+  "description": "The definitive guide to coffee from around the world, covering origins, processing, and brewing methods.",
+  "price": "$22.95",
+  "originalPrice": "$29.95",
+  "image": "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "World Atlas of Coffee book cover",
+  "affiliateUrl": "https://amazon.com/World-Atlas-Coffee-James-Hoffmann/dp/1770854703",
+  "category": "books",
+  "rating": 4.8,
+  "reviewCount": 3456,
+  "brand": "Firefly Books",
+  "features": [
+    "256 pages of coffee knowledge",
+    "Beautiful photography",
+    "Comprehensive brewing guide",
+    "Global coffee origins map"
+  ],
+  "pros": [
+    "Incredibly comprehensive",
+    "Beautiful visual design",
+    "Expert author credentials"
+  ],
+  "cons": [
+    "Can be overwhelming for beginners",
+    "Heavy book to carry",
+    "Some technical jargon"
+  ],
+  "badge": "Coffee Bible",
+  "buttonText": "Buy This Book"
+}

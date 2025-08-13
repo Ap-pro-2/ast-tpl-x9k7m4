@@ -1,0 +1,98 @@
+---
+/**
+ * Pure Sidebar Latest Articles Component - No Styling
+ * Multi-purpose foundation ready for any theme
+ */
+
+import { getAllPosts, formatDate } from '../../core/blogLogic';
+import { getEntry } from 'astro:content';
+import OptimizedImage from './OptimizedImage.astro';
+
+interface Props {
+  currentPostId?: string;
+  limit?: number;
+}
+
+const { currentPostId, limit = 4 } = Astro.props;
+
+// Get latest posts using core logic
+const allPosts = await getAllPosts();
+const latestPosts = allPosts
+  .filter(post => post.id !== currentPostId) // Exclude current post
+  .slice(0, limit);
+---
+
+{latestPosts.length > 0 && (
+  <div class="theme-card p-6">
+    <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary)">Latest Articles</h3>
+    <div class="space-y-4">
+      {latestPosts.map(async (post) => {
+        // Get category data safely
+        let category = null;
+        try {
+          if (post.data.category) {
+            const categoryId = typeof post.data.category === 'string' ? post.data.category : post.data.category.id;
+            category = await getEntry('categories', categoryId);
+          }
+        } catch (error) {
+          console.warn('Could not load category:', error);
+        }
+        
+        return (
+          <article class="flex gap-3">
+            {post.data.image?.url && (
+              <div class="flex-shrink-0 w-16 h-16 overflow-hidden" style="border-radius: var(--radius-md)">
+                <OptimizedImage 
+                  src={post.data.image.url} 
+                  alt={post.data.image.alt || post.data.title}
+                  width={64}
+                  height={64}
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            
+            <div class="flex-1 min-w-0">
+              {category && (
+                <div class="mb-1">
+                  <span class="theme-badge">
+                    {category.data.name}
+                  </span>
+                </div>
+              )}
+              
+              <h4 class="text-sm font-semibold leading-tight mb-1" style="color: var(--text-primary)">
+                <a href={`/blog/${post.id}`} 
+                   style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
+                   onmouseover="this.style.color='var(--text-accent)'"
+                   onmouseout="this.style.color='var(--text-primary)'"
+                   aria-label={`Read article: ${post.data.title}`}>
+                  {post.data.title}
+                </a>
+              </h4>
+              
+              <time datetime={post.data.pubDate.toISOString()} class="text-xs" style="color: var(--text-muted)">
+                {formatDate(post.data.pubDate)}
+              </time>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+    
+    <a 
+      href="/blog"
+      class="inline-flex items-center gap-1 text-sm font-medium mt-4 transition-colors"
+      style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
+      onmouseover="this.style.color='var(--color-primary-dark)'"
+      onmouseout="this.style.color='var(--text-accent)'"
+      aria-label="View all blog articles"
+    >
+      <span>View All Articles</span>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+      </svg>
+    </a>
+  </div>
+)}

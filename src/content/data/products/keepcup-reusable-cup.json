@@ -1,0 +1,32 @@
+{
+  "id": "keepcup-reusable-cup",
+  "title": "KeepCup Reusable Coffee Cup - Medium",
+  "description": "Sustainable reusable coffee cup made from lightweight, durable materials with barista standard sizing.",
+  "price": "$24.95",
+  "originalPrice": "$29.95",
+  "image": "https://images.pexels.com/photos/302896/pexels-photo-302896.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Reusable coffee cup with coffee",
+  "affiliateUrl": "https://keepcup.com/shop/keepcup-original",
+  "category": "accessories",
+  "rating": 4.4,
+  "reviewCount": 3421,
+  "brand": "KeepCup",
+  "features": [
+    "12oz capacity",
+    "Barista standard sizing",
+    "BPA-free materials",
+    "Dishwasher safe"
+  ],
+  "pros": [
+    "Environmentally friendly",
+    "Perfect coffee shop fit",
+    "Lightweight design"
+  ],
+  "cons": [
+    "Can retain coffee odors",
+    "Lid can be tricky to clean",
+    "Not fully leak-proof"
+  ],
+  "badge": "Eco-Friendly",
+  "buttonText": "Get This Cup"
+}

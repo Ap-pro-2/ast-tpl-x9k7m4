@@ -1,0 +1,15 @@
+[
+  {
+    "id": "general",
+    "name": "General",
+    "description": "General topics and articles",
+    "color": "#6b7280",
+    "slug": "general",
+    "seo": {
+      "title": "General Topics & Articles",
+      "description": "Explore general topics and articles covering a wide range of subjects and interesting insights.",
+      "keywords": ["general", "topics", "articles", "blog posts", "content", "insights"],
+      "ogImageAlt": "General topics and articles collection"
+    }
+  }
+]

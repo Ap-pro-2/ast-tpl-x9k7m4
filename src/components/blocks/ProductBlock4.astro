@@ -1,0 +1,43 @@
+---
+/**
+ * Product Block 4 - Jasper Style Design
+ * Usage: <ProductBlock4 id="acaia-pearl-scale" />
+ * Uses ProductCard4 component for centered layout with prominent rating
+ */
+import { getEntry } from 'astro:content';
+import ProductCard4 from '../ProductCard4.astro';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get product from single dynamic collection
+const product = await getEntry('affiliateProducts', id);
+
+if (!product) {
+  console.warn(`ProductBlock4: Product "${id}" not found`);
+  return null;
+}
+
+const data = product.data;
+---
+
+<ProductCard4
+  title={data.title}
+  description={data.description}
+  price={data.price}
+  originalPrice={data.originalPrice}
+  image={data.image}
+  imageAlt={data.imageAlt}
+  affiliateUrl={data.affiliateUrl}
+  rating={data.rating}
+  reviewCount={data.reviewCount}
+  brand={data.brand}
+  features={data.features}
+  pros={data.pros}
+  cons={data.cons}
+  badge={data.badge}
+  buttonText={data.buttonText}
+/>

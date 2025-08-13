@@ -1,0 +1,162 @@
+---
+export const prerender = true;
+
+import {
+  generateTagPaths,
+  generateTagSEO,
+  getSiteSettings,
+} from "../../core/blogLogic";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogList from "../../components/blog/BlogList.astro";
+import Breadcrumb from "../../components/navigation/Breadcrumb.astro";
+import { getTagBreadcrumbs } from "../../core/navigation/breadcrumbUtils";
+
+export const getStaticPaths = generateTagPaths;
+
+const { posts } = Astro.props;
+const { tag: tagSlug } = Astro.params;
+
+// Handle undefined tagSlug
+if (!tagSlug) {
+  throw new Error('Tag slug is required');
+}
+
+const settings = await getSiteSettings();
+const seoData = await generateTagSEO(tagSlug);
+
+const allTags = await getCollection("tags");
+const tagData = allTags.find((tag) => tag.data.slug === tagSlug);
+const tagName = tagData ? tagData.data.name : tagSlug;
+const tagDescription = tagData ? tagData.data.description : null;
+
+const breadcrumbs = getTagBreadcrumbs(tagSlug, tagData);
+---
+
+<BaseLayout 
+  pageTitle={seoData.pageTitle} 
+  description={seoData.description}
+  ogImage={seoData.ogImage}
+  ogImageAlt={seoData.ogImageAlt}
+  canonicalUrl={seoData.canonicalUrl}
+  keywords={seoData.keywords}
+>
+  {
+    settings.imageDomain && (
+      <link rel="preconnect" href={settings.imageDomain} slot="head" />
+    )
+  }
+
+  <section
+    class="py-6 lg:py-8"
+    style="background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary))"
+  >
+    <div class="container max-w-7xl">
+      <Breadcrumb items={breadcrumbs} />
+
+      <div class="text-center">
+        <!-- Professional Badge -->
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 mb-6"
+          style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full); border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent)"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            ></path>
+          </svg>
+          <span class="text-sm font-semibold">Tag</span>
+        </div>
+
+        <h1
+          class="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight"
+          style="color: var(--text-primary); font-family: var(--font-heading)"
+        >
+          #{tagName}
+        </h1>
+
+        {
+          tagDescription && (
+            <p
+              class="text-lg lg:text-xl max-w-3xl mx-auto mb-8 leading-relaxed"
+              style="color: var(--text-secondary); font-family: var(--font-body)"
+            >
+              {tagDescription}
+            </p>
+          )
+        }
+
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2"
+          style="background: var(--bg-tertiary); color: var(--text-muted); border-radius: var(--radius-full); border: 1px solid var(--border-light)"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <span class="text-sm font-medium"
+            >{posts.length}
+            {posts.length === 1 ? "article" : "articles"} with this tag</span
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    posts.length > 0 ? (
+      <BlogList posts={posts} />
+    ) : (
+      <div class="py-16">
+        <div class="container">
+          <div class="text-center max-w-md mx-auto">
+            <div
+              class="w-16 h-16 flex items-center justify-center mx-auto mb-4"
+              style="background: var(--bg-tertiary); border-radius: var(--radius-full)"
+            >
+              <span class="text-2xl font-bold" style="color: var(--text-muted)">
+                #
+              </span>
+            </div>
+            <h3
+              class="text-xl font-semibold mb-2"
+              style="color: var(--text-primary)"
+            >
+              No Articles with This Tag
+            </h3>
+            <p class="mb-6" style="color: var(--text-secondary)">
+              We haven't published any articles with this tag yet. Check back
+              soon for fresh content!
+            </p>
+            <a
+              href="/tags"
+              class="inline-flex items-center font-medium transition-colors"
+              style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
+              onmouseover="this.style.color='var(--color-primary-dark)'"
+              onmouseout="this.style.color='var(--text-accent)'"
+            >
+              ← Explore Other Tags
+            </a>
+          </div>
+        </div>
+      </div>
+    )
+  }
+</BaseLayout>

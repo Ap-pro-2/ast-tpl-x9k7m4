@@ -1,0 +1,43 @@
+---
+/**
+ * Product Block - Works with single dynamic collection
+ * Usage: <ProductBlock id="macbook-pro-14-m3" />
+ * Dashboard-friendly: No config changes needed when adding categories
+ */
+import { getEntry } from 'astro:content';
+import ProductCard from '../ProductCard.astro';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get product from single dynamic collection (simple!)
+const product = await getEntry('affiliateProducts', id);
+
+if (!product) {
+  console.warn(`ProductBlock: Product "${id}" not found`);
+  return null;
+}
+
+const data = product.data;
+---
+
+<ProductCard
+  title={data.title}
+  description={data.description}
+  price={data.price}
+  originalPrice={data.originalPrice}
+  image={data.image}
+  imageAlt={data.imageAlt}
+  affiliateUrl={data.affiliateUrl}
+  rating={data.rating}
+  reviewCount={data.reviewCount}
+  brand={data.brand}
+  features={data.features}
+  pros={data.pros}
+  cons={data.cons}
+  badge={data.badge}
+  buttonText={data.buttonText}
+/>

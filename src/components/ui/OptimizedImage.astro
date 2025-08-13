@@ -1,0 +1,143 @@
+---
+// Optimized Image Component using Cloudflare Image Transformations
+import { Image } from "astro:assets";
+
+interface Props {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+    priority?: boolean;
+    class?: string;
+    style?: string;
+    quality?: number;
+    format?: "webp" | "avif" | "auto";
+    loading?: "eager" | "lazy";
+    sizes?: string;
+}
+
+const {
+    src,
+    alt,
+    width = 830,
+    height = 467,
+    priority = false,
+    class: className = "",
+    quality = 85,
+    format = "webp",
+    loading = priority ? "eager" : "lazy",
+    sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+    ...rest
+} = Astro.props;
+
+// Check if this is an external image
+const isExternalImage = src.startsWith("http");
+
+// For external images, use Cloudflare Image Transformations
+const getCloudflareOptimizedSrc = (
+    originalSrc: string,
+    targetWidth: number,
+    targetHeight: number,
+) => {
+    if (!isExternalImage) return originalSrc;
+
+    // Check if this is your custom domain for R2
+    const isCustomDomain = originalSrc.includes("images.supplementcrew.com");
+
+    if (isCustomDomain) {
+        // Use Cloudflare's /cdn-cgi/image/ transformation through main domain
+        // Format: https://supplementcrew.com/cdn-cgi/image/width=400,quality=85,format=webp/https://images.supplementcrew.com/image.webp
+        const options = [
+            `width=${targetWidth}`,
+            `height=${targetHeight}`,
+            `fit=cover`,
+            `quality=${quality}`,
+            `format=${format}`,
+        ].join(",");
+
+        return `https://supplementcrew.com/cdn-cgi/image/${options}/${originalSrc}`;
+    }
+
+    // For other external images, use as-is
+    return originalSrc;
+};
+
+// Generate responsive srcset using Cloudflare transformations
+const generateCloudflareResponsiveSrcSet = (
+    originalSrc: string,
+    maxWidth: number,
+) => {
+    if (!isExternalImage) return undefined;
+
+    // Check if this is your custom domain for R2
+    const isCustomDomain = originalSrc.includes("images.supplementcrew.com");
+
+    if (!isCustomDomain) return undefined;
+
+    // Generate multiple sizes for responsive images using FULL URL
+    const widths = [
+        Math.round(maxWidth * 0.5), // 50% for small screens
+        Math.round(maxWidth * 0.75), // 75% for medium screens
+        maxWidth, // 100% for large screens
+        Math.round(maxWidth * 1.5), // 150% for high-DPI displays
+    ]
+        .filter((w, i, arr) => w >= 200 && arr.indexOf(w) === i) // Remove duplicates and too-small widths
+        .sort((a, b) => a - b);
+
+    return widths
+        .map((w) => {
+            const h = Math.round((w / maxWidth) * height);
+            const options = [
+                `width=${w}`,
+                `height=${h}`,
+                `fit=cover`,
+                `quality=${quality}`,
+                `format=${format}`,
+            ].join(",");
+            return `https://supplementcrew.com/cdn-cgi/image/${options}/${originalSrc} ${w}w`;
+        })
+        .join(", ");
+};
+
+const optimizedSrc = getCloudflareOptimizedSrc(src, width, height);
+const responsiveSrcSet = generateCloudflareResponsiveSrcSet(src, width);
+
+// No fallback needed - Cloudflare transformations are active
+
+// For external images, use plain img tag with Cloudflare transformations
+// For local images, use Astro's Image component
+const useAstroImage = !isExternalImage;
+---
+
+{
+    useAstroImage ? (
+        <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            quality={quality}
+            format={format}
+            loading={loading}
+            decoding={priority ? "sync" : "async"}
+            fetchpriority={priority ? "high" : "auto"}
+            class={className}
+            sizes={sizes}
+            {...rest}
+        />
+    ) : (
+        <img
+            src={optimizedSrc}
+            alt={alt}
+            width={width}
+            height={height}
+            loading={loading}
+            decoding={priority ? "sync" : "async"}
+            fetchpriority={priority ? "high" : "auto"}
+            class={className}
+            sizes={sizes}
+            srcset={responsiveSrcSet}
+            {...rest}
+        />
+    )
+}

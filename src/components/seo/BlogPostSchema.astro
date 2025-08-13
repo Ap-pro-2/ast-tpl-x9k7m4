@@ -1,0 +1,48 @@
+---
+/**
+ * BlogPostSchema Component - Thin Wrapper
+ * Now just calls core logic and renders schema
+ */
+
+ import Schema from '../../core/seo/Schema.astro';
+import { generateBlogPostSchemaData } from '../../core/seo/generateBlogPostSchema';
+
+export interface Props {
+  /** Blog post frontmatter from content collection */
+  frontmatter: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    author: string; // Reference to author ID
+    category: string; // Reference to category ID
+    tags: string[]; // Array of tag IDs
+    image?: {
+      url: string;
+      alt: string;
+    };
+    featured?: boolean;
+    status?: 'draft' | 'published';
+  };
+  /** Full URL of the blog post */
+  url: string;
+  /** Schema type to generate - Article or BlogPosting */
+  schemaType?: 'Article' | 'BlogPosting';
+}
+
+const { 
+  frontmatter, 
+  url, 
+  schemaType = 'Article'
+} = Astro.props;
+
+// ✅ Just call core logic - no complex logic here
+const schemaData = await generateBlogPostSchemaData(frontmatter, url, schemaType);
+const shouldRender = schemaData !== null;
+---
+
+{shouldRender && schemaData && (
+  <Schema 
+    item={schemaData} 
+    id={`blog-post-schema-${schemaType.toLowerCase()}`}
+  />
+)}

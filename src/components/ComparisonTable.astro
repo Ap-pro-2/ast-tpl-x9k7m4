@@ -1,0 +1,225 @@
+---
+/**
+ * Product Comparison Table Component
+ * Perfect for comparing 2-3 products side by side with aligned buttons
+ */
+
+export interface ComparisonProduct {
+  title: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  imageAlt: string;
+  affiliateUrl: string;
+  rating?: number;
+  reviewCount?: number;
+  badge?: string;
+  features: string[];
+  pros: string[];
+  cons: string[];
+  buttonText?: string;
+}
+
+export interface Props {
+  title?: string;
+  products: ComparisonProduct[];
+}
+
+const { title = "Product Comparison", products } = Astro.props;
+
+// Ensure we only show 2-3 products max
+const displayProducts = products.slice(0, 3);
+---
+
+<!-- Comparison Table -->
+<div class="comparison-table theme-card overflow-hidden mb-8">
+  
+  <!-- Header -->
+  <div class="p-6 border-b" style="border-color: var(--border-light); background: var(--bg-tertiary);">
+    <h3 class="text-2xl font-bold text-center" style="color: var(--text-primary); font-family: var(--font-heading);">
+      {title}
+    </h3>
+  </div>
+  
+  <!-- Comparison Grid -->
+  <div class={`grid ${displayProducts.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-0 min-h-0`}>
+    
+    {displayProducts.map((product, index) => (
+      <div class={`flex flex-col p-6 ${index < displayProducts.length - 1 ? 'border-r md:border-r' : ''} ${index < displayProducts.length - 1 ? 'border-b md:border-b-0' : ''}`} 
+           style="border-color: var(--border-light);">
+        
+        <!-- Product Header -->
+        <div class="text-center mb-6">
+          
+          <!-- Badge -->
+          {product.badge && (
+            <div class="mb-3">
+              <span class="theme-badge font-semibold text-xs px-3 py-1">
+                {product.badge}
+              </span>
+            </div>
+          )}
+          
+          <!-- Product Image -->
+          <div class="w-24 h-24 mx-auto mb-4 overflow-hidden" style="border-radius: var(--radius-lg);">
+            <img 
+              src={product.image} 
+              alt={product.imageAlt}
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          
+          <!-- Product Title -->
+          <h4 class="text-lg font-bold mb-2 line-clamp-2" 
+              style="color: var(--text-primary); font-family: var(--font-heading);">
+            {product.title}
+          </h4>
+          
+          <!-- Rating -->
+          {product.rating && (
+            <div class="flex items-center justify-center gap-2 mb-3">
+              <div class="flex items-center">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg 
+                    class={`w-4 h-4 ${i < Math.floor(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`}
+                    fill="currentColor" 
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              {product.reviewCount && (
+                <span class="text-xs" style="color: var(--text-muted);">
+                  ({product.reviewCount})
+                </span>
+              )}
+            </div>
+          )}
+          
+          <!-- Price -->
+          <div class="mb-6">
+            <div class="text-2xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading);">
+              {product.price}
+            </div>
+            {product.originalPrice && (
+              <div class="text-sm line-through" style="color: var(--text-muted);">
+                {product.originalPrice}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <!-- Content Section - Flexible -->
+        <div class="flex-grow">
+          
+          <!-- Features -->
+          <div class="mb-6">
+            <h5 class="text-sm font-semibold mb-3" style="color: var(--text-primary); font-family: var(--font-heading);">
+              Key Features
+            </h5>
+            <ul class="space-y-2">
+              {product.features.slice(0, 4).map(feature => (
+                <li class="flex items-start gap-2 text-sm" style="color: var(--text-secondary);">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0" style="color: var(--color-primary);" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <!-- Pros -->
+          <div class="mb-4">
+            <h5 class="text-sm font-semibold mb-2 text-green-600" style="font-family: var(--font-heading);">
+              ✓ Pros
+            </h5>
+            <ul class="space-y-1">
+              {product.pros.slice(0, 3).map(pro => (
+                <li class="text-xs" style="color: var(--text-secondary);">
+                  • {pro}
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <!-- Cons -->
+          <div class="mb-6">
+            <h5 class="text-sm font-semibold mb-2 text-red-600" style="font-family: var(--font-heading);">
+              ✗ Cons
+            </h5>
+            <ul class="space-y-1">
+              {product.cons.slice(0, 3).map(con => (
+                <li class="text-xs" style="color: var(--text-secondary);">
+                  • {con}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        
+        <!-- CTA Button - Always at bottom -->
+        <div class="mt-auto">
+          <a 
+            href={product.affiliateUrl}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full"
+            style="background: var(--color-primary);"
+            onmouseover="this.style.background='var(--color-primary-dark)'"
+            onmouseout="this.style.background='var(--color-primary)'"
+          >
+            <span>{product.buttonText || "View Deal"}</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </a>
+        </div>
+        
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .comparison-table {
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+  
+  .comparison-table:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  /* Ensure equal height columns */
+  .comparison-table .grid {
+    align-items: stretch;
+  }
+  
+  .comparison-table .grid > div {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .comparison-table .grid > div {
+      border-right: none !important;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .comparison-table .grid > div:last-child {
+      border-bottom: none !important;
+    }
+  }
+</style>

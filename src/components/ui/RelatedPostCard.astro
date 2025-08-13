@@ -1,0 +1,318 @@
+---
+/**
+ * Related Post Card Component - Enhanced Theme Integration
+ * Polished card design using your blog's theme system
+ */
+
+import { formatDate } from '../../core/blogLogic';
+import { getEntry } from 'astro:content';
+import OptimizedImage from './OptimizedImage.astro';
+
+interface Props {
+  post: any;
+}
+
+const { post } = Astro.props;
+
+// Get author and category data safely
+let author = null;
+let category = null;
+
+try {
+  if (post.data.author) {
+    const authorId = typeof post.data.author === 'string' ? post.data.author : post.data.author.id;
+    author = await getEntry('authors', authorId);
+  }
+  if (post.data.category) {
+    const categoryId = typeof post.data.category === 'string' ? post.data.category : post.data.category.id;
+    category = await getEntry('categories', categoryId);
+  }
+} catch (error) {
+  console.warn('Could not load author/category:', error);
+}
+---
+
+<article class="related-post-card">
+  <a href={`/blog/${post.id}`} class="card-link">
+    
+    <!-- Card Container -->
+    <div class="card-container">
+      
+      <!-- Post Image -->
+      {post.data.image?.url && (
+        <div class="image-container">
+          <OptimizedImage 
+            src={post.data.image.url} 
+            alt={post.data.image.alt || post.data.title}
+            width={300}
+            height={200}
+            loading="lazy"
+            class="post-image"
+          />
+          
+          <!-- Category Badge on Image -->
+          {category && (
+            <div class="category-badge-overlay">
+              <span class="category-badge">
+                {category.data.name}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+      
+      <!-- Post Content -->
+      <div class="content-container">
+        
+        <!-- Category (if no image) -->
+        {!post.data.image?.url && category && (
+          <div class="category-standalone">
+            <span class="category-badge">
+              {category.data.name}
+            </span>
+          </div>
+        )}
+        
+        <!-- Title -->
+        <h3 class="post-title">
+          {post.data.title}
+        </h3>
+        
+        <!-- Description -->
+        {post.data.description && (
+          <p class="post-description">
+            {post.data.description}
+          </p>
+        )}
+        
+        <!-- Meta Info -->
+        <div class="meta-container">
+          <div class="meta-info">
+            {author && (
+              <>
+                <span class="author-name">{author.data.name}</span>
+                <span class="separator">•</span>
+              </>
+            )}
+            <time datetime={post.data.pubDate.toISOString()} class="post-date">
+              {formatDate(post.data.pubDate)}
+            </time>
+          </div>
+          
+          <!-- Read More Arrow -->
+          <div class="read-arrow">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  /* Related Post Card */
+  .related-post-card {
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+  
+  /* Card Link */
+  .card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Card Container */
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+  
+  .card-container:hover {
+    border-color: color-mix(in srgb, var(--color-primary-accessible) 30%, var(--border-light));
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  
+  /* Image Container */
+  .image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+  
+  .post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--animation-duration) var(--animation-easing);
+  }
+  
+  .card-container:hover .post-image {
+    transform: scale(1.05);
+  }
+  
+  /* Category Badge */
+  .category-badge-overlay {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+  
+  .category-standalone {
+    margin-bottom: 0.75rem;
+  }
+  
+  .category-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-primary-accessible) 10%, var(--surface-card));
+    color: var(--color-primary-accessible);
+    border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent);
+    border-radius: var(--radius-md);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+  
+  /* Content Container */
+  .content-container {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Post Title */
+  .post-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    line-height: 1.4;
+    margin: 0 0 0.75rem 0;
+    transition: color var(--animation-duration) var(--animation-easing);
+  }
+  
+  .card-container:hover .post-title {
+    color: var(--color-primary-accessible);
+  }
+  
+  /* Post Description */
+  .post-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Meta Container */
+  .meta-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  
+  /* Meta Info */
+  .meta-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  
+  .author-name {
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  
+  .separator {
+    opacity: 0.6;
+  }
+  
+  .post-date {
+    color: var(--text-muted);
+  }
+  
+  /* Read Arrow */
+  .read-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: color-mix(in srgb, var(--color-primary-accessible) 8%, transparent);
+    color: var(--color-primary-accessible);
+    border-radius: var(--radius-md);
+    transition: all var(--animation-duration) var(--animation-easing);
+  }
+  
+  .card-container:hover .read-arrow {
+    background: var(--color-primary-accessible);
+    color: var(--bg-primary);
+    transform: translateX(2px);
+  }
+  
+  /* Desktop Layout */
+  @media (min-width: 768px) {
+    .card-container {
+      flex-direction: row;
+    }
+    
+    .image-container {
+      width: 12rem;
+      flex-shrink: 0;
+      aspect-ratio: 4/3;
+    }
+    
+    .content-container {
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .post-title {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .post-description {
+      font-size: 0.8125rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+  
+  /* Mobile Adjustments */
+  @media (max-width: 480px) {
+    .content-container {
+      padding: 1.25rem;
+    }
+    
+    .post-title {
+      font-size: 1rem;
+    }
+    
+    .meta-info {
+      font-size: 0.75rem;
+    }
+    
+    .read-arrow {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+  }
+</style>

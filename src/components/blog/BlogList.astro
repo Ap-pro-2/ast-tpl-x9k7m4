@@ -1,0 +1,89 @@
+---
+/**
+ * Professional Blog List Component - Matches Hero Section Style
+ * Clean, modern design with consistent theme system
+ */
+
+import BlogPostCard from './BlogPostCard.astro';
+
+interface Props {
+  posts: any[];
+  pagination?: any;
+}
+
+const { posts, pagination } = Astro.props;
+---
+
+<section class="py-8 lg:py-12" style="background: var(--bg-primary)">
+  <div class="container max-w-7xl">
+    
+    <!-- Posts Grid - Professional Layout -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+      {posts.map((post) => (
+        <BlogPostCard post={post} />
+      ))}
+    </div>
+    
+    <!-- Professional Pagination -->
+    {pagination && pagination.lastPage > 1 && (
+      <div class="mt-8 lg:mt-12">
+        <div class="flex items-center justify-center gap-3">
+          
+          <!-- Previous Page -->
+          {pagination.currentPage > 1 && (
+            <a 
+              href={pagination.currentPage === 2 ? '/blog' : `/blog/${pagination.currentPage - 1}`}
+              class="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all duration-300 hover:shadow-lg"
+              style="background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-xl); transition: all var(--animation-duration) var(--animation-easing)"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'"
+              onmouseout="this.style.background='var(--surface-card)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Previous</span>
+            </a>
+          )}
+          
+          <!-- Page Numbers -->
+          <div class="flex gap-2">
+            {Array.from({ length: pagination.lastPage }, (_, i) => i + 1).map((pageNum) => (
+              <a 
+                href={pageNum === 1 ? '/blog' : `/blog/${pageNum}`}
+                class={`w-12 h-12 flex items-center justify-center font-semibold transition-all duration-300 hover:shadow-lg ${
+                  pageNum === pagination.currentPage 
+                    ? 'text-white' 
+                    : 'hover:shadow-md'
+                }`}
+                style={pageNum === pagination.currentPage 
+                  ? `background: var(--color-primary); color: var(--bg-primary); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); transition: all var(--animation-duration) var(--animation-easing)`
+                  : `background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-xl); transition: all var(--animation-duration) var(--animation-easing)`
+                }
+                onmouseover={pageNum !== pagination.currentPage ? "this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-2px)'" : "this.style.background='var(--color-primary-dark)'; this.style.transform='translateY(-2px)'"}
+                onmouseout={pageNum !== pagination.currentPage ? "this.style.background='var(--surface-card)'; this.style.transform='translateY(0)'" : "this.style.background='var(--color-primary)'; this.style.transform='translateY(0)'"}
+              >
+                {pageNum}
+              </a>
+            ))}
+          </div>
+          
+          <!-- Next Page -->
+          {pagination.currentPage < pagination.lastPage && (
+            <a 
+              href={`/blog/${pagination.currentPage + 1}`}
+              class="inline-flex items-center gap-2 px-6 py-3 font-semibold transition-all duration-300 hover:shadow-lg"
+              style="background: var(--surface-card); color: var(--text-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-xl); transition: all var(--animation-duration) var(--animation-easing)"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'"
+              onmouseout="this.style.background='var(--surface-card)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+            >
+              <span>Next</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

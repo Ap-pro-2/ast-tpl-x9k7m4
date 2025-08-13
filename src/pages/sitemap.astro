@@ -1,0 +1,547 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { getPublishedPosts } from "../core/blogLogic";
+
+// Get all content collections - using getPublishedPosts to exclude drafts
+const allPosts = await getPublishedPosts();
+const allAuthors = await getCollection("authors");
+const allCategories = await getCollection("categories");
+const allTags = await getCollection("tags");
+
+// Get site settings
+const allSettings = await getCollection("settings");
+const userSettings = allSettings[0]?.data || {};
+
+const pageTitle = "Sitemap";
+const description = `Navigate through all content on ${userSettings.siteName}. Find articles, authors, categories, and everything in between.`;
+---
+
+<BaseLayout pageTitle={pageTitle} description={description}>
+  <style>
+    /* Enhanced Sitemap Styles using Theme System */
+    .sitemap-hero {
+      background: linear-gradient(
+        135deg,
+        var(--bg-secondary) 0%,
+        var(--bg-primary) 100%
+      );
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .sitemap-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(
+          circle at 30% 20%,
+          color-mix(in srgb, var(--color-primary-accessible) 12%, transparent) 0%,
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at 70% 80%,
+          color-mix(in srgb, var(--color-accent) 10%, transparent) 0%,
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at 90% 10%,
+          color-mix(in srgb, var(--color-primary-light) 8%, transparent) 0%,
+          transparent 50%
+        );
+      pointer-events: none;
+    }
+
+    .sitemap-title {
+      background: linear-gradient(
+        135deg,
+        var(--text-primary) 0%,
+        var(--color-primary-accessible) 70%,
+        var(--color-accent) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 2px 4px color-mix(in srgb, var(--text-primary) 10%, transparent);
+    }
+
+    .sitemap-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      transition: all var(--animation-duration) cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sitemap-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--color-primary-accessible),
+        var(--color-accent),
+        transparent
+      );
+      transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sitemap-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: var(--shadow-xl);
+      border-color: color-mix(in srgb, var(--color-primary-accessible) 25%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--surface-card) 95%,
+        var(--color-primary-accessible) 5%
+      );
+    }
+
+    .sitemap-card:hover::before {
+      left: 100%;
+    }
+
+    .sitemap-section-title {
+      color: var(--text-primary);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: var(--text-lg);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sitemap-section-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--color-primary-accessible);
+      flex-shrink: 0;
+    }
+
+    .sitemap-link {
+      display: block;
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      padding: 0.5rem 0;
+      border-radius: var(--radius-md);
+      transition: all var(--animation-duration) var(--animation-easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sitemap-link::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        var(--color-primary-accessible),
+        var(--color-accent)
+      );
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sitemap-link:hover {
+      color: var(--color-primary-accessible);
+      background: color-mix(in srgb, var(--color-primary-accessible) 8%, transparent);
+      padding-left: 0.75rem;
+      transform: translateX(4px);
+    }
+
+    .sitemap-link:hover::before {
+      width: 100%;
+    }
+
+    .sitemap-main-link {
+      font-weight: 600;
+      color: var(--text-accent);
+      font-size: var(--text-sm);
+    }
+
+    .sitemap-main-link:hover {
+      color: var(--color-primary-accessible-dark);
+      background: color-mix(in srgb, var(--color-primary-accessible) 12%, transparent);
+    }
+
+    .count-badge {
+      background: linear-gradient(
+        135deg,
+        var(--color-primary-accessible) 0%,
+        var(--color-accent) 100%
+      );
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: var(--text-xs);
+      padding: 0.375rem 0.75rem;
+      border-radius: var(--radius-full);
+      text-shadow: 0 1px 2px color-mix(in srgb, var(--text-primary) 20%, transparent);
+      box-shadow: var(--shadow-sm);
+      animation: pulse 3s ease-in-out infinite;
+      min-width: 2rem;
+      text-align: center;
+    }
+
+    .count-badge-secondary {
+      background: linear-gradient(
+        135deg,
+        var(--color-secondary) 0%,
+        var(--text-muted) 100%
+      );
+      color: var(--bg-primary);
+    }
+
+    .count-badge-accent {
+      background: linear-gradient(
+        135deg,
+        var(--color-accent) 0%,
+        var(--color-primary-light) 100%
+      );
+      color: var(--bg-primary);
+    }
+
+    .hero-badge {
+      background: color-mix(in srgb, var(--color-primary-accessible) 15%, transparent);
+      color: var(--color-primary-accessible);
+      border: 1px solid
+        color-mix(in srgb, var(--color-primary-accessible) 25%, transparent);
+      font-weight: 600;
+      font-size: var(--text-sm);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      backdrop-filter: blur(10px);
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .grid-container {
+      animation: staggerIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        box-shadow: var(--shadow-sm);
+      }
+      50% {
+        transform: scale(1.08);
+        box-shadow: var(--shadow-md);
+      }
+    }
+
+    @keyframes bounce {
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-8px);
+      }
+      60% {
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes staggerIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive enhancements */
+    @media (max-width: 768px) {
+      .sitemap-card {
+        padding: 1.25rem;
+      }
+
+      .sitemap-title {
+        font-size: 2.5rem;
+      }
+
+      .grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      .sitemap-hero::before {
+        opacity: 0.7;
+      }
+
+      .sitemap-card {
+        backdrop-filter: blur(20px);
+      }
+    }
+  </style>
+
+  <section class="sitemap-hero py-20">
+    <div class="container relative z-10">
+      <div class="text-center">
+        <div class="hero-badge inline-flex items-center mb-6">
+          🗺️ Site Navigation
+        </div>
+
+        <h1
+          class="sitemap-title text-5xl font-bold mb-6"
+          style="font-family: var(--font-heading)"
+        >
+          Sitemap
+        </h1>
+
+        <p class="text-xl max-w-2xl mx-auto opacity-90 theme-text-secondary">
+          {description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="container">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 grid-container">
+        <!-- Articles Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Articles
+            <span class="count-badge ml-auto">{allPosts.length}</span>
+          </div>
+          <div class="space-y-1">
+            <a href="/blog" class="sitemap-main-link sitemap-link">
+              All Articles
+            </a>
+            {
+              allPosts.slice(0, 5).map((post) => (
+                <a href={`/blog/${post.id}`} class="sitemap-link truncate">
+                  {post.data.title}
+                </a>
+              ))
+            }
+            {
+              allPosts.length > 5 && (
+                <a href="/blog" class="sitemap-main-link sitemap-link">
+                  View all {allPosts.length} articles
+                </a>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Authors Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+              ></path>
+            </svg>
+            Authors
+            <span class="count-badge-accent ml-auto">{allAuthors.length}</span>
+          </div>
+          <div class="space-y-1">
+            <a href="/authors" class="sitemap-main-link sitemap-link">
+              All Authors
+            </a>
+            {
+              allAuthors.map((author) => (
+                <a href={`/authors/${author.data.slug}`} class="sitemap-link">
+                  {author.data.name}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+            Categories
+            <span class="count-badge-secondary ml-auto"
+              >{allCategories.length}</span
+            >
+          </div>
+          <div class="space-y-1">
+            <a href="/categories" class="sitemap-main-link sitemap-link">
+              All Categories
+            </a>
+            {
+              allCategories.map((category) => (
+                <a
+                  href={`/categories/${category.data.slug}`}
+                  class="sitemap-link"
+                >
+                  {category.data.name}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- Tags Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              ></path>
+            </svg>
+            Tags
+            <span class="count-badge-accent ml-auto">{allTags.length}</span>
+          </div>
+          <div class="space-y-1">
+            <a href="/tags" class="sitemap-main-link sitemap-link">
+              All Tags
+            </a>
+            {
+              allTags.slice(0, 10).map((tag) => (
+                <a href={`/tags/${tag.id}`} class="sitemap-link">
+                  #{tag.data.name}
+                </a>
+              ))
+            }
+            {
+              allTags.length > 10 && (
+                <a href="/tags" class="sitemap-main-link sitemap-link">
+                  View all {allTags.length} tags
+                </a>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Pages Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Pages
+            <span class="count-badge-secondary ml-auto">5</span>
+          </div>
+          <div class="space-y-1">
+            <a href="/" class="sitemap-link"> Home </a>
+            <a href="/blog" class="sitemap-link"> Blog </a>
+            <a href="/authors" class="sitemap-link"> Authors </a>
+            <a href="/categories" class="sitemap-link"> Categories </a>
+            <a href="/tags" class="sitemap-link"> Tags </a>
+          </div>
+        </div>
+
+        <!-- Legal Section -->
+        <div class="sitemap-card p-6">
+          <div class="sitemap-section-title">
+            <svg
+              class="sitemap-section-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            Legal
+            <span class="count-badge-secondary ml-auto">2</span>
+          </div>
+          <div class="space-y-1">
+            <a href="/legal/privacy" class="sitemap-link"> Privacy Policy </a>
+            <a href="/legal/terms" class="sitemap-link"> Terms of Service </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

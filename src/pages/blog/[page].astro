@@ -1,0 +1,120 @@
+---
+export const prerender = true;
+
+import {
+  getAllPosts,
+  createPaginationData,
+  generateBlogListingSEO,
+  generateBlogListingSchema,
+  getSiteSettings,
+} from "../../core/blogLogic";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BlogList from "../../components/blog/BlogList.astro";
+import Breadcrumb from "../../components/navigation/Breadcrumb.astro";
+import Schema from "../../core/seo/Schema.astro";
+import { generateBreadcrumbs } from "../../core/navigation/breadcrumbUtils";
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const pageSize = 6;
+  const totalPages = Math.ceil(posts.length / pageSize);
+
+  const paths = [];
+  for (let i = 1; i <= totalPages; i++) {
+    const paginationData = createPaginationData(posts, i, pageSize);
+    paths.push({
+      params: { page: i.toString() },
+      props: { page: paginationData },
+    });
+  }
+  return paths;
+}
+
+const { page } = Astro.props;
+const settings = await getSiteSettings();
+const seoData = await generateBlogListingSEO(page.currentPage, page.lastPage);
+const paginationSchema = await generateBlogListingSchema(
+  page.data,
+  page.currentPage,
+);
+const breadcrumbs = generateBreadcrumbs("/blog");
+---
+
+<BaseLayout pageTitle={seoData.pageTitle} description={seoData.description}>
+  {
+    settings.imageDomain && (
+      <link rel="preconnect" href={settings.imageDomain} slot="head" />
+    )
+  }
+
+  <link rel="canonical" href={seoData.canonicalUrl} slot="head" />
+  {seoData.prevUrl && <link rel="prev" href={seoData.prevUrl} slot="head" />}
+  {seoData.nextUrl && <link rel="next" href={seoData.nextUrl} slot="head" />}
+  <meta property="og:url" content={seoData.canonicalUrl} slot="head" />
+  <Schema item={paginationSchema} id="pagination-schema" slot="head" />
+
+  <section
+    class="py-6 lg:py-8"
+    style="background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary))"
+  >
+    <div class="container max-w-7xl">
+      <Breadcrumb items={breadcrumbs} />
+
+      <div class="text-center">
+        <!-- Professional Badge -->
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 mb-6"
+          style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full); border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent)"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
+              clip-rule="evenodd"></path>
+          </svg>
+          <span class="text-sm font-semibold">Articles</span>
+        </div>
+
+        <h1
+          class="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight"
+          style="color: var(--text-primary); font-family: var(--font-heading)"
+        >
+          Articles
+        </h1>
+
+        <p
+          class="text-lg lg:text-xl max-w-3xl mx-auto mb-8 leading-relaxed"
+          style="color: var(--text-secondary); font-family: var(--font-body)"
+        >
+          Discover our curated collection of articles, guides, and insights.
+          From expert tips to in-depth tutorials, explore content that matters
+          to you.
+        </p>
+
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2"
+          style="background: var(--bg-tertiary); color: var(--text-muted); border-radius: var(--radius-full); border: 1px solid var(--border-light)"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <span class="text-sm font-medium"
+            >Page {page.currentPage} of {page.lastPage}</span
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <BlogList posts={page.data} pagination={page} />
+</BaseLayout>

@@ -1,0 +1,285 @@
+---
+/**
+ * Two-Sided Hero Section - Professional Blog Layout
+ * Clean 2-column design with enriched content using core logic
+ */
+
+import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts } from '../../core/blogLogic';
+import { formatDate } from '../../core/blogLogic';
+import { getCollection } from 'astro:content';
+import OptimizedImage from '../ui/OptimizedImage.astro';
+
+// Get dynamic data using core logic
+const posts = await getAllPosts();
+const settings = await getSiteSettings();
+const categories = await getCategoriesWithPostCounts();
+const allCategories = await getCollection('categories');
+
+// Get featured posts
+const featuredPosts = posts.slice(0, 5);
+
+// Helper function to get category name from ID
+function getCategoryName(categoryRef: string | { id: string } | undefined): string | null {
+  if (!categoryRef) return null;
+  
+  const categoryId = typeof categoryRef === 'string' ? categoryRef : categoryRef.id;
+  const category = allCategories.find(cat => cat.data.id === categoryId || cat.id === categoryId);
+  return category?.data.name || null;
+}
+
+interface Props {
+  showFeaturedPosts?: boolean;
+}
+
+const { showFeaturedPosts = true } = Astro.props;
+---
+
+<!-- Professional Two-Sided Hero Section -->
+<section class="relative" style="background: var(--bg-primary)">
+  
+  <!-- Hero Content -->
+  <div class="py-16 lg:py-20">
+    <div class="container max-w-7xl">
+      
+      <!-- Site Header - Professional -->
+      <div class="text-center mb-16 lg:mb-20">
+        <div class="mb-6">
+          <h1 class="text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight" 
+              style="color: var(--text-primary); font-family: var(--font-heading)">
+            {settings.siteName}
+          </h1>
+        </div>
+        <p class="text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed" 
+           style="color: var(--text-secondary); font-family: var(--font-body)">
+          {settings.siteDescription}
+        </p>
+      </div>
+
+      <!-- Two-Sided Layout -->
+      {showFeaturedPosts && featuredPosts.length > 0 && (
+        <div class="grid lg:grid-cols-3 gap-12 lg:gap-16">
+          
+          <!-- Left Side - Main Featured Article -->
+          <div class="lg:col-span-2">
+            
+            <!-- Featured Article -->
+            <article class="group">
+              
+              <!-- Featured Image -->
+              {featuredPosts[0].data.image?.url && (
+                <div class="relative mb-8">
+                  <div class="aspect-[16/9] overflow-hidden shadow-xl" 
+                       style="border-radius: var(--radius-xl); box-shadow: 0 20px 40px rgba(0,0,0,0.1)">
+                    <OptimizedImage 
+                      src={featuredPosts[0].data.image.url} 
+                      alt={featuredPosts[0].data.image.alt || featuredPosts[0].data.title}
+                      width={830}
+                      height={467}
+                      priority={true}
+                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  
+                  <!-- Featured Badge -->
+                  <div class="absolute top-6 left-6">
+                    <span class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md" 
+                          style="background: var(--color-primary); border-radius: var(--radius-full); box-shadow: 0 8px 32px rgba(0,0,0,0.2)">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+                      </svg>
+                      Featured
+                    </span>
+                  </div>
+                </div>
+              )}
+              
+              <!-- Featured Content -->
+              <div class="space-y-6">
+                <!-- Category & Meta -->
+                <div class="flex items-center gap-4">
+                  {getCategoryName(featuredPosts[0].data.category) && (
+                    <span class="text-sm font-semibold px-3 py-1.5" 
+                          style="color: var(--color-primary); background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border-light)">
+                      {getCategoryName(featuredPosts[0].data.category)}
+                    </span>
+                  )}
+                  <div class="flex items-center gap-3 text-sm theme-card-meta">
+                    <time datetime={featuredPosts[0].data.pubDate.toISOString()} class="theme-date">
+                      {formatDate(featuredPosts[0].data.pubDate)}
+                    </time>
+                    <span>•</span>
+                    <span class="theme-reading-time">5 min read</span>
+                  </div>
+                </div>
+                
+                <!-- Title -->
+                <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight" 
+                    style="color: var(--text-primary); font-family: var(--font-heading)">
+                  <a href={`/blog/${featuredPosts[0].id}`} 
+                     class="hover:opacity-80 transition-opacity duration-300"
+                     style="color: inherit;"
+                     aria-label={`Read featured article: ${featuredPosts[0].data.title}`}>
+                    {featuredPosts[0].data.title}
+                  </a>
+                </h2>
+                
+                <!-- Description -->
+                {featuredPosts[0].data.description && (
+                  <p class="text-lg lg:text-xl leading-relaxed" 
+                     style="color: var(--text-secondary); font-family: var(--font-body)">
+                    {featuredPosts[0].data.description}
+                  </p>
+                )}
+                
+                <!-- Read More Button -->
+                <div class="pt-2">
+                  <a 
+                    href={`/blog/${featuredPosts[0].id}`}
+                    class="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold transition-all duration-300 hover:shadow-xl"
+                    style="background: var(--color-primary); color: white; border-radius: var(--radius-xl); box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: all var(--animation-duration) var(--animation-easing)"
+                    onmouseover="this.style.background='var(--color-primary-dark)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.15)'"
+                    onmouseout="this.style.background='var(--color-primary)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'"
+                    aria-label={`Read the full featured article: ${featuredPosts[0].data.title}`}
+                  >
+                    <span>Read Full Article</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+          
+          <!-- Right Side - Recent Posts & Categories -->
+          <div class="space-y-10">
+            
+            <!-- Recent Posts - Professional List -->
+            <div class="bg-white/50 p-6 backdrop-blur-sm" 
+                 style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05)">
+              
+              <div class="flex items-center gap-3 mb-8">
+                <div class="w-1 h-6" style="background: var(--color-primary); border-radius: var(--radius-full)"></div>
+                <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
+                  Recent Posts
+                </h3>
+              </div>
+              
+              <div class="space-y-6">
+                {featuredPosts.slice(1, 5).map((post) => (
+                  <article class="group">
+                    <div class="flex gap-4 p-3 transition-all duration-300 hover:shadow-md" 
+                         style="border-radius: var(--radius-lg); transition: all var(--animation-duration) var(--animation-easing)"
+                         onmouseover="this.style.backgroundColor='var(--bg-tertiary)'; this.style.transform='translateY(-2px)'"
+                         onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateY(0)'">
+                      
+                      <!-- Thumbnail -->
+                      {post.data.image?.url && (
+                        <div class="flex-shrink-0 w-16 h-12 overflow-hidden" 
+                             style="border-radius: var(--radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.1)">
+                          <OptimizedImage 
+                            src={post.data.image.url} 
+                            alt={post.data.image.alt || post.data.title}
+                            width={64}
+                            height={48}
+                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
+                      )}
+                      
+                      <!-- Post Info -->
+                      <div class="flex-1 min-w-0">
+                        <h4 class="font-semibold text-sm leading-tight mb-2 line-clamp-2 group-hover:text-accent transition-colors" 
+                            style="color: var(--text-primary); font-family: var(--font-heading); transition: color var(--animation-duration) var(--animation-easing)">
+                          <a href={`/blog/${post.id}`} 
+                             style="color: inherit;"
+                             aria-label={`Read article: ${post.data.title}`}>
+                            {post.data.title}
+                          </a>
+                        </h4>
+                        
+                        <div class="flex items-center gap-2 text-xs theme-card-meta">
+                          <time datetime={post.data.pubDate.toISOString()} class="theme-date">
+                            {formatDate(post.data.pubDate)}
+                          </time>
+                          <span>•</span>
+                          <span class="theme-reading-time">3 min</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              
+              <!-- View All Link -->
+              <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-light)">
+                <a href="/blog" 
+                   class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"
+                   style="color: var(--color-primary); transition: all var(--animation-duration) var(--animation-easing)"
+                   onmouseover="this.style.color='var(--color-primary-dark)'"
+                   onmouseout="this.style.color='var(--color-primary)'"
+                   aria-label="View all blog posts">
+                  <span>View All Posts</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <!-- Categories Section -->
+            {categories.length > 0 && (
+              <div class="bg-white/50 p-6 backdrop-blur-sm" 
+                   style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05)">
+                
+                <div class="flex items-center gap-3 mb-8">
+                  <div class="w-1 h-6" style="background: var(--color-primary); border-radius: var(--radius-full)"></div>
+                  <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
+                    Categories
+                  </h3>
+                </div>
+                
+                <div class="space-y-3">
+                  {categories.slice(0, 6).map((category) => (
+                    <a 
+                      href={`/categories/${category.data.slug}`}
+                      class="flex items-center justify-between p-4 transition-all duration-300 hover:shadow-md"
+                      style="background: var(--bg-tertiary); border-radius: var(--radius-lg); border: 1px solid var(--border-light); transition: all var(--animation-duration) var(--animation-easing)"
+                      onmouseover="this.style.backgroundColor='var(--bg-primary)'; this.style.transform='translateX(6px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)'"
+                      onmouseout="this.style.backgroundColor='var(--bg-tertiary)'; this.style.transform='translateX(0)'; this.style.boxShadow='none'"
+                      aria-label={`View all posts in ${category.data.name} category (${category.postCount} posts)`}
+                    >
+                      <span class="font-semibold text-sm" style="color: var(--text-primary)">
+                        {category.data.name}
+                      </span>
+                      <span class="text-xs px-3 py-1.5 font-bold" 
+                            style="background: var(--color-primary); color: white; border-radius: var(--radius-full)"
+                            aria-label={`${category.postCount} posts`}>
+                        {category.postCount}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+                
+                <!-- View All Categories -->
+                <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-light)">
+                  <a href="/categories" 
+                     class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"
+                     style="color: var(--color-primary); transition: all var(--animation-duration) var(--animation-easing)"
+                     onmouseover="this.style.color='var(--color-primary-dark)'"
+                     onmouseout="this.style.color='var(--color-primary)'"
+                     aria-label="Browse all blog categories">
+                    <span>Browse All Categories</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

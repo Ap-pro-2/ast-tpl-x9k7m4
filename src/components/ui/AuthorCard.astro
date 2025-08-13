@@ -1,0 +1,86 @@
+---
+/**
+ * Professional Author Card - Clean & Modern
+ * Matches our established UI design system with excellent UX
+ */
+
+import { getAuthorsWithPostCounts } from '../../core/blogLogic';
+
+// Get author data using core blog logic
+const authors = await getAuthorsWithPostCounts();
+const author = authors[0]; // Get the first author with posts
+
+interface Props {
+  authorId?: string;
+}
+
+const { authorId } = Astro.props;
+const displayAuthor = authorId ? authors.find(a => a.id === authorId) || author : author;
+---
+
+{displayAuthor && (
+  <!-- Professional Author Card - Consistent with other cards -->
+  <div class="theme-card p-6">
+    
+    <div>
+      
+      <!-- Header Section -->
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-1 h-6" style="background: var(--color-primary-accessible); border-radius: var(--radius-full)"></div>
+        <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
+          About the Author
+        </h3>
+      </div>
+      
+      <!-- Author Content -->
+      <div class="flex items-start gap-6">
+        
+        <!-- Enhanced Avatar -->
+        <div class="flex-shrink-0">
+          {displayAuthor.data.avatar ? (
+            <div class="relative">
+              <img 
+                src={displayAuthor.data.avatar} 
+                alt={displayAuthor.data.name}
+                class="w-20 h-20 object-cover transition-transform duration-500 group-hover:scale-105"
+                style="border-radius: var(--radius-full); box-shadow: 0 4px 16px rgba(0,0,0,0.1)"
+              />
+              <div class="absolute inset-0 rounded-full" style="border: 3px solid var(--color-primary-accessible); opacity: 0; transition: opacity var(--animation-duration) var(--animation-easing); border-radius: var(--radius-full)"></div>
+            </div>
+          ) : (
+            <div class="w-20 h-20 text-white flex items-center justify-center text-2xl font-bold transition-transform duration-500 group-hover:scale-105"
+                 style="background: linear-gradient(135deg, var(--color-primary-accessible), var(--color-primary-accessible-dark)); border-radius: var(--radius-full); box-shadow: 0 4px 16px rgba(0,0,0,0.1)">
+              {displayAuthor.data.name.charAt(0)}
+            </div>
+          )}
+        </div>
+        
+        <!-- Author Info -->
+        <div class="flex-1 min-w-0">
+          
+          <!-- Author Name -->
+          <h4 class="text-lg font-bold mb-2" style="color: var(--text-primary); font-family: var(--font-heading)">
+            {displayAuthor.data.name}
+          </h4>
+          
+          <!-- Author Bio -->
+          <p class="text-sm leading-relaxed mb-6 line-clamp-3 theme-text-secondary" style="font-family: var(--font-body)">
+            {displayAuthor.data.bio || 'Author and blogger sharing stories and insights. Passionate about exploring topics and sharing knowledge with the community.'}
+          </p>
+          
+          <!-- View Profile Button - Our UI System -->
+          <a 
+            href={`/authors/${displayAuthor.data.slug}`}
+            class="btn-accessible-primary px-5 py-2.5"
+            aria-label={`View ${displayAuthor.data.name}'s profile and all articles`}
+          >
+            <span>View Profile</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+)}

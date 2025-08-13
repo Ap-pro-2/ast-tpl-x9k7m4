@@ -1,0 +1,32 @@
+{
+  "id": "blue-bottle-coffee-beans",
+  "title": "Blue Bottle Coffee - Three Africas Blend",
+  "description": "A bright, fruity blend showcasing the best of African coffee with notes of blueberry and chocolate.",
+  "price": "$18.00",
+  "originalPrice": "$22.00",
+  "image": "https://images.pexels.com/photos/894695/pexels-photo-894695.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Premium coffee beans in a bag",
+  "affiliateUrl": "https://bluebottlecoffee.com/three-africas",
+  "category": "coffee-beans",
+  "rating": 4.8,
+  "reviewCount": 1247,
+  "brand": "Blue Bottle Coffee",
+  "features": [
+    "Single-origin African beans",
+    "Medium roast profile",
+    "Notes of blueberry and chocolate",
+    "Freshly roasted to order"
+  ],
+  "pros": [
+    "Exceptional flavor complexity",
+    "Ethically sourced beans",
+    "Fresh roasting guarantee"
+  ],
+  "cons": [
+    "Premium pricing",
+    "Limited availability",
+    "Strong flavor may not suit all tastes"
+  ],
+  "badge": "Editor's Choice",
+  "buttonText": "Order These Beans"
+}

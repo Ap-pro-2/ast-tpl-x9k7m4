@@ -1,0 +1,32 @@
+{
+  "id": "baratza-encore-grinder",
+  "title": "Baratza Encore Conical Burr Coffee Grinder",
+  "description": "The perfect entry-level burr grinder with 40 grind settings for consistent, uniform coffee grounds.",
+  "price": "$169.00",
+  "originalPrice": "$199.00",
+  "image": "https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Coffee grinder with fresh ground coffee",
+  "affiliateUrl": "https://baratza.com/grinder/encore",
+  "category": "brewing-equipment",
+  "rating": 4.6,
+  "reviewCount": 2891,
+  "brand": "Baratza",
+  "features": [
+    "40 individual grind settings",
+    "Conical burr grinding mechanism",
+    "8oz bean hopper capacity",
+    "Calibrated pulse button"
+  ],
+  "pros": [
+    "Consistent grind quality",
+    "Wide range of settings",
+    "Reliable and durable"
+  ],
+  "cons": [
+    "Can be noisy",
+    "Plastic construction",
+    "Static buildup issues"
+  ],
+  "badge": "Best Value",
+  "buttonText": "Buy This Grinder"
+}

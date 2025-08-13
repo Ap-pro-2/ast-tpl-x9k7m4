@@ -1,0 +1,32 @@
+{
+  "id": "chemex-coffee-maker",
+  "title": "Chemex Classic Pour-Over Coffee Maker",
+  "description": "The iconic hourglass-shaped pour-over coffee maker that delivers clean, pure coffee flavor.",
+  "price": "$44.95",
+  "originalPrice": "$54.95",
+  "image": "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Chemex pour-over coffee maker with coffee",
+  "affiliateUrl": "https://chemexcoffeemaker.com/classic-series",
+  "category": "brewing-equipment",
+  "rating": 4.7,
+  "reviewCount": 3456,
+  "brand": "Chemex",
+  "features": [
+    "Borosilicate glass construction",
+    "6-cup capacity",
+    "Proprietary bonded filters",
+    "Heat-resistant wooden collar"
+  ],
+  "pros": [
+    "Clean, bright coffee flavor",
+    "Beautiful design",
+    "Durable construction"
+  ],
+  "cons": [
+    "Requires special filters",
+    "Fragile glass material",
+    "Slower brewing process"
+  ],
+  "badge": "Most Popular",
+  "buttonText": "Get This Chemex"
+}

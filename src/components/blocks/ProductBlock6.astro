@@ -1,0 +1,43 @@
+---
+/**
+ * Product Block 6 - Comparison Winner Layout
+ * Usage: <ProductBlock6 id="acaia-pearl-scale" />
+ * Shows why this product beats competitors
+ */
+import { getEntry } from 'astro:content';
+import ProductCard6 from '../ProductCard6.astro';
+
+export interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+// Get product from single dynamic collection
+const product = await getEntry('affiliateProducts', id);
+
+if (!product) {
+  console.warn(`ProductBlock6: Product "${id}" not found`);
+  return null;
+}
+
+const data = product.data;
+---
+
+<ProductCard6
+  title={data.title}
+  description={data.description}
+  price={data.price}
+  originalPrice={data.originalPrice}
+  image={data.image}
+  imageAlt={data.imageAlt}
+  affiliateUrl={data.affiliateUrl}
+  rating={data.rating}
+  reviewCount={data.reviewCount}
+  brand={data.brand}
+  features={data.features}
+  pros={data.pros}
+  cons={data.cons}
+  badge={data.badge}
+  buttonText={data.buttonText}
+/>

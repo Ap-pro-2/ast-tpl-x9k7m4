@@ -1,0 +1,32 @@
+{
+  "id": "intelligentsia-coffee-beans",
+  "title": "Intelligentsia Coffee - Black Cat Classic Espresso",
+  "description": "A rich, full-bodied espresso blend with notes of dark chocolate and brown sugar.",
+  "price": "$17.75",
+  "originalPrice": "$21.00",
+  "image": "https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Premium espresso coffee beans",
+  "affiliateUrl": "https://intelligentsiacoffee.com/products/black-cat-classic-espresso",
+  "category": "coffee-beans",
+  "rating": 4.7,
+  "reviewCount": 1923,
+  "brand": "Intelligentsia Coffee",
+  "features": [
+    "Espresso-specific blend",
+    "Dark roast profile",
+    "Notes of chocolate and brown sugar",
+    "Direct trade sourcing"
+  ],
+  "pros": [
+    "Perfect for espresso",
+    "Rich crema production",
+    "Ethically sourced"
+  ],
+  "cons": [
+    "Too dark for some tastes",
+    "Premium pricing",
+    "Limited brewing versatility"
+  ],
+  "badge": "Espresso Expert",
+  "buttonText": "Buy These Beans"
+}

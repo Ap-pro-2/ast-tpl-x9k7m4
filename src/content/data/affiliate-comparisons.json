@@ -1,0 +1,34 @@
+[
+  {
+    "id": "best-coffee-beans-2024",
+    "title": "Best Specialty Coffee Beans 2024",
+    "description": "Compare the top specialty coffee beans from renowned roasters",
+    "products": ["blue-bottle-coffee-beans", "stumptown-coffee-beans", "intelligentsia-coffee-beans"],
+    "category": "coffee-beans",
+    "active": true
+  },
+  {
+    "id": "pour-over-brewing-setup",
+    "title": "Complete Pour-Over Coffee Setup",
+    "description": "Everything you need for the perfect pour-over coffee experience",
+    "products": ["chemex-coffee-maker", "baratza-encore-grinder", "fellow-stagg-kettle", "acaia-pearl-scale"],
+    "category": "brewing-equipment",
+    "active": true
+  },
+  {
+    "id": "beginner-coffee-setup",
+    "title": "Best Coffee Setup for Beginners",
+    "description": "Start your coffee journey with these essential, beginner-friendly tools",
+    "products": ["hario-v60-dripper", "baratza-encore-grinder", "stumptown-coffee-beans"],
+    "category": "brewing-equipment",
+    "active": true
+  },
+  {
+    "id": "sustainable-coffee-essentials",
+    "title": "Sustainable Coffee Essentials",
+    "description": "Eco-friendly coffee products for the environmentally conscious coffee lover",
+    "products": ["keepcup-reusable-cup", "counter-culture-coffee-beans"],
+    "category": "accessories",
+    "active": true
+  }
+]

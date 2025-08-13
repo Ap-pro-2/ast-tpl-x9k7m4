@@ -1,0 +1,238 @@
+---
+
+import { getCollection } from "astro:content";
+import { ClientRouter } from "astro:transitions";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import { getThemeCSS } from "../utils/theme";
+import { generateTransitionCSS } from "../utils/transitions";
+import { userTheme } from "../config/user-theme";
+import { generateGoogleFontsURL, getGoogleFontsPreconnects, hasGoogleFonts } from "../utils/fonts";
+import "../styles/global.css";
+
+// ========================================
+// DEMO THEME SWITCHER - REMOVED FOR TESTING
+// ========================================
+// Theme switcher temporarily removed to test JSON-based theme system
+// Uncomment the line below to re-enable the theme switcher:
+// import ThemeSwitcher from "../components/demo/ThemeSwitcher.astro";
+
+// Get site settings using core data
+const allSettings = await getCollection("settings");
+const userSettings = allSettings[0]?.data || {};
+
+const {
+  pageTitle,
+  description = userSettings.siteDescription ||
+    "A modern blog built with Astro",
+  noindex = false,
+  isArticle = false,
+} = Astro.props;
+
+// Clean title handling - no site name appending
+const siteName = userSettings.siteName || "AstroPress";
+
+let finalTitle;
+if (pageTitle) {
+  // Use the pageTitle directly - clean and simple
+  finalTitle = pageTitle;
+} else {
+  // Fallback to siteName only if no pageTitle provided
+  finalTitle = siteName;
+}
+
+// Dynamic Google Fonts loading
+const fontConfig = {
+  fontHeading: userSettings.themeSettings?.typography?.fontHeading || 'system-ui, sans-serif',
+  fontBody: userSettings.themeSettings?.typography?.fontBody || 'system-ui, sans-serif',
+  fontMono: userSettings.themeSettings?.typography?.fontMono || 'ui-monospace, monospace'
+};
+const googleFontsURL = generateGoogleFontsURL(fontConfig);
+const needsGoogleFonts = hasGoogleFonts(fontConfig);
+const preconnectUrls = getGoogleFontsPreconnects();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{finalTitle}</title>
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, nofollow" : "index, follow"}
+    />
+    <!-- Favicon Configuration -->
+    <link
+      rel="icon"
+      type="image/png"
+      href={userSettings.favicons?.mainIcon || "/favicon.png"}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href={userSettings.favicons?.icon32 || "/favicon-32x32.png"}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href={userSettings.favicons?.icon16 || "/favicon-16x16.png"}
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href={userSettings.favicons?.appleTouchIcon || "/apple-touch-icon.png"}
+    />
+    <link
+      rel="manifest"
+      href={userSettings.favicons?.manifest || "/site.webmanifest"}
+    />
+
+    <!-- PWA & Theme Configuration -->
+    <meta
+      name="theme-color"
+      content={userSettings.themeSettings?.colors?.primary || "#6B7280"}
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content={userSettings.siteName || "AstroPress"}
+    />
+
+    <!-- Enhanced SEO Meta Tags -->
+    {
+      Astro.props.keywords && (
+        <meta name="keywords" content={Astro.props.keywords.join(", ")} />
+      )
+    }
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content={finalTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={isArticle ? "article" : "website"} />
+    <meta
+      property="og:url"
+      content={Astro.props.canonicalUrl ||
+        `${userSettings.siteUrl}${Astro.url.pathname}`}
+    />
+    {
+      Astro.props.ogImage && (
+        <>
+          <meta property="og:image" content={Astro.props.ogImage} />
+          <meta
+            property="og:image:alt"
+            content={Astro.props.ogImageAlt || finalTitle}
+          />
+        </>
+      )
+    }
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={finalTitle} />
+    <meta name="twitter:description" content={description} />
+    {
+      Astro.props.ogImage && (
+        <meta name="twitter:image" content={Astro.props.ogImage} />
+      )
+    }
+
+    <!-- Canonical URL -->
+    <link
+      rel="canonical"
+      href={Astro.props.canonicalUrl ||
+        `${userSettings.siteUrl}${Astro.url.pathname}`}
+    />
+
+    <!-- Critical Resource Preloading -->
+    <link rel="preconnect" href="https://supplementcrew.com" />
+    <link rel="preconnect" href="https://images.supplementcrew.com" />
+    
+    <!-- Optimized Google Fonts - Non-blocking -->
+    {needsGoogleFonts && (
+      <>
+        {preconnectUrls.map(url => (
+          <link rel="preconnect" href={url} {...(url.includes('gstatic') && { crossorigin: true })} />
+        ))}
+        <!-- Preload critical font with high priority -->
+        <link rel="preload" href={googleFontsURL} as="style" onload="this.onload=null;this.rel='stylesheet'" />
+        <!-- Fallback for browsers that don't support preload -->
+        <noscript><link href={googleFontsURL} rel="stylesheet" /></noscript>
+        <!-- Ensure font loading doesn't block render -->
+        <script>
+          // Polyfill for older browsers that don't support preload
+          if (!('onload' in document.createElement('link'))) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '{googleFontsURL}';
+            document.head.appendChild(link);
+          }
+        </script>
+      </>
+    )}
+    
+
+    <!-- Multi-Purpose Theme System -->
+    <style set:html={getThemeCSS()}></style>
+
+    <!-- Dynamic Transition System -->
+    <style set:html={generateTransitionCSS(userTheme)}></style>
+
+    <!-- View Transitions for smooth navigation -->
+    <ClientRouter />
+
+    <!-- View Transition Scripts -->
+    <script is:inline>
+      // Add smooth loading indicator
+      document.addEventListener("astro:before-preparation", () => {
+        const loader = document.createElement("div");
+        loader.className = "page-loading show";
+        loader.id = "page-loader";
+        document.body.appendChild(loader);
+      });
+
+      document.addEventListener("astro:after-preparation", () => {
+        const loader = document.getElementById("page-loader");
+        if (loader) {
+          loader.remove();
+        }
+      });
+
+      // Preserve theme across navigation
+      document.addEventListener("astro:before-swap", (event) => {
+        // Preserve theme settings
+        const currentTheme = document.documentElement.dataset.theme;
+        if (currentTheme) {
+          event.newDocument.documentElement.dataset.theme = currentTheme;
+        }
+      });
+
+      // Reinitialize any scripts after navigation
+      document.addEventListener("astro:page-load", () => {
+        // Trigger any initialization that needs to happen on each page
+        // Page loaded with view transitions
+      });
+    </script>
+
+    <slot name="head" />
+  </head>
+
+  <body>
+
+
+    <!-- Header Component -->
+    <Header />
+
+
+    <!-- Main content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer Component -->
+    <Footer />
+  </body>
+</html>

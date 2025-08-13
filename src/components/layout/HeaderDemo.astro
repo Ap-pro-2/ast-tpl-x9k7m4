@@ -1,0 +1,259 @@
+---
+/**
+ * Professional Header Component - Clean & Modern
+ * Simple and clean without excessive transitions
+ */
+
+import { getSiteSettings } from "../../core/blogLogic";
+
+// Get dynamic data using blog logic
+const settings = await getSiteSettings();
+---
+
+<!-- Professional Header -->
+<header
+  class="sticky top-0 z-50 backdrop-blur-xl"
+  style="background: rgba(var(--bg-primary-rgb), 0.95); border-bottom: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05);"
+  transition:name="header"
+>
+  <div class="container max-w-7xl">
+    <div class="flex items-center justify-between py-4 lg:py-6">
+      <!-- Logo/Brand - Enhanced -->
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 flex items-center justify-center"
+          style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); border-radius: var(--radius-lg); box-shadow: 0 4px 16px rgba(0,0,0,0.1)"
+        >
+          <svg
+            class="w-5 h-5 text-white"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
+              clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <a
+          href="/"
+          class="text-xl lg:text-2xl font-bold"
+          style="color: var(--text-primary); font-family: var(--font-heading);"
+          aria-label="Go to homepage"
+        >
+          {settings.siteName}
+        </a>
+      </div>
+
+      <!-- Navigation - Professional -->
+      <nav class="hidden lg:flex">
+        <ul class="flex items-center space-x-2">
+          <li>
+            <a
+              href="/"
+              class="px-4 py-2 font-medium"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              aria-label="Go to homepage"
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              href="/blog"
+              class="px-4 py-2 font-medium"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              aria-label="View all blog articles"
+            >
+              Articles
+            </a>
+          </li>
+          <li>
+            <a
+              href="/categories"
+              class="px-4 py-2 font-medium"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              aria-label="Browse blog categories"
+            >
+              Categories
+            </a>
+          </li>
+          <li>
+            <a
+              href="/authors"
+              class="px-4 py-2 font-medium"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              aria-label="View all blog authors"
+            >
+              Authors
+            </a>
+          </li>
+          <li>
+            <a
+              href="/tags"
+              class="px-4 py-2 font-medium"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              aria-label="Browse blog tags"
+            >
+              Tags
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- CTA Button - Simple -->
+      <div class="hidden md:flex">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 px-6 py-3 font-semibold"
+          style="background: var(--color-primary); color: white; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+          aria-label="Explore all blog articles"
+        >
+          <span>Explore</span>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle - Functional -->
+      <button
+        id="mobile-menu-toggle"
+        class="lg:hidden p-3 transition-colors duration-200"
+        style="border-radius: var(--radius-lg);"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <div class="w-6 h-6 flex flex-col justify-center space-y-1.5">
+          <span
+            id="hamburger-line-1"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+          <span
+            id="hamburger-line-2"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+          <span
+            id="hamburger-line-3"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Mobile Menu - Hidden by default -->
+    <div
+      id="mobile-menu"
+      class="lg:hidden absolute top-full left-0 right-0 opacity-0 invisible transform -translate-y-2 transition-all duration-300"
+      style="background: var(--bg-primary); border-bottom: 1px solid var(--border-light); box-shadow: 0 8px 32px rgba(0,0,0,0.1);"
+    >
+      <nav class="container max-w-7xl py-6">
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="/"
+              class="block px-4 py-3 font-medium transition-colors duration-200"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'"
+              onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"
+              aria-label="Go to homepage"
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              href="/blog"
+              class="block px-4 py-3 font-medium transition-colors duration-200"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'"
+              onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"
+              aria-label="View all blog articles"
+            >
+              Articles
+            </a>
+          </li>
+          <li>
+            <a
+              href="/categories"
+              class="block px-4 py-3 font-medium transition-colors duration-200"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'"
+              onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"
+              aria-label="Browse blog categories"
+            >
+              Categories
+            </a>
+          </li>
+          <li>
+            <a
+              href="/authors"
+              class="block px-4 py-3 font-medium transition-colors duration-200"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'"
+              onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"
+              aria-label="View all blog authors"
+            >
+              Authors
+            </a>
+          </li>
+          <li>
+            <a
+              href="/tags"
+              class="block px-4 py-3 font-medium transition-colors duration-200"
+              style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+              onmouseover="this.style.background='var(--bg-secondary)'; this.style.color='var(--text-primary)'"
+              onmouseout="this.style.background='transparent'; this.style.color='var(--text-secondary)'"
+              aria-label="Browse blog tags"
+            >
+              Tags
+            </a>
+          </li>
+        </ul>
+
+        <!-- Mobile CTA Button -->
+        <div class="mt-6 px-4">
+          <a
+            href="/blog"
+            class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 font-semibold transition-all duration-200"
+            style="background: var(--color-primary); color: white; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+            onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'"
+            aria-label="Explore all blog articles"
+          >
+            <span>Explore Articles</span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu Module -->
+<script src="/scripts/mobileMenu.js" is:inline></script>

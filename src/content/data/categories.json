@@ -1,0 +1,22 @@
+[
+  {
+    "id": "uncategorized",
+    "name": "Uncategorized",
+    "description": "General posts and articles",
+    "color": "#6b7280",
+    "slug": "uncategorized",
+    "seo": {
+      "title": "Uncategorized Articles & Posts",
+      "description": "Browse our collection of general articles and posts covering various topics and insights.",
+      "keywords": [
+        "articles",
+        "posts",
+        "blog",
+        "content",
+        "insights",
+        "general"
+      ],
+      "ogImageAlt": "Uncategorized articles and general content"
+    }
+  }
+]

@@ -1,0 +1,445 @@
+---
+/**
+ * Professional Header with Categories Dropdown - Clean & Modern
+ * Features categories with hover dropdowns showing posts
+ */
+
+import { getSiteSettings, getCategoriesWithPostCounts, getPostsByCategory } from "../../core/blogLogic";
+import OptimizedImage from "../ui/OptimizedImage.astro";
+
+// Get dynamic data using blog logic
+const settings = await getSiteSettings();
+const categories = await getCategoriesWithPostCounts();
+
+// Filter out uncategorized and get top 4 categories with posts
+const topCategories = categories
+  .filter(category => category.data.id !== "uncategorized")
+  .slice(0, 4);
+
+// Get posts for each category (limit to 4 posts per category for dropdown)
+const categoriesWithPosts = await Promise.all(
+  topCategories.map(async (category) => {
+    const posts = await getPostsByCategory(category.id);
+    return {
+      ...category,
+      posts: posts.slice(0, 4) // Limit to 4 posts for dropdown
+    };
+  })
+);
+---
+
+<!-- Professional Header with Categories -->
+<header
+  class="sticky top-0 z-50 backdrop-blur-xl"
+  style="background: color-mix(in srgb, var(--bg-primary) 95%, transparent); border-bottom: 1px solid var(--border-light); box-shadow: var(--shadow-md);"
+  transition:name="header"
+>
+  <div class="container max-w-7xl">
+    <div class="flex items-center justify-between py-4 lg:py-6">
+      <!-- Logo/Brand - Enhanced -->
+      <div class="flex items-center gap-3">
+        {settings.logo ? (
+          <div class="w-10 h-10 flex items-center justify-center">
+            <img 
+              src={settings.logo} 
+              alt={`${settings.siteName} logo`}
+              class="w-10 h-10 object-contain"
+            />
+          </div>
+        ) : (
+          <div
+            class="w-10 h-10 flex items-center justify-center"
+            style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); border-radius: var(--radius-lg); box-shadow: var(--shadow-md)"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </div>
+        )}
+        <a
+          href="/"
+          class="text-xl lg:text-2xl font-bold"
+          style="color: var(--text-primary); font-family: var(--font-heading);"
+          aria-label="Go to homepage"
+        >
+          {settings.siteName}
+        </a>
+      </div>
+
+      <!-- Navigation with Categories Only - Desktop -->
+      <nav class="hidden lg:flex">
+        <ul class="flex items-center space-x-2">
+          <!-- Categories with Dropdown -->
+          {categoriesWithPosts.map((category) => (
+            <li class="relative category-dropdown">
+              <a
+                href={`/categories/${category.data.slug}`}
+                class="px-4 py-2 font-medium flex items-center gap-1 category-trigger"
+                style="color: var(--text-secondary); border-radius: var(--radius-lg);"
+                aria-label={`Browse ${category.data.name} articles`}
+              >
+                {category.data.name}
+                <svg class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </a>
+              
+              <!-- Dropdown Menu -->
+              <div 
+                class="category-dropdown-menu absolute top-full left-0 mt-2 w-96 opacity-0 invisible transform translate-y-2 transition-all duration-300 z-50"
+                style="background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);"
+              >
+                <div class="p-6">
+                  <!-- Category Header -->
+                  <div class="flex items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid var(--border-light);">
+                    <div 
+                      class="w-3 h-3 rounded-full" 
+                      style={`background: ${category.data.color || 'var(--color-primary)'}`}
+                    ></div>
+                    <h3 class="font-bold text-lg" style="color: var(--text-primary); font-family: var(--font-heading);">
+                      {category.data.name}
+                    </h3>
+                    <span class="text-xs px-2 py-1 rounded-full" style="background: var(--bg-secondary); color: var(--text-muted);">
+                      {category.postCount} posts
+                    </span>
+                  </div>
+                  
+                  <!-- Category Description -->
+                  <p class="text-sm mb-4" style="color: var(--text-secondary);">
+                    {category.data.description}
+                  </p>
+                  
+                  <!-- Recent Posts - Side by Side Grid with Images -->
+                  <div class="mb-4">
+                    <h4 class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Recent Posts:</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                      {category.posts.slice(0, 4).map((post) => (
+                        <a 
+                          href={`/blog/${post.id}`}
+                          class="block rounded-lg transition-all duration-200 hover:shadow-md overflow-hidden"
+                          style="border: 1px solid var(--border-light);"
+                          onmouseover="this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-1px)'"
+                          onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)'"
+                          aria-label={`Read article: ${post.data.title}`}
+                        >
+                          <!-- Post Image -->
+                          <div class="aspect-[16/9] overflow-hidden">
+                            {post.data.image ? (
+                              <OptimizedImage 
+                                src={post.data.image.url} 
+                                alt={post.data.image.alt || post.data.title}
+                                width={300}
+                                height={169}
+                                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                              />
+                            ) : (
+                              <div 
+                                class="w-full h-full flex items-center justify-center text-white"
+                                style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));"
+                              >
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <!-- Post Title -->
+                          <div class="p-3">
+                            <h5 class="font-medium text-xs line-clamp-2" style="color: var(--text-primary);">
+                              {post.data.title}
+                            </h5>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <!-- View All Link -->
+                  <div class="pt-3" style="border-top: 1px solid var(--border-light);">
+                    <a 
+                      href={`/categories/${category.data.slug}`}
+                      class="inline-flex items-center gap-2 text-sm font-semibold transition-colors duration-200"
+                      style="color: var(--color-primary);"
+                      onmouseover="this.style.color='var(--color-primary-dark)'"
+                      onmouseout="this.style.color='var(--color-primary)'"
+                    >
+                      View all {category.data.name} posts
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- CTA Button - Simple -->
+      <div class="hidden md:flex">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 px-6 py-3 font-semibold"
+          style="background: var(--color-primary); color: var(--bg-primary); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);"
+          aria-label="Explore all blog articles"
+        >
+          <span>Explore</span>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle - Functional -->
+      <button
+        id="mobile-menu-toggle"
+        class="lg:hidden p-3 transition-colors duration-200"
+        style="border-radius: var(--radius-lg);"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <div class="w-6 h-6 flex flex-col justify-center space-y-1.5">
+          <span
+            id="hamburger-line-1"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+          <span
+            id="hamburger-line-2"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+          <span
+            id="hamburger-line-3"
+            class="block w-full h-0.5 transition-all duration-300"
+            style="background: var(--text-secondary); border-radius: var(--radius-full);"
+          ></span>
+        </div>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- Simple Mobile Menu - Outside header for proper positioning -->
+<div
+  id="mobile-menu"
+  class="lg:hidden fixed inset-0 z-[9999]"
+  style="display: none; background: color-mix(in srgb, var(--text-primary) 50%, transparent);"
+>
+  <!-- Simple Sidebar from Left -->
+  <div 
+    id="mobile-sidebar"
+    class="fixed left-0 top-0 h-full w-80 max-w-[90vw]"
+    style="background: var(--bg-primary); transform: translateX(-100%); transition: transform 0.3s ease;"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4" style="border-bottom: 1px solid var(--border-light);">
+      <h2 class="text-lg font-bold" style="color: var(--text-primary);">Menu</h2>
+      <button 
+        id="mobile-menu-close"
+        class="p-2 rounded"
+        style="color: var(--text-secondary);"
+      >
+        ✕
+      </button>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="p-4">
+      <nav class="space-y-2">
+        <a href="/" class="block p-3 rounded" style="color: var(--text-primary);">Home</a>
+        <a href="/blog" class="block p-3 rounded" style="color: var(--text-primary);">Blog</a>
+        
+        <div class="pt-4">
+          <h3 class="text-sm font-bold mb-2" style="color: var(--text-muted);">Categories</h3>
+          {categoriesWithPosts.map((category) => (
+            <a
+              href={`/categories/${category.data.slug}`}
+              class="flex items-center gap-2 p-2 rounded"
+              style="color: var(--text-secondary);"
+            >
+              <div 
+                class="w-2 h-2 rounded-full" 
+                style={`background: ${category.data.color || 'var(--color-primary)'}`}
+              ></div>
+              {category.data.name}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Header JavaScript Module - Optimized for performance -->
+<script>
+  // Optimized header script - no longer render blocking
+  (function() {
+    'use strict';
+
+    // Initialize on DOM ready and after Astro page transitions
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    // Re-initialize after Astro view transitions
+    document.addEventListener('astro:page-load', init);
+
+    function init() {
+      initDesktopDropdowns();
+      initMobileSidebar();
+    }
+
+    /**
+     * Desktop category dropdowns
+     */
+    function initDesktopDropdowns() {
+      const dropdowns = document.querySelectorAll('.category-dropdown');
+      
+      dropdowns.forEach(dropdown => {
+        const dropdownEl = dropdown as HTMLElement;
+        
+        // Skip if already initialized
+        if (dropdownEl.dataset.initialized) return;
+        dropdownEl.dataset.initialized = 'true';
+        
+        const menu = dropdown.querySelector('.category-dropdown-menu') as HTMLElement;
+        const arrow = dropdown.querySelector('svg') as SVGElement;
+        
+        let timeout: ReturnType<typeof setTimeout>;
+        
+        const handleMouseEnter = () => {
+          clearTimeout(timeout);
+          if (menu) {
+            menu.style.opacity = '1';
+            menu.style.visibility = 'visible';
+            menu.style.transform = 'translateY(0)';
+          }
+          if (arrow) arrow.style.transform = 'rotate(180deg)';
+        };
+        
+        const handleMouseLeave = () => {
+          timeout = setTimeout(() => {
+            if (menu) {
+              menu.style.opacity = '0';
+              menu.style.visibility = 'hidden';
+              menu.style.transform = 'translateY(8px)';
+            }
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+          }, 150);
+        };
+        
+        dropdown.addEventListener('mouseenter', handleMouseEnter);
+        dropdown.addEventListener('mouseleave', handleMouseLeave);
+      });
+    }
+
+    /**
+     * Simple mobile sidebar - Easy to understand
+     */
+    function initMobileSidebar() {
+      const toggle = document.getElementById('mobile-menu-toggle') as HTMLElement;
+      const menu = document.getElementById('mobile-menu') as HTMLElement;
+      const sidebar = document.getElementById('mobile-sidebar') as HTMLElement;
+      const close = document.getElementById('mobile-menu-close') as HTMLElement;
+
+      if (!toggle || !menu || !sidebar || !close) {
+        return;
+      }
+
+      // Skip if already initialized
+      if (toggle.dataset.initialized) return;
+      toggle.dataset.initialized = 'true';
+
+      // Open menu
+      function openMenu() {
+        if (menu && sidebar) {
+          menu.style.display = 'block';
+          setTimeout(() => {
+            sidebar.style.transform = 'translateX(0)';
+          }, 10);
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      // Close menu
+      function closeMenu() {
+        if (menu && sidebar) {
+          sidebar.style.transform = 'translateX(-100%)';
+          setTimeout(() => {
+            menu.style.display = 'none';
+          }, 300);
+          document.body.style.overflow = '';
+        }
+      }
+
+      // Toggle button click
+      const handleToggleClick = function() {
+        if (menu && (menu.style.display === 'none' || !menu.style.display)) {
+          openMenu();
+        } else {
+          closeMenu();
+        }
+      };
+
+      // Click overlay to close
+      const handleOverlayClick = function(e: Event) {
+        if (e.target === menu) {
+          closeMenu();
+        }
+      };
+
+      // Close on escape key
+      const handleKeyDown = function(e: KeyboardEvent) {
+        if (e.key === 'Escape' && menu && menu.style.display === 'block') {
+          closeMenu();
+        }
+      };
+
+      // Close on window resize
+      const handleResize = function() {
+        if (window.innerWidth >= 1024) {
+          closeMenu();
+        }
+      };
+
+      // Add event listeners
+      toggle.addEventListener('click', handleToggleClick);
+      close.addEventListener('click', closeMenu);
+      menu.addEventListener('click', handleOverlayClick);
+      document.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('resize', handleResize);
+
+      // Close when clicking nav links
+      if (sidebar) {
+        const navLinks = sidebar.querySelectorAll('a');
+        navLinks.forEach(link => {
+          link.addEventListener('click', closeMenu);
+        });
+      }
+    }
+
+  })();
+</script>

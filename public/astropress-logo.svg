@@ -1,0 +1,33 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 150" width="250" height="150">
+	<title>mcp</title>
+	<defs>
+		<linearGradient id="g1" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0,31.831,-15.917,0,140.233,113.392)">
+			<stop offset="0" stop-color="#1ed378"/>
+			<stop offset="1" stop-color="#1c1c1c"/>
+		</linearGradient>
+		<linearGradient id="g2" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0,47.747,-15.917,0,266.955,97.472)">
+			<stop offset="0" stop-color="#1ed378"/>
+			<stop offset="1" stop-color="#1c1c1c"/>
+		</linearGradient>
+		<linearGradient id="g3" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0,63.663,-15.917,0,422.613,81.558)">
+			<stop offset="0" stop-color="#1ed378"/>
+			<stop offset="1" stop-color="#1c1c1c"/>
+		</linearGradient>
+	</defs>
+	<style>
+		.s0 { fill: url(#g1) } 
+		.s1 { fill: url(#g2) } 
+		.s2 { fill: url(#g3) } 
+		.s3 { fill: #00a854 } 
+		.s4 { fill: #00ff8c } 
+	</style>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s0" d="m93.2 82.4v62.8h-31.4v-62.8z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s1" d="m141.5 51.1v94.1h-31.4v-94.1z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s2" d="m187.3 19.7v125.5h-31.4v-125.5z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s3" d="m93.2 82.4v31.4h-31.4v-31.4z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s3" d="m140.2 51.1v31.3h-31.3v-31.3z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s3" d="m187.3 19.7v31.4h-31.4v-31.4z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s4" d="m77.5 98.1c-8.7 0-15.7-7-15.7-15.7 0-8.6 7-15.6 15.7-15.6 8.7 0 15.7 7 15.7 15.6 0 8.7-7 15.7-15.7 15.7z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s4" d="m171.6 35.4c-8.7 0-15.7-7-15.7-15.7 0-8.7 7-15.7 15.7-15.7 8.7 0 15.7 7 15.7 15.7 0 8.7-7 15.7-15.7 15.7z"/>
+	<path id="&lt;Path&gt;" fill-rule="evenodd" class="s4" d="m124.6 66.8c-8.7 0-15.7-7.1-15.7-15.7 0-8.7 7-15.7 15.7-15.7 8.6 0 15.6 7 15.6 15.7 0 8.6-7 15.7-15.6 15.7z"/>
+</svg>

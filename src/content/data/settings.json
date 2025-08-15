@@ -45,6 +45,10 @@
       "enabled": true,
       "itemsPerPage": 20
     },
+    "disclaimer": {
+      "enabled": true,
+      "text": "This website may contain affiliate links. When you click on these links and make a purchase, we may earn a commission at no additional cost to you. We only recommend products and services we believe in and think will be valuable to our readers."
+    },
     "themeSettings": {
       "colors": {
         "primary": "#8B4513",

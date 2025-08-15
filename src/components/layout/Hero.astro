@@ -4,7 +4,7 @@
  * Clean 2-column design with enriched content using core logic
  */
 
-import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts } from '../../core/blogLogic';
+import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts, getFeaturedPosts } from '../../core/blogLogic';
 import { formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
@@ -15,8 +15,14 @@ const settings = await getSiteSettings();
 const categories = await getCategoriesWithPostCounts();
 const allCategories = await getCollection('categories');
 
-// Get featured posts
-const featuredPosts = posts.slice(0, 5);
+// Get featured posts (posts marked with featured: true), sorted by most recent
+let featuredPosts = await getFeaturedPosts(5);
+
+// If we don't have enough featured posts, fill with recent posts
+if (featuredPosts.length < 5) {
+  const recentPosts = posts.filter(post => !featuredPosts.some(fp => fp.id === post.id));
+  featuredPosts = [...featuredPosts, ...recentPosts.slice(0, 5 - featuredPosts.length)];
+}
 
 // Helper function to get category name from ID
 function getCategoryName(categoryRef: string | { id: string } | undefined): string | null {
@@ -154,14 +160,14 @@ const { showFeaturedPosts = true } = Astro.props;
           <!-- Right Side - Recent Posts & Categories -->
           <div class="space-y-10">
             
-            <!-- Recent Posts - Professional List -->
+            <!-- Featured Posts - Professional List -->
             <div class="bg-white/50 p-6 backdrop-blur-sm" 
                  style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05)">
               
               <div class="flex items-center gap-3 mb-8">
                 <div class="w-1 h-6" style="background: var(--color-primary); border-radius: var(--radius-full)"></div>
                 <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
-                  Recent Posts
+                  Featured Posts
                 </h3>
               </div>
               
@@ -189,14 +195,23 @@ const { showFeaturedPosts = true } = Astro.props;
                       
                       <!-- Post Info -->
                       <div class="flex-1 min-w-0">
-                        <h4 class="font-semibold text-sm leading-tight mb-2 line-clamp-2 group-hover:text-accent transition-colors" 
-                            style="color: var(--text-primary); font-family: var(--font-heading); transition: color var(--animation-duration) var(--animation-easing)">
-                          <a href={`/blog/${post.id}`} 
-                             style="color: inherit;"
-                             aria-label={`Read article: ${post.data.title}`}>
-                            {post.data.title}
-                          </a>
-                        </h4>
+                        <div class="flex items-start gap-2 mb-2">
+                          <h4 class="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-accent transition-colors flex-1" 
+                              style="color: var(--text-primary); font-family: var(--font-heading); transition: color var(--animation-duration) var(--animation-easing)">
+                            <a href={`/blog/${post.id}`} 
+                               style="color: inherit;"
+                               aria-label={`Read article: ${post.data.title}`}>
+                              {post.data.title}
+                            </a>
+                          </h4>
+                          {post.data.featured && (
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-bold text-white" 
+                                  style="background: var(--color-primary); border-radius: var(--radius-sm);"
+                                  title="Featured Post">
+                              ★
+                            </span>
+                          )}
+                        </div>
                         
                         <div class="flex items-center gap-2 text-xs theme-card-meta">
                           <time datetime={post.data.pubDate.toISOString()} class="theme-date">

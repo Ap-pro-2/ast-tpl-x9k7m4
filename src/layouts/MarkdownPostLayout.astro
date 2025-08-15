@@ -80,6 +80,42 @@ if (
 >
   {schemaData && <Schema item={schemaData} slot="head" />}
 
+  <!-- Video Content SEO Enhancement -->
+  <meta property="og:type" content="article" slot="head" />
+  <meta
+    property="article:author"
+    content={author?.data.name || "Author"}
+    slot="head"
+  />
+  <meta
+    property="article:published_time"
+    content={frontmatter.pubDate.toISOString()}
+    slot="head"
+  />
+  {
+    frontmatter.tags && (
+      <meta
+        property="article:tag"
+        content={frontmatter.tags.join(", ")}
+        slot="head"
+      />
+    )
+  }
+
+  <!-- Enhanced meta for video content -->
+  <meta name="twitter:card" content="summary_large_image" slot="head" />
+  <meta name="twitter:title" content={frontmatter.title} slot="head" />
+  <meta
+    name="twitter:description"
+    content={frontmatter.description}
+    slot="head"
+  />
+  {
+    frontmatter.image?.url && (
+      <meta name="twitter:image" content={frontmatter.image.url} slot="head" />
+    )
+  }
+
   <!-- Preload critical featured image for LCP optimization -->
   {
     frontmatter.image?.url && (
@@ -240,7 +276,10 @@ if (
 
           <!-- Article Content -->
           <div class="px-4 sm:px-6 lg:px-8 xl:px-12 pb-6 sm:pb-8 lg:pb-12">
-            <div class="prose max-w-none" id="blog-content">
+            <div
+              class="prose max-w-none video-content-optimized"
+              id="blog-content"
+            >
               <slot />
             </div>
 
@@ -297,10 +336,10 @@ if (
                 <div slot="fallback" class="theme-card p-6">
                   <div class="animate-pulse">
                     <div class="flex items-center gap-4">
-                      <div class="w-20 h-20 bg-gray-200 rounded-full"></div>
+                      <div class="w-20 h-20 bg-gray-200 rounded-full" />
                       <div class="flex-1">
-                        <div class="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                        <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/3 mb-2" />
+                        <div class="h-3 bg-gray-200 rounded w-2/3" />
                       </div>
                     </div>
                   </div>
@@ -323,15 +362,17 @@ if (
               <div class="animate-pulse">
                 <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
                 <div class="grid gap-4">
-                  {[1, 2, 3].map(() => (
-                    <div class="flex gap-4">
-                      <div class="w-20 h-16 bg-gray-200 rounded"></div>
-                      <div class="flex-1">
-                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                  {
+                    [1, 2, 3].map(() => (
+                      <div class="flex gap-4">
+                        <div class="w-20 h-16 bg-gray-200 rounded" />
+                        <div class="flex-1">
+                          <div class="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                          <div class="h-3 bg-gray-200 rounded w-1/2" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  }
                 </div>
               </div>
             </div>
@@ -341,35 +382,93 @@ if (
     </div>
   </div>
 
+  <!-- Video Content Optimization Styles -->
+  <style>
+    /* Video content optimizations */
+    .video-content-optimized {
+      /* Ensure videos are responsive within prose content */
+      --tw-prose-body: var(--text-primary);
+      --tw-prose-headings: var(--text-primary);
+    }
+
+    .video-content-optimized .youtube-embed-container {
+      /* Better spacing for videos in content */
+      margin: 2rem 0;
+      max-width: 100%;
+    }
+
+    /* Responsive video adjustments */
+    @media (max-width: 768px) {
+      .video-content-optimized .youtube-embed-container {
+        margin: 1.5rem 0;
+        border-radius: var(--radius-md);
+      }
+    }
+
+    /* Enhanced prose styling for video content */
+    .video-content-optimized h2 {
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.875rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .video-content-optimized h3 {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Better spacing around videos */
+    .video-content-optimized .youtube-embed-container + h2,
+    .video-content-optimized .youtube-embed-container + h3 {
+      margin-top: 3rem;
+    }
+
+    .video-content-optimized p + .youtube-embed-container {
+      margin-top: 2rem;
+    }
+
+    /* Checklist styling improvements */
+    .video-content-optimized ul li input[type="checkbox"] {
+      margin-right: 0.5rem;
+      accent-color: var(--color-primary);
+    }
+
+    .video-content-optimized ul li:has(input[type="checkbox"]) {
+      list-style: none;
+      margin-left: -1.5rem;
+      padding-left: 1.5rem;
+    }
+  </style>
+
+  <!-- SEO-Optimized External Link Handler & YouTube Auto-Embed -->
   <!-- SEO-Optimized External Link Handler -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Get the current domain
       const currentDomain = window.location.hostname;
-
-      // Find all links in the blog content
       const blogContent = document.getElementById("blog-content");
       if (!blogContent) return;
 
+      // Handle external links only
       const links = blogContent.querySelectorAll("a[href]");
 
       links.forEach((link) => {
         const href = link.getAttribute("href");
-
-        // Skip if no href or it's an anchor link
         if (!href || href.startsWith("#")) return;
 
         try {
-          // Check if it's an external link
           const url = new URL(href, window.location.origin);
           const isExternal = url.hostname !== currentDomain;
 
           if (isExternal) {
-            // Add SEO and security attributes for external links
             link.setAttribute("target", "_blank");
             link.setAttribute("rel", "noopener noreferrer nofollow");
 
-            // Add visual indicator for external links
             if (!link.querySelector(".external-link-icon")) {
               const icon = document.createElement("span");
               icon.className = "external-link-icon";
@@ -378,7 +477,6 @@ if (
               link.appendChild(icon);
             }
 
-            // Add title attribute for accessibility
             const currentTitle = link.getAttribute("title") || "";
             link.setAttribute(
               "title",
@@ -386,8 +484,7 @@ if (
             );
           }
         } catch (e) {
-          // If URL parsing fails, treat as internal link
-          // Silently continue - this is expected for some URLs
+          // Silently continue for invalid URLs
         }
       });
     });

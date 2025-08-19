@@ -50,7 +50,7 @@ if (!post || !exists) {
   return Astro.redirect('/404');
 }
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 // ✅ CLEAN: Use core function for frontmatter
 const frontmatter = extractFrontmatter(post);
@@ -62,7 +62,7 @@ const rawContent = post.body; // Get raw MDX content for FAQ parsing
 const schemaData = await generateBlogPostSchemaData(frontmatter, currentUrl, 'Article', rawContent);
 ---
 
-<MarkdownPostLayout frontmatter={frontmatter} schemaData={schemaData}>
+<MarkdownPostLayout frontmatter={frontmatter} schemaData={schemaData} headings={headings}>
   <Content
     components={{
       Product,

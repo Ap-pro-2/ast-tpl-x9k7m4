@@ -29,7 +29,7 @@
       "icon32": "",
       "icon16": "",
       "appleTouchIcon": "",
-      "mainIcon": "",
+      "mainIcon": "https://imgs.mcpanalytics.blog/ico.ico",
       "manifest": "/site.webmanifest"
     },
     "performance": {

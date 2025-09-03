@@ -9,6 +9,7 @@ import { getCollection } from 'astro:content';
 import { formatDate } from '../../core/blogLogic';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
+import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
 // Get dynamic data using core logic
 const posts = await getAllPosts();
@@ -99,7 +100,7 @@ const previewPost = posts.find(post =>
                   <!-- Category Badge -->
                   <div class="magazine-politics-category-overlay">
                     <span class="magazine-politics-category-tag" 
-                          style={`background: ${getCategoryData(featuredPoliticsPost.data.category).color}`}>
+                          style={getBadgeStyleString(getCategoryData(featuredPoliticsPost.data.category).color)}>
                       {(getCategoryData(featuredPoliticsPost.data.category).name || 'Featured').toUpperCase()}
                     </span>
                   </div>
@@ -158,7 +159,7 @@ const previewPost = posts.find(post =>
                       <!-- Category Badge -->
                       <div class="magazine-hotspot-category-overlay">
                         <span class="magazine-hotspot-category-tag" 
-                              style={`background: ${getCategoryData(post.data.category).color}`}>
+                              style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
                           {(getCategoryData(post.data.category).name || 'General').toUpperCase()}
                         </span>
                       </div>
@@ -167,9 +168,9 @@ const previewPost = posts.find(post =>
                   
                   <!-- Hotspot Content -->
                   <div class="magazine-hotspot-content">
-                    <h3 class="magazine-hotspot-title">
+                    <h4 class="magazine-hotspot-title">
                       {post.data.title}
-                    </h3>
+                    </h4>
                     
                     <div class="magazine-hotspot-meta">
                       <span class="magazine-hotspot-author">By {getAuthorName(post.data.author)}</span>
@@ -238,9 +239,9 @@ const previewPost = posts.find(post =>
                     )}
                     
                     <div class="magazine-story-text">
-                      <h4 class="magazine-story-title">
+                      <h5 class="magazine-story-title">
                         {post.data.title}
-                      </h4>
+                      </h5>
                       
                       <div class="magazine-story-meta">
                         <time datetime={post.data.pubDate.toISOString()}>

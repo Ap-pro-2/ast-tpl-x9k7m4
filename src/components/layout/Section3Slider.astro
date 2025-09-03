@@ -2,6 +2,7 @@
 import { getAllPosts, getSiteSettings, formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
+import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
 // Get dynamic data using core logic
 const posts = await getAllPosts();
@@ -71,7 +72,7 @@ const sliderPosts = posts.slice(0, 10);
                   <!-- Category Badge -->
                   <div class="slider-category-overlay">
                     <span class="slider-category-badge" 
-                          style={`background: ${getCategoryData(post.data.category).color}`}>
+                          style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
                       {(getCategoryData(post.data.category).name || 'General').toUpperCase()}
                     </span>
                   </div>

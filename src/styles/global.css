@@ -3288,16 +3288,29 @@
   }
 
   .slider-dot {
-    width: 10px;
-    height: 10px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: var(--border-default);
+    background: transparent;
     border: none;
     cursor: pointer;
     transition: all var(--animation-duration) var(--animation-easing);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .slider-dot::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border-default);
+    transition: all var(--animation-duration) var(--animation-easing);
   }
 
-  .slider-dot.active {
+  .slider-dot.active::before {
     background: var(--color-primary);
     transform: scale(1.2);
   }

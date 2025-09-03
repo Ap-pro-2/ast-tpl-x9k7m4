@@ -7,6 +7,7 @@
 import { getAllPosts, getSiteSettings, getFeaturedPosts, formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
+import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
 // Get dynamic data using core logic
 const posts = await getAllPosts();
@@ -100,7 +101,7 @@ const rightCards = floatingPosts.slice(3, 6);
                     {getCategoryData(post.data.category).name && (
                       <div class="hero-v2-card-category">
                         <span class="hero-v2-category-pill" 
-                              style={`background: ${getCategoryData(post.data.category).color}`}>
+                              style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
                           {getCategoryData(post.data.category).name}
                         </span>
                       </div>
@@ -109,9 +110,9 @@ const rightCards = floatingPosts.slice(3, 6);
                 )}
                 
                 <div class="hero-v2-card-content">
-                  <h3 class="hero-v2-card-title">
+                  <h2 class="hero-v2-card-title">
                     {post.data.title}
-                  </h3>
+                  </h2>
                   
                   <div class="hero-v2-card-meta">
                     <span class="hero-v2-meta-date">
@@ -149,7 +150,7 @@ const rightCards = floatingPosts.slice(3, 6);
                 {getCategoryData(mainPost.data.category).name && (
                   <div class="hero-v2-featured-category">
                     <span class="hero-v2-featured-badge" 
-                          style={`background: ${getCategoryData(mainPost.data.category).color}`}>
+                          style={getBadgeStyleString(getCategoryData(mainPost.data.category).color)}>
                       <span class="hero-v2-badge-icon">⚡</span>
                       {getCategoryData(mainPost.data.category).name.toUpperCase()}
                     </span>
@@ -216,7 +217,7 @@ const rightCards = floatingPosts.slice(3, 6);
                       {getCategoryData(post.data.category).name && (
                         <div class="hero-v2-card-category">
                           <span class="hero-v2-category-pill" 
-                                style={`background: ${getCategoryData(post.data.category).color}`}>
+                                style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
                             {getCategoryData(post.data.category).name}
                           </span>
                         </div>
@@ -225,9 +226,9 @@ const rightCards = floatingPosts.slice(3, 6);
                   )}
                   
                   <div class="hero-v2-card-content">
-                    <h3 class="hero-v2-card-title">
+                    <h2 class="hero-v2-card-title">
                       {post.data.title}
-                    </h3>
+                    </h2>
                     
                     <div class="hero-v2-card-meta">
                       <span class="hero-v2-meta-date">

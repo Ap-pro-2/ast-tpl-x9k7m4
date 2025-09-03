@@ -93,6 +93,30 @@
     }
   },
   {
+    "id": "about-us",
+    "title": "About Us",
+    "slug": "about",
+    "description": "Learn about our story, mission, and the team behind AstroPress Coffee.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "About Us | AstroPress Coffee - Our Story & Mission",
+      "description": "Discover the story behind AstroPress Coffee. Learn about our passion for coffee, our mission to share knowledge, and meet the team dedicated to bringing you the best coffee content.",
+      "keywords": [
+        "about us",
+        "coffee blog story",
+        "coffee passion",
+        "coffee mission",
+        "coffee team",
+        "coffee expertise",
+        "coffee community"
+      ],
+      "ogImage": "/images/seo/about-us-og.jpg",
+      "canonical": "/about"
+    }
+  },
+  {
     "id": "privacy-policy",
     "title": "Privacy Policy",
     "slug": "legal/privacy",

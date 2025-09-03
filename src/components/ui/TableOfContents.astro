@@ -231,20 +231,20 @@ if (filteredHeadings.length === 0) return null;
 <!-- TOC Interactive Behavior -->
 <script>
   function initTableOfContents() {
-    const tocToggle = document.querySelector('.toc-toggle') as HTMLButtonElement | null;
-    const tocContent = document.getElementById('toc-content') as HTMLElement | null;
-    const tocChevron = document.querySelector('.toc-chevron') as HTMLElement | null;
-    const tocLinks = document.querySelectorAll('[data-toc-link]') as NodeListOf<HTMLAnchorElement>;
-    const headings = document.querySelectorAll('h2[id], h3[id], h4[id], h5[id], h6[id]') as NodeListOf<HTMLElement>;
+    const tocToggle = document.querySelector('.toc-toggle');
+    const tocContent = document.getElementById('toc-content');
+    const tocChevron = document.querySelector('.toc-chevron');
+    const tocLinks = document.querySelectorAll('[data-toc-link]');
+    const headings = document.querySelectorAll('h2[id], h3[id], h4[id], h5[id], h6[id]');
     
     // Clean up any existing event listeners to prevent duplicates
-    if (tocToggle && (tocToggle as any)._tocInitialized) {
+    if (tocToggle && tocToggle._tocInitialized) {
       return; // Already initialized
     }
     
     // Toggle functionality
-    if (tocToggle && tocContent && tocChevron) {
-      const toggleHandler = function(e: Event) {
+    if (tocToggle && tocContent) {
+      const toggleHandler = function(e) {
         e.preventDefault();
         
         const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
@@ -253,23 +253,23 @@ if (filteredHeadings.length === 0) return null;
           // Collapse
           tocContent.classList.add('hidden');
           tocToggle.setAttribute('aria-expanded', 'false');
-          tocChevron.classList.remove('expanded');
+          if (tocChevron) tocChevron.classList.remove('expanded');
         } else {
           // Expand
           tocContent.classList.remove('hidden');
           tocToggle.setAttribute('aria-expanded', 'true');
-          tocChevron.classList.add('expanded');
+          if (tocChevron) tocChevron.classList.add('expanded');
         }
       };
       
       tocToggle.addEventListener('click', toggleHandler);
-      (tocToggle as any)._tocInitialized = true; // Mark as initialized
+      tocToggle._tocInitialized = true; // Mark as initialized
     }
     
     if (tocLinks.length === 0 || headings.length === 0) return;
 
     // Create intersection observer for active section highlighting
-    const observerOptions: IntersectionObserverInit = {
+    const observerOptions = {
       rootMargin: '-20% 0px -70% 0px',
       threshold: 0
     };
@@ -279,7 +279,7 @@ if (filteredHeadings.length === 0) return null;
         const id = entry.target.getAttribute('id');
         if (!id) return;
         
-        const tocLink = document.querySelector(`[data-target="${id}"]`) as HTMLAnchorElement;
+        const tocLink = document.querySelector(`[data-target="${id}"]`);
         
         if (tocLink) {
           if (entry.isIntersecting) {
@@ -299,12 +299,12 @@ if (filteredHeadings.length === 0) return null;
 
     // Smooth scroll behavior for TOC links
     tocLinks.forEach(link => {
-      link.addEventListener('click', function(e: Event) {
+      link.addEventListener('click', function(e) {
         e.preventDefault();
         const targetId = this.getAttribute('data-target');
         if (!targetId) return;
         
-        const targetElement = document.getElementById(targetId) as HTMLElement;
+        const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
           const offsetTop = targetElement.offsetTop - 80; // Account for fixed header
@@ -322,7 +322,7 @@ if (filteredHeadings.length === 0) return null;
     // Handle direct hash navigation on page load
     if (window.location.hash) {
       setTimeout(() => {
-        const targetElement = document.querySelector(window.location.hash) as HTMLElement;
+        const targetElement = document.querySelector(window.location.hash);
         if (targetElement) {
           const offsetTop = targetElement.offsetTop - 80;
           window.scrollTo({

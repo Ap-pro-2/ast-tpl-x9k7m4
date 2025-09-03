@@ -363,7 +363,7 @@ const description = `Navigate through all content on ${userSettings.siteName}. F
             </a>
             {
               allPosts.slice(0, 5).map((post) => (
-                <a href={`/blog/${post.id}`} class="sitemap-link truncate">
+                <a href={`/${post.id}`} class="sitemap-link truncate">
                   {post.data.title}
                 </a>
               ))

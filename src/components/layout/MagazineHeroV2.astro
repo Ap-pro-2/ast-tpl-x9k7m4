@@ -1,0 +1,294 @@
+---
+/**
+ * Magazine Hero Section V2 - Modern Asymmetric Design
+ * Layout: Split screen with diagonal overlay, floating cards, and animated elements
+ */
+
+import { getAllPosts, getSiteSettings, getFeaturedPosts, formatDate } from '../../core/blogLogic';
+import { getCollection } from 'astro:content';
+import OptimizedImage from '../ui/OptimizedImage.astro';
+
+// Get dynamic data using core logic
+const posts = await getAllPosts();
+const settings = await getSiteSettings();
+const allCategories = await getCollection('categories');
+
+// Get featured posts and recent posts
+let featuredPosts = await getFeaturedPosts(1);
+if (featuredPosts.length === 0) {
+  featuredPosts = posts.slice(0, 1);
+}
+
+// Get additional posts for floating cards
+const floatingPosts = posts.filter(post => 
+  !featuredPosts.some(fp => fp.id === post.id)
+).slice(0, 6);
+
+// Get all authors for author lookup
+const allAuthors = await getCollection('authors');
+
+// Helper function to get category data
+function getCategoryData(categoryRef: string | { id: string } | undefined) {
+  if (!categoryRef) return { name: null, color: 'var(--color-primary)' };
+  
+  const categoryId = typeof categoryRef === 'string' ? categoryRef : categoryRef.id;
+  const category = allCategories.find(cat => cat.data.id === categoryId || cat.id === categoryId);
+  return {
+    name: category?.data.name || null,
+    color: category?.data.color || 'var(--color-primary)'
+  };
+}
+
+// Helper function to get author data from post data
+function getAuthorData(authorRef: string | { id: string } | undefined) {
+  if (!authorRef) return { name: 'Author', avatar: null };
+  
+  const authorId = typeof authorRef === 'string' ? authorRef : authorRef.id;
+  const author = allAuthors.find(auth => auth.data.id === authorId || auth.id === authorId);
+  return {
+    name: author?.data.name || 'Author',
+    avatar: author?.data.avatar || null
+  };
+}
+
+// Helper function to get author name from post data (for backward compatibility)
+function getAuthorName(authorRef: string | { id: string } | undefined): string {
+  return getAuthorData(authorRef).name;
+}
+
+const mainPost = featuredPosts[0];
+const leftCards = floatingPosts.slice(0, 3);
+const rightCards = floatingPosts.slice(3, 6);
+---
+
+<!-- Magazine Hero V2 - Modern Asymmetric Design -->
+<section class="hero-v2-section" style="background: var(--bg-primary)">
+  <div class="hero-v2-container">
+    
+    <!-- Animated Background Elements -->
+    <div class="hero-v2-bg-elements">
+      <div class="hero-v2-bg-circle hero-v2-bg-circle-1"></div>
+      <div class="hero-v2-bg-circle hero-v2-bg-circle-2"></div>
+      <div class="hero-v2-bg-gradient"></div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="hero-v2-grid">
+      
+      <!-- Left Column - Floating Cards -->
+      <div class="hero-v2-left-column">
+        
+        <div class="hero-v2-floating-cards">
+          {leftCards.map((post, index) => (
+            <article class={`hero-v2-floating-card hero-v2-card-delay-${index + 1}`}>
+              <a href={`/${post.id}`} class="hero-v2-card-link">
+                
+                {post.data.image?.url && (
+                  <div class="hero-v2-card-image">
+                    <OptimizedImage 
+                      src={post.data.image.url} 
+                      alt={post.data.image.alt || post.data.title}
+                      width={250}
+                      height={140}
+                      class="w-full h-full object-cover"
+                    />
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="hero-v2-card-overlay"></div>
+                    
+                    <!-- Category Badge -->
+                    {getCategoryData(post.data.category).name && (
+                      <div class="hero-v2-card-category">
+                        <span class="hero-v2-category-pill" 
+                              style={`background: ${getCategoryData(post.data.category).color}`}>
+                          {getCategoryData(post.data.category).name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                <div class="hero-v2-card-content">
+                  <h3 class="hero-v2-card-title">
+                    {post.data.title}
+                  </h3>
+                  
+                  <div class="hero-v2-card-meta">
+                    <span class="hero-v2-meta-date">
+                      {formatDate(post.data.pubDate)}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <!-- Center - Hero Featured Post -->
+      <div class="hero-v2-center-column">
+        <article class="hero-v2-featured-post">
+          <a href={`/${mainPost.id}`} class="hero-v2-featured-link">
+            
+            <!-- Hero Image with Diagonal Cut -->
+            {mainPost.data.image?.url && (
+              <div class="hero-v2-featured-image">
+                <OptimizedImage 
+                  src={mainPost.data.image.url} 
+                  alt={mainPost.data.image.alt || mainPost.data.title}
+                  width={800}
+                  height={600}
+                  priority={true}
+                  class="w-full h-full object-cover"
+                />
+                
+                <!-- Diagonal Overlay -->
+                <div class="hero-v2-diagonal-overlay"></div>
+                
+                <!-- Category Badge with Animation -->
+                {getCategoryData(mainPost.data.category).name && (
+                  <div class="hero-v2-featured-category">
+                    <span class="hero-v2-featured-badge" 
+                          style={`background: ${getCategoryData(mainPost.data.category).color}`}>
+                      <span class="hero-v2-badge-icon">⚡</span>
+                      {getCategoryData(mainPost.data.category).name.toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                
+              </div>
+            )}
+            
+            <!-- Content with Glass Effect -->
+            <div class="hero-v2-featured-content">
+              <div class="hero-v2-content-glass">
+                
+                
+                <h1 class="hero-v2-featured-title">
+                  {mainPost.data.title}
+                </h1>
+                
+                {mainPost.data.description && (
+                  <p class="hero-v2-featured-description">
+                    {mainPost.data.description}
+                  </p>
+                )}
+                
+                <div class="hero-v2-featured-meta">
+                  <div class="hero-v2-meta-details">
+                    <time datetime={mainPost.data.pubDate.toISOString()}>
+                      {formatDate(mainPost.data.pubDate)}
+                    </time>
+                    <span class="hero-v2-meta-separator">•</span>
+                    <span class="hero-v2-read-time">5 min read</span>
+                    <svg class="hero-v2-read-icon-inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </article>
+      </div>
+
+      <!-- Right Column - More Floating Cards -->
+      <div class="hero-v2-right-column">
+        <div class="hero-v2-trending-section">
+          
+          <div class="hero-v2-floating-cards hero-v2-right-cards">
+            {rightCards.map((post, index) => (
+              <article class={`hero-v2-floating-card hero-v2-right-card hero-v2-card-delay-${index + 4}`}>
+                <a href={`/${post.id}`} class="hero-v2-card-link">
+                  
+                  {post.data.image?.url && (
+                    <div class="hero-v2-card-image">
+                      <OptimizedImage 
+                        src={post.data.image.url} 
+                        alt={post.data.image.alt || post.data.title}
+                        width={250}
+                        height={140}
+                        class="w-full h-full object-cover"
+                      />
+                      
+                      <div class="hero-v2-card-overlay"></div>
+                      
+                      {getCategoryData(post.data.category).name && (
+                        <div class="hero-v2-card-category">
+                          <span class="hero-v2-category-pill" 
+                                style={`background: ${getCategoryData(post.data.category).color}`}>
+                            {getCategoryData(post.data.category).name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  <div class="hero-v2-card-content">
+                    <h3 class="hero-v2-card-title">
+                      {post.data.title}
+                    </h3>
+                    
+                    <div class="hero-v2-card-meta">
+                      <span class="hero-v2-meta-date">
+                        {formatDate(post.data.pubDate)}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Inline Read Icon - Clean and Simple */
+.hero-v2-read-icon-inline {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 2px;
+  color: var(--color-primary-accessible);
+  margin-left: 0.5rem;
+  transition: all var(--animation-duration) var(--animation-easing);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.hero-v2-read-icon-inline:hover {
+  color: var(--color-primary-accessible-dark);
+  transform: translateX(2px);
+}
+
+/* Ensure meta details flex properly */
+.hero-v2-meta-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-v2-read-icon-inline {
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-left: 0.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-v2-meta-details {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .hero-v2-read-icon-inline {
+    margin-left: auto;
+    margin-top: 0;
+  }
+}
+</style>

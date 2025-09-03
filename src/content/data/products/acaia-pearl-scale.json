@@ -1,0 +1,32 @@
+{
+  "id": "acaia-pearl-scale",
+  "title": "Acaia Pearl Coffee Scale",
+  "description": "Professional-grade coffee scale with bluetooth connectivity and precision timing.",
+  "price": "$159.00",
+  "originalPrice": "$179.00",
+  "image": "https://images.pexels.com/photos/4349776/pexels-photo-4349776.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Acaia Pearl coffee scale",
+  "affiliateUrl": "https://acaia.co/collections/coffee-scales/products/acaia-pearl",
+  "category": "accessories",
+  "rating": 4.9,
+  "reviewCount": 1856,
+  "brand": "Acaia",
+  "features": [
+    "0.1g precision",
+    "Bluetooth connectivity",
+    "Built-in timer",
+    "Water-resistant design"
+  ],
+  "pros": [
+    "Extremely accurate",
+    "App integration",
+    "Professional quality"
+  ],
+  "cons": [
+    "Expensive",
+    "Battery life could be better",
+    "Overkill for casual users"
+  ],
+  "badge": "Pro Grade",
+  "buttonText": "Get Scale"
+}

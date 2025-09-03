@@ -1,0 +1,192 @@
+---
+/**
+ * Simple Banner Ad Component
+ * Displays banner ads by placement or ID.
+ * This component is designed to be robust and developer-friendly.
+ * - It fetches ad data from a central logic file.
+ * - It fails gracefully by rendering nothing in production if an ad is not found.
+ * - It shows a helpful placeholder in development for easy debugging.
+ */
+
+import { getBannersByPlacement, getBannerById, areAdsEnabled } from '../../core/adsLogic';
+import OptimizedImage from '../ui/OptimizedImage.astro';
+
+// --- Component Props ---
+export interface Props {
+  // The placement string that corresponds to an ad placement in ads.json
+  placement?: string;
+  // The specific ID of a banner to render
+  bannerId?: string;
+  // Optional CSS classes to apply to the ad container for styling
+  className?: string;
+}
+
+const { placement, bannerId, className = '' } = Astro.props;
+
+// --- Ad Fetching Logic ---
+
+// 1. First, check if ads are globally enabled in the configuration.
+const adsEnabled = await areAdsEnabled();
+
+// 2. If ads are enabled, fetch the banner data.
+let banners = [];
+if (adsEnabled) {
+  // If a specific bannerId is provided, fetch that banner.
+  if (bannerId) {
+    const banner = await getBannerById(bannerId);
+    if (banner) banners = [banner];
+  // Otherwise, if a placement is provided, fetch all banners for that placement.
+  } else if (placement) {
+    banners = await getBannersByPlacement(placement);
+  }
+}
+---
+
+{/* --- Rendering Logic --- */}
+
+{/* 
+  If ads are enabled and we found at least one banner, render the ad(s).
+  This ensures that nothing is rendered on the live site if an ad is not configured.
+*/}
+{adsEnabled && banners.length > 0 ? (
+  <div class={`banner-ads ${className}`}>
+    {banners.map((banner) => (
+      <div class="banner-ad" key={banner.id}>
+        {/* If the banner has a link, wrap the image in an anchor tag. */}
+        {banner.link ? (
+          <a 
+            href={banner.link}
+            target="_blank"
+            rel="noopener sponsored"
+            class="banner-ad-link"
+            title={banner.alt}
+          >
+            <OptimizedImage 
+              src={banner.image}
+              alt={banner.alt}
+              width={728}
+              height={90}
+              loading="lazy"
+              class="banner-ad-image"
+            />
+          </a>
+        ) : (
+          // If there's no link, just render the image.
+          <OptimizedImage 
+            src={banner.image}
+            alt={banner.alt}
+            width={728}
+            height={90}
+            loading="lazy"
+            class="banner-ad-image"
+          />
+        )}
+      </div>
+    ))}
+  </div>
+) : (
+  /* 
+    If no ad is rendered, show a helpful placeholder in development mode ONLY when:
+    1. Ads are enabled globally but no ads are configured for this placement
+    2. This helps debug missing ad configurations, not globally disabled ads
+  */
+  import.meta.env.DEV && adsEnabled && (
+    <div class={`banner-ad-placeholder ${className}`}>
+      <div style="
+        background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+        border: 2px dashed #9c27b0;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        color: #7b1fa2;
+        font-family: monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+      ">
+        <div>🖼️ Banner Ad Placeholder</div>
+        <div style="margin-top: 0.5rem; font-size: 0.75rem;">
+          {placement ? `Placement: ${placement}` : bannerId ? `Banner ID: ${bannerId}` : 'No placement specified'}
+        </div>
+        <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #666;">
+          No ads configured for this placement
+        </div>
+      </div>
+    </div>
+  )
+)}
+
+<style>
+  .banner-ads {
+    margin: 1rem 0;
+    text-align: center;
+  }
+  
+  .banner-ad {
+    margin-bottom: 1rem;
+  }
+  
+  .banner-ad:last-child {
+    margin-bottom: 0;
+  }
+  
+  .banner-ad-link {
+    display: inline-block;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .banner-ad-link:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  
+  .banner-ad-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .banner-ad-link:hover .banner-ad-image {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .banner-ads {
+      margin: 1rem -1rem;
+    }
+    
+    .banner-ad-image {
+      border-radius: 0;
+      width: 100%;
+    }
+  }
+  
+  /* Placement-specific styling */
+  .banner-ads.header {
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-light, #f0f0f0);
+    border-bottom: 1px solid var(--border-light, #f0f0f0);
+  }
+  
+  .banner-ads.sidebar {
+    margin: 2rem 0;
+  }
+  
+  .banner-ads.article {
+    margin: 3rem 0;
+    text-align: center;
+  }
+  
+  .banner-ads.footer {
+    margin: 2rem 0 1rem 0;
+    text-align: center;
+  }
+  
+  .banner-ad-placeholder {
+    margin: 1rem 0;
+  }
+</style>

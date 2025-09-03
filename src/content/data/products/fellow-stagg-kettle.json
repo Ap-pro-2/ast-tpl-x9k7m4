@@ -1,0 +1,32 @@
+{
+  "id": "fellow-stagg-kettle",
+  "title": "Fellow Stagg EKG Electric Pour-over Kettle",
+  "description": "Precision electric kettle with variable temperature control for perfect pour-over coffee.",
+  "price": "$195.00",
+  "originalPrice": "$215.00",
+  "image": "https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Fellow Stagg electric kettle",
+  "affiliateUrl": "https://fellowproducts.com/products/stagg-ekg",
+  "category": "brewing-equipment",
+  "rating": 4.8,
+  "reviewCount": 2234,
+  "brand": "Fellow",
+  "features": [
+    "Variable temperature control",
+    "Precision pour spout",
+    "1200W heating element",
+    "60-minute hold mode"
+  ],
+  "pros": [
+    "Perfect pour control",
+    "Beautiful design",
+    "Precise temperature"
+  ],
+  "cons": [
+    "Premium price point",
+    "Small capacity",
+    "Cord could be longer"
+  ],
+  "badge": "Premium Pick",
+  "buttonText": "Buy Kettle"
+}

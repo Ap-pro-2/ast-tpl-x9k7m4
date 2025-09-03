@@ -1,7 +1,7 @@
 ---
 // Clean Blog Post Layout - Multi-Purpose Foundation
-import { formatDate } from "../core/blogLogic";
-import { getEntry } from "astro:content";
+import { formatDate, getAllPosts, getSiteSettings, getCategoriesWithPostCounts } from "../core/blogLogic";
+import { getEntry, getCollection } from "astro:content";
 import OptimizedImage from "../components/ui/OptimizedImage.astro";
 import BaseLayout from "./BaseLayout.astro";
 import Breadcrumb from "../components/navigation/Breadcrumb.astro";
@@ -10,6 +10,8 @@ import RelatedPosts from "../components/ui/RelatedPosts.astro";
 import { Schema } from "../core/seo";
 import HorizontalAuthorCard from "../components/ui/HorizontalAuthorCard.astro";
 import TableOfContents from "../components/ui/TableOfContents.astro";
+import SimpleBannerAd from "../components/ads/SimpleBannerAd.astro";
+import ShareArticle from "../components/ui/ShareArticle.astro";
 
 const { frontmatter, schemaData, headings } = Astro.props;
 
@@ -45,7 +47,23 @@ const pageData = {
     ? { id: category.id, name: category.data.name, slug: category.data.slug }
     : undefined,
 };
-const breadcrumbs = generateBreadcrumbs(`/blog/${frontmatter.title}`, pageData);
+const breadcrumbs = generateBreadcrumbs(`/${frontmatter.title}`, pageData);
+
+// Get sidebar data
+const allPosts = await getAllPosts();
+const settings = await getSiteSettings();
+const categories = await getCategoriesWithPostCounts();
+const allCategories = await getCollection('categories');
+
+// Get recent posts for sidebar (exclude current post)
+const recentPosts = allPosts
+  .filter(post => post.id !== frontmatter.title)
+  .slice(0, 4);
+
+// Get hot categories (top 4 most used)
+const hotCategories = categories
+  .sort((a, b) => (b.postCount || 0) - (a.postCount || 0))
+  .slice(0, 4);
 
 // Process tags safely
 let tagData: any[] = [];
@@ -128,11 +146,13 @@ if (
       />
     )
   }
-  <!-- Clean Article Layout -->
-  <div class="py-6 sm:py-8 lg:py-12 xl:py-16">
+  <!-- Post Layout with Sidebar -->
+  <div class="py-6 sm:py-8 lg:py-12 xl:py-16" style="background: var(--bg-primary)">
     <div class="container max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Centered Main Content -->
-      <main class="max-w-4xl mx-auto">
+      <!-- Two Column Layout -->
+      <div class="post-layout-grid">
+        <!-- Main Content Column -->
+        <main class="post-main-content">
         <article
           class="theme-card overflow-hidden"
           style="transition: all var(--animation-duration) var(--animation-easing);"
@@ -287,10 +307,10 @@ if (
             {
               tagData.length > 0 && (
                 <div
-                  class="mt-12 pt-8"
+                  class="mt-12 pt-8 text-center"
                   style="border-top: 1px solid var(--border-light)"
                 >
-                  <div class="flex items-center gap-3 mb-4">
+                  <div class="flex items-center justify-center gap-3 mb-4">
                     <svg
                       class="w-5 h-5"
                       style="color: var(--color-primary)"
@@ -312,7 +332,7 @@ if (
                       Tags
                     </h3>
                   </div>
-                  <div class="flex flex-wrap gap-3">
+                  <div class="flex flex-wrap justify-center gap-3">
                     {tagData.map((tag) => (
                       <a
                         href={`/tags/${tag.data.slug || tag.id}`}
@@ -325,6 +345,14 @@ if (
                 </div>
               )
             }
+
+            <!-- Share Article Component -->
+            <ShareArticle 
+              title={frontmatter.title}
+              url={`${settings.siteUrl}/${frontmatter.title}`}
+              description={frontmatter.description}
+              className="mt-8"
+            />
           </div>
         </article>
 
@@ -348,6 +376,14 @@ if (
             </div>
           )
         }
+
+        <!-- After Content Ad -->
+        <div class="mt-8 mb-8">
+          <SimpleBannerAd 
+            placement="article-content"
+            className="article-content-ad"
+          />
+        </div>
 
         <!-- Related Posts - Deferred for better performance -->
         <div class="mt-12">
@@ -378,7 +414,76 @@ if (
             </div>
           </RelatedPosts>
         </div>
-      </main>
+        </main>
+
+        <!-- Sidebar Column -->
+        <aside class="post-sidebar">
+          <!-- Sidebar Ad Unit - Top Position -->
+          <div class="post-sidebar-section">
+            <SimpleBannerAd 
+              placement="article-sidebar"
+              className="post-sidebar-ad-top"
+            />
+          </div>
+
+          <!-- Hot Categories Section -->
+          <div class="post-sidebar-section">
+            <div class="post-section-header">
+              <div class="post-section-line"></div>
+              <h3 class="post-section-title">Hot Categories</h3>
+            </div>
+            <div class="post-categories-grid">
+              {hotCategories.map((category) => {
+                const categoryData = allCategories.find(cat => cat.data.id === category.id || cat.id === category.id);
+                const categoryColor = categoryData?.data.color || 'var(--color-primary)';
+                return (
+                  <a href={`/categories/${category.slug || category.id}`} class="post-category-card" style={`background: ${categoryColor}`}>
+                    <div class="post-category-content">
+                      <span class="post-category-name">{category.name?.toUpperCase() || ''}</span>
+                      <span class="post-category-count">{category.postCount}</span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
+
+          <!-- Recent News Section -->
+          <div class="post-sidebar-section">
+            <div class="post-section-header">
+              <div class="post-section-line"></div>
+              <h3 class="post-section-title">Recent News</h3>
+            </div>
+            <div class="post-recent-posts">
+              {recentPosts.map((post) => (
+                <article class="post-recent-item">
+                  <a href={`/${post.id}`} class="post-recent-link">
+                    <div class="post-recent-image">
+                      {post.data.image?.url ? (
+                        <OptimizedImage 
+                          src={post.data.image.url} 
+                          alt={post.data.image.alt || post.data.title}
+                          width={80}
+                          height={80}
+                          class="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div class="post-recent-placeholder"></div>
+                      )}
+                    </div>
+                    <div class="post-recent-content">
+                      <h4 class="post-recent-title">{post.data.title}</h4>
+                      <div class="post-recent-date">{formatDate(post.data.pubDate)}</div>
+                    </div>
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+
+        </aside>
+      </div>
     </div>
   </div>
 

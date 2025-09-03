@@ -730,7 +730,7 @@ export async function generateBlogListingSchema(posts: BlogPost[], currentPage: 
           "@type": "BlogPosting",
           "headline": post.data.title,
           "description": post.data.description,
-          "url": `${settings.siteUrl}/blog/${post.id}`,
+          "url": `${settings.siteUrl}/${post.id}`,
           "datePublished": post.data.pubDate.toISOString(),
           "author": {
             "@type": "Person",

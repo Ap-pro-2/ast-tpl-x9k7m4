@@ -96,7 +96,7 @@ const tagNames = postTags.map((tag: any) => {
     
     <!-- Title -->
     <h3 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text-primary); font-family: var(--font-heading)">
-      <a href={url || `/blog/${postData.id}`} 
+      <a href={url || `/${postData.id}`} 
          style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
          onmouseover="this.style.color='var(--text-accent)'"
          onmouseout="this.style.color='var(--text-primary)'">
@@ -132,7 +132,7 @@ const tagNames = postTags.map((tag: any) => {
     <!-- Read More Button -->
     <div class="mt-auto">
       <a 
-        href={url || `/blog/${postData.id}`}
+        href={url || `/${postData.id}`}
         class="inline-flex items-center gap-2 font-medium text-sm"
         style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
         onmouseover="this.style.color='var(--color-primary-dark)'"

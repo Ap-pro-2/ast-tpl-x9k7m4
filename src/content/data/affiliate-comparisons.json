@@ -1,3 +1,34 @@
 [
-
+  {
+    "id": "best-coffee-beans-2024",
+    "title": "Best Coffee Beans 2024",
+    "description": "Compare the top coffee beans for different brewing methods and flavor preferences",
+    "products": ["blue-bottle-coffee-beans"],
+    "category": "coffee-beans",
+    "active": true
+  },
+  {
+    "id": "pour-over-brewing-setup",
+    "title": "Complete Pour-Over Setup",
+    "description": "Everything you need for the perfect pour-over coffee setup",
+    "products": ["chemex-coffee-maker", "hario-v60-dripper", "acaia-pearl-scale", "fellow-stagg-kettle"],
+    "category": "brewing-equipment", 
+    "active": true
+  },
+  {
+    "id": "beginner-coffee-setup",
+    "title": "Beginner Coffee Setup",
+    "description": "Essential coffee equipment for beginners getting started with specialty coffee",
+    "products": ["hario-v60-dripper", "baratza-encore-grinder"],
+    "category": "brewing-equipment",
+    "active": true
+  },
+  {
+    "id": "sustainable-coffee-essentials",
+    "title": "Sustainable Coffee Essentials",
+    "description": "Eco-friendly coffee products for sustainable brewing",
+    "products": ["blue-bottle-coffee-beans", "chemex-coffee-maker"],
+    "category": "coffee-beans",
+    "active": true
+  }
 ]

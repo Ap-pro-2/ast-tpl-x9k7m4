@@ -1,5 +1,70 @@
 [
   {
+    "id": "brewing-guides",
+    "name": "Brewing Guides",
+    "description": "Step-by-step coffee brewing tutorials and techniques",
+    "color": "#8b5cf6",
+    "slug": "brewing-guides",
+    "seo": {
+      "title": "Coffee Brewing Guides & Tutorials",
+      "description": "Master coffee brewing with our detailed guides covering pour-over, espresso, French press, and more brewing methods.",
+      "keywords": ["coffee brewing", "brewing guides", "pour over", "espresso", "french press", "coffee tutorials"],
+      "ogImageAlt": "Coffee brewing guides and tutorials"
+    }
+  },
+  {
+    "id": "equipment-reviews",
+    "name": "Equipment Reviews",
+    "description": "Honest reviews of coffee equipment and accessories",
+    "color": "#10b981",
+    "slug": "equipment-reviews",
+    "seo": {
+      "title": "Coffee Equipment Reviews & Recommendations",
+      "description": "Find the best coffee equipment with our honest reviews of grinders, brewers, accessories, and more.",
+      "keywords": ["coffee equipment", "coffee grinder", "espresso machine", "coffee maker", "equipment reviews"],
+      "ogImageAlt": "Coffee equipment reviews and recommendations"
+    }
+  },
+  {
+    "id": "coffee-culture",
+    "name": "Coffee Culture",
+    "description": "Stories about coffee culture and traditions worldwide",
+    "color": "#f59e0b",
+    "slug": "coffee-culture",
+    "seo": {
+      "title": "Coffee Culture & Traditions Around the World",
+      "description": "Explore global coffee culture, traditions, and the fascinating stories behind your favorite cup of coffee.",
+      "keywords": ["coffee culture", "coffee traditions", "coffee history", "coffee origins", "specialty coffee"],
+      "ogImageAlt": "Coffee culture and traditions worldwide"
+    }
+  },
+  {
+    "id": "bean-spotlight",
+    "name": "Bean Spotlight",
+    "description": "Featured coffee beans and origin stories",
+    "color": "#ef4444",
+    "slug": "bean-spotlight",
+    "seo": {
+      "title": "Coffee Bean Reviews & Origin Stories",
+      "description": "Discover amazing coffee beans from around the world with detailed reviews and origin stories.",
+      "keywords": ["coffee beans", "single origin", "coffee roasting", "bean reviews", "coffee origins"],
+      "ogImageAlt": "Coffee bean reviews and origin stories"
+    }
+  },
+  {
+    "id": "business",
+    "name": "Business",
+    "description": "Coffee business insights and industry news",
+    "color": "#3b82f6",
+    "slug": "business",
+    "seo": {
+      "title": "Coffee Business & Industry Insights",
+      "description": "Stay updated with coffee business trends, industry news, and insights for coffee entrepreneurs.",
+      "keywords": ["coffee business", "coffee industry", "coffee shop", "coffee trends", "specialty coffee market"],
+      "ogImageAlt": "Coffee business and industry insights"
+    }
+  },
+  {
     "id": "uncategorized",
     "name": "Uncategorized",
     "description": "General posts and articles",

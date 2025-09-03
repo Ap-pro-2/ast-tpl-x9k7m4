@@ -1,0 +1,293 @@
+---
+/**
+ * Section2 - Category-based content areas
+ * Layout: Left column (featured + grid) + Right sidebar (top stories)
+ */
+
+import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts } from '../../core/blogLogic';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../../core/blogLogic';
+import OptimizedImage from '../ui/OptimizedImage.astro';
+import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
+
+// Get dynamic data using core logic
+const posts = await getAllPosts();
+const settings = await getSiteSettings();
+const categories = await getCategoriesWithPostCounts();
+const allCategories = await getCollection('categories');
+const allAuthors = await getCollection('authors');
+
+// Helper function to get category name and color
+function getCategoryData(categoryRef: string | { id: string } | undefined) {
+  if (!categoryRef) return { name: null, color: 'var(--color-primary)' };
+  
+  const categoryId = typeof categoryRef === 'string' ? categoryRef : categoryRef.id;
+  const category = allCategories.find(cat => cat.data.id === categoryId || cat.id === categoryId);
+  return {
+    name: category?.data.name || null,
+    color: category?.data.color || 'var(--color-primary)'
+  };
+}
+
+// Helper function to get author name from post data
+function getAuthorName(authorRef: string | { id: string } | undefined): string {
+  if (!authorRef) return 'Author';
+  
+  const authorId = typeof authorRef === 'string' ? authorRef : authorRef.id;
+  const author = allAuthors.find(auth => auth.data.id === authorId || auth.id === authorId);
+  return author?.data.name || 'Author';
+}
+
+// Get posts by category for different sections
+const politicsCategory = 'business'; // Using business as "Politics" equivalent
+const featuredPoliticsPost = posts.find(post => 
+  (typeof post.data.category === 'string' ? post.data.category : post.data.category?.id) === politicsCategory
+) || posts[0];
+
+// Get posts for "Today's Hot Spot" - mix of different categories
+const hotSpotPosts = posts
+  .filter(post => post.id !== featuredPoliticsPost.id)
+  .slice(0, 3);
+
+// Get top stories for sidebar - latest posts
+const topStories = posts
+  .filter(post => post.id !== featuredPoliticsPost.id && 
+                  !hotSpotPosts.some(hp => hp.id === post.id))
+  .slice(0, 5);
+
+// Small preview post for top right
+const previewPost = posts.find(post => 
+  post.id !== featuredPoliticsPost.id && 
+  !hotSpotPosts.some(hp => hp.id === post.id) &&
+  !topStories.some(ts => ts.id === post.id)
+) || posts[posts.length - 1];
+---
+
+<!-- Magazine Sections -->
+<section class="magazine-sections py-12 lg:py-16" style="background: var(--bg-primary)">
+  <div class="container max-w-7xl">
+    
+    <!-- Main Grid Layout -->
+    <div class="magazine-sections-grid">
+      
+      <!-- Left Column - Main Content -->
+      <div class="magazine-main-column">
+        
+        <!-- Politics Section -->
+        <div class="magazine-category-section mb-12">
+          <div class="magazine-section-header">
+            <div class="magazine-section-line"></div>
+            <h2 class="magazine-section-title">
+              {getCategoryData(featuredPoliticsPost.data.category).name || 'Featured'}
+            </h2>
+          </div>
+          
+          <!-- Featured Politics Card -->
+          <article class="magazine-featured-politics">
+            <a href={`/${featuredPoliticsPost.id}`} class="magazine-politics-link">
+              
+              {featuredPoliticsPost.data.image?.url && (
+                <div class="magazine-politics-image">
+                  <OptimizedImage 
+                    src={featuredPoliticsPost.data.image.url} 
+                    alt={featuredPoliticsPost.data.image.alt || featuredPoliticsPost.data.title}
+                    width={400}
+                    height={250}
+                    class="w-full h-full object-cover"
+                  />
+                  
+                  <!-- Category Badge -->
+                  <div class="magazine-politics-category-overlay">
+                    <span class="magazine-politics-category-tag" 
+                          style={`background: ${getCategoryData(featuredPoliticsPost.data.category).color}`}>
+                      {(getCategoryData(featuredPoliticsPost.data.category).name || 'Featured').toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              )}
+              
+              <!-- Politics Content -->
+              <div class="magazine-politics-content">
+                <h3 class="magazine-politics-title">
+                  {featuredPoliticsPost.data.title}
+                </h3>
+                
+                {featuredPoliticsPost.data.description && (
+                  <p class="magazine-politics-description">
+                    {featuredPoliticsPost.data.description}
+                  </p>
+                )}
+                
+                <div class="magazine-politics-meta">
+                  <span class="magazine-politics-author">By {getAuthorName(featuredPoliticsPost.data.author)}</span>
+                  <span class="magazine-meta-separator">•</span>
+                  <time datetime={featuredPoliticsPost.data.pubDate.toISOString()}>
+                    {formatDate(featuredPoliticsPost.data.pubDate)}
+                  </time>
+                </div>
+                
+                <span class="magazine-read-more">READ MORE</span>
+              </div>
+            </a>
+          </article>
+        </div>
+        
+        <!-- Today's Hot Spot Section -->
+        <div class="magazine-category-section">
+          <div class="magazine-section-header">
+            <div class="magazine-section-line"></div>
+            <h2 class="magazine-section-title">Today's Hot Spot</h2>
+          </div>
+          
+          <!-- Hot Spot Cards Grid -->
+          <div class="magazine-hotspot-grid">
+            {hotSpotPosts.map((post) => (
+              <article class="magazine-hotspot-card">
+                <a href={`/${post.id}`} class="magazine-hotspot-link">
+                  
+                  {post.data.image?.url && (
+                    <div class="magazine-hotspot-image">
+                      <OptimizedImage 
+                        src={post.data.image.url} 
+                        alt={post.data.image.alt || post.data.title}
+                        width={300}
+                        height={200}
+                        class="w-full h-full object-cover"
+                      />
+                      
+                      <!-- Category Badge -->
+                      <div class="magazine-hotspot-category-overlay">
+                        <span class="magazine-hotspot-category-tag" 
+                              style={`background: ${getCategoryData(post.data.category).color}`}>
+                          {(getCategoryData(post.data.category).name || 'General').toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <!-- Hotspot Content -->
+                  <div class="magazine-hotspot-content">
+                    <h3 class="magazine-hotspot-title">
+                      {post.data.title}
+                    </h3>
+                    
+                    <div class="magazine-hotspot-meta">
+                      <span class="magazine-hotspot-author">By {getAuthorName(post.data.author)}</span>
+                      <span class="magazine-meta-separator">•</span>
+                      <time datetime={post.data.pubDate.toISOString()}>
+                        {formatDate(post.data.pubDate)}
+                      </time>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+          
+          <!-- Horizontal Ad Unit inside Today's Hot Spot section -->
+          <div class="magazine-hotspot-ad">
+            <SimpleBannerAd 
+              placement="ad-section-2-horizontal"
+              className="magazine-horizontal-ad"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Sidebar -->
+      <div class="magazine-sections-sidebar">
+        
+        <!-- Sidebar Ad Unit -->
+        <div class="magazine-ad-unit-sidebar">
+          <SimpleBannerAd 
+            placement="ad-section-2-sidebar"
+            className="magazine-sidebar-ad"
+          />
+        </div>
+        
+        <!-- Top Stories Section -->
+        <div class="magazine-top-stories">
+          <div class="magazine-section-header">
+            <div class="magazine-section-line"></div>
+            <h2 class="magazine-section-title">Top Stories</h2>
+          </div>
+          
+          <!-- Numbered Stories List -->
+          <div class="magazine-stories-list">
+            {topStories.map((post, index) => (
+              <article class="magazine-story-item">
+                <a href={`/${post.id}`} class="magazine-story-link">
+                  
+                  <!-- Number Badge -->
+                  <div class="magazine-story-number">
+                    {index + 1}
+                  </div>
+                  
+                  <!-- Story Content -->
+                  <div class="magazine-story-content">
+                    {post.data.image?.url && (
+                      <div class="magazine-story-thumbnail">
+                        <OptimizedImage 
+                          src={post.data.image.url} 
+                          alt={post.data.image.alt || post.data.title}
+                          width={60}
+                          height={60}
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    
+                    <div class="magazine-story-text">
+                      <h4 class="magazine-story-title">
+                        {post.data.title}
+                      </h4>
+                      
+                      <div class="magazine-story-meta">
+                        <time datetime={post.data.pubDate.toISOString()}>
+                          {formatDate(post.data.pubDate)}
+                        </time>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Mobile Ad Banner Fixes for Section 2 */
+@media (max-width: 768px) {
+  /* Hide sidebar ad on mobile to avoid stacking */
+  .magazine-ad-unit-sidebar {
+    display: none;
+  }
+  
+  /* Improve horizontal ad spacing and positioning */
+  .magazine-hotspot-ad {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  
+  /* Ensure horizontal ad scales properly */
+  .magazine-horizontal-ad {
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further optimize horizontal ad for small screens */
+  .magazine-hotspot-ad {
+    margin: 1rem -1rem; /* Extend to screen edges */
+  }
+  
+  .magazine-horizontal-ad {
+    border-radius: 0; /* Remove border radius for full width */
+  }
+}
+</style>

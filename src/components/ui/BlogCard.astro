@@ -85,7 +85,7 @@ const tagNames = tags.map((tag: any) => {
     <!-- Title -->
     <h3 class="text-xl font-bold mb-3 leading-tight line-clamp-2" 
         style="color: var(--text-primary); font-family: var(--font-heading);">
-      <a href={`/blog/${post.id}`} 
+      <a href={`/${post.id}`} 
          class="hover:opacity-80 transition-opacity duration-300"
          style="color: inherit;"
          aria-label={`Read full article: ${post.data.title}`}>
@@ -148,7 +148,7 @@ const tagNames = tags.map((tag: any) => {
       </div>
       
       <!-- Theme Button -->
-      <a href={`/blog/${post.id}`} 
+      <a href={`/${post.id}`} 
          class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
          aria-label={`Read the full article: ${post.data.title}`}>
         <span>Read Article</span>

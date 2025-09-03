@@ -4,5 +4,23 @@
     "name": "Coffee Beans",
     "description": "Premium coffee beans from around the world",
     "color": "#8B4513"
+  },
+  {
+    "id": "brewing-equipment",
+    "name": "Brewing Equipment",
+    "description": "Coffee brewing equipment and accessories",
+    "color": "#2563eb"
+  },
+  {
+    "id": "accessories",
+    "name": "Accessories",
+    "description": "Coffee accessories and tools",
+    "color": "#059669"
+  },
+  {
+    "id": "books",
+    "name": "Books",
+    "description": "Coffee books and educational resources",
+    "color": "#7c3aed"
   }
 ]

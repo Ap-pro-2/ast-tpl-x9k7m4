@@ -278,6 +278,36 @@ const affiliateComparisons = defineCollection({
   }),
 });
 
+// Ads collection - comprehensive schema for advertisement management
+const ads = defineCollection({
+  loader: file("src/content/data/ads.json"),
+  schema: z.object({
+    id: z.string(),
+    global: z.object({
+      enabled: z.boolean(),
+      testMode: z.boolean().default(false),
+    }),
+    banners: z.array(z.object({
+      id: z.string(),
+      name: z.string(),
+      enabled: z.boolean().default(true),
+      image: z.string(),
+      link: z.string().url().optional(),
+      alt: z.string(),
+      placement: z.enum([
+        'between-hero-and-content',
+        'ad-section-2-sidebar', 
+        'ad-section-2-horizontal',
+        'article-content',
+        'article-sidebar',
+        'homepage-between-posts',
+        'categories-sidebar',
+        'tags-sidebar'
+      ]),
+    }))
+  })
+});
+
 export const collections = {
   blog,
   authors,
@@ -287,5 +317,6 @@ export const collections = {
   pages,
   affiliateCategories,
   affiliateProducts,
-  affiliateComparisons
+  affiliateComparisons,
+  ads
 };

@@ -1,5 +1,109 @@
 [
   {
+    "id": "pour-over",
+    "name": "Pour Over",
+    "description": "Pour over brewing methods and techniques",
+    "color": "#8b5cf6",
+    "slug": "pour-over",
+    "seo": {
+      "title": "Pour Over Coffee - Brewing Guides & Tips",
+      "description": "Master pour over coffee brewing with our comprehensive guides covering V60, Chemex, and other methods.",
+      "keywords": ["pour over", "v60", "chemex", "brewing", "coffee techniques"],
+      "ogImageAlt": "Pour over coffee brewing guides"
+    }
+  },
+  {
+    "id": "espresso",
+    "name": "Espresso",
+    "description": "All things espresso - machines, techniques, and recipes",
+    "color": "#ef4444",
+    "slug": "espresso",
+    "seo": {
+      "title": "Espresso Coffee - Machines, Techniques & Recipes",
+      "description": "Everything about espresso coffee including machine reviews, brewing techniques, and delicious recipes.",
+      "keywords": ["espresso", "espresso machine", "coffee shots", "espresso techniques"],
+      "ogImageAlt": "Espresso coffee guides and reviews"
+    }
+  },
+  {
+    "id": "grinders",
+    "name": "Grinders",
+    "description": "Coffee grinder reviews and recommendations",
+    "color": "#10b981",
+    "slug": "grinders",
+    "seo": {
+      "title": "Coffee Grinder Reviews & Buying Guide",
+      "description": "Find the perfect coffee grinder with our detailed reviews and buying guides for burr and blade grinders.",
+      "keywords": ["coffee grinder", "burr grinder", "blade grinder", "grinder reviews"],
+      "ogImageAlt": "Coffee grinder reviews and guides"
+    }
+  },
+  {
+    "id": "single-origin",
+    "name": "Single Origin",
+    "description": "Single origin coffee beans and their stories",
+    "color": "#f59e0b",
+    "slug": "single-origin",
+    "seo": {
+      "title": "Single Origin Coffee - Bean Reviews & Stories",
+      "description": "Explore amazing single origin coffees from around the world with detailed tasting notes and origin stories.",
+      "keywords": ["single origin", "coffee beans", "specialty coffee", "origin stories"],
+      "ogImageAlt": "Single origin coffee bean reviews"
+    }
+  },
+  {
+    "id": "roasting",
+    "name": "Roasting",
+    "description": "Coffee roasting techniques and equipment",
+    "color": "#f97316",
+    "slug": "roasting",
+    "seo": {
+      "title": "Coffee Roasting - Home Roasting Guides & Tips",
+      "description": "Learn coffee roasting at home with our comprehensive guides covering techniques, equipment, and roast profiles.",
+      "keywords": ["coffee roasting", "home roasting", "roast profiles", "roasting equipment"],
+      "ogImageAlt": "Coffee roasting guides and techniques"
+    }
+  },
+  {
+    "id": "barista-skills",
+    "name": "Barista Skills",
+    "description": "Professional barista techniques and skills",
+    "color": "#6366f1",
+    "slug": "barista-skills",
+    "seo": {
+      "title": "Barista Skills - Professional Coffee Making Techniques",
+      "description": "Develop professional barista skills with our guides covering latte art, espresso extraction, and coffee service.",
+      "keywords": ["barista skills", "latte art", "coffee service", "professional barista"],
+      "ogImageAlt": "Professional barista skills and techniques"
+    }
+  },
+  {
+    "id": "coffee-shop",
+    "name": "Coffee Shop",
+    "description": "Coffee shop business and culture",
+    "color": "#3b82f6",
+    "slug": "coffee-shop",
+    "seo": {
+      "title": "Coffee Shop Business & Culture",
+      "description": "Insights into coffee shop business, culture, and the specialty coffee industry.",
+      "keywords": ["coffee shop", "coffee business", "cafe culture", "specialty coffee"],
+      "ogImageAlt": "Coffee shop business and culture"
+    }
+  },
+  {
+    "id": "sustainability",
+    "name": "Sustainability",
+    "description": "Sustainable coffee practices and environmental impact",
+    "color": "#059669",
+    "slug": "sustainability",
+    "seo": {
+      "title": "Sustainable Coffee - Environmental & Social Impact",
+      "description": "Learn about sustainable coffee practices, fair trade, and the environmental impact of coffee production.",
+      "keywords": ["sustainable coffee", "fair trade", "coffee environment", "ethical coffee"],
+      "ogImageAlt": "Sustainable coffee practices"
+    }
+  },
+  {
     "id": "general",
     "name": "General",
     "description": "General topics and articles",
@@ -11,5 +115,194 @@
       "keywords": ["general", "topics", "articles", "blog posts", "content", "insights"],
       "ogImageAlt": "General topics and articles collection"
     }
+  },
+  {
+    "id": "health",
+    "name": "Health",
+    "description": "Coffee health benefits and wellness topics",
+    "color": "#dc2626",
+    "slug": "health",
+    "seo": {
+      "title": "Coffee & Health - Benefits & Wellness",
+      "description": "Discover the health benefits of coffee and wellness topics related to coffee consumption.",
+      "keywords": ["health", "coffee health", "wellness", "health benefits"],
+      "ogImageAlt": "Coffee health and wellness"
+    }
+  },
+  {
+    "id": "science",
+    "name": "Science",
+    "description": "Scientific research and studies about coffee",
+    "color": "#7c3aed",
+    "slug": "science",
+    "seo": {
+      "title": "Coffee Science - Research & Studies",
+      "description": "Explore scientific research and studies about coffee, brewing, and coffee chemistry.",
+      "keywords": ["science", "coffee research", "studies", "chemistry"],
+      "ogImageAlt": "Coffee science and research"
+    }
+  },
+  {
+    "id": "wellness",
+    "name": "Wellness",
+    "description": "Coffee wellness and lifestyle topics",
+    "color": "#059669",
+    "slug": "wellness",
+    "seo": {
+      "title": "Coffee Wellness & Lifestyle",
+      "description": "Coffee wellness topics and lifestyle integration for better health and enjoyment.",
+      "keywords": ["wellness", "lifestyle", "coffee wellness", "healthy coffee"],
+      "ogImageAlt": "Coffee wellness and lifestyle"
+    }
+  },
+  {
+    "id": "coffee-beans",
+    "name": "Coffee Beans",
+    "description": "Coffee bean varieties and characteristics",
+    "color": "#92400e",
+    "slug": "coffee-beans",
+    "seo": {
+      "title": "Coffee Beans - Varieties & Characteristics",
+      "description": "Learn about different coffee bean varieties, their characteristics, and unique qualities.",
+      "keywords": ["coffee beans", "bean varieties", "arabica", "robusta"],
+      "ogImageAlt": "Coffee bean varieties"
+    }
+  },
+  {
+    "id": "flavor-profiles",
+    "name": "Flavor Profiles",
+    "description": "Coffee flavor profiles and tasting notes",
+    "color": "#d97706",
+    "slug": "flavor-profiles",
+    "seo": {
+      "title": "Coffee Flavor Profiles & Tasting Notes",
+      "description": "Explore coffee flavor profiles and learn how to identify different tasting notes in coffee.",
+      "keywords": ["flavor profiles", "tasting notes", "coffee flavors", "taste"],
+      "ogImageAlt": "Coffee flavor profiles"
+    }
+  },
+  {
+    "id": "tasting",
+    "name": "Tasting",
+    "description": "Coffee tasting techniques and guides",
+    "color": "#ea580c",
+    "slug": "tasting",
+    "seo": {
+      "title": "Coffee Tasting - Techniques & Guides",
+      "description": "Master coffee tasting with our comprehensive guides and techniques for evaluating coffee.",
+      "keywords": ["coffee tasting", "tasting techniques", "coffee evaluation"],
+      "ogImageAlt": "Coffee tasting techniques"
+    }
+  },
+  {
+    "id": "cupping",
+    "name": "Cupping",
+    "description": "Coffee cupping protocols and techniques",
+    "color": "#dc2626",
+    "slug": "cupping",
+    "seo": {
+      "title": "Coffee Cupping - Professional Evaluation",
+      "description": "Learn professional coffee cupping techniques and protocols used by coffee professionals.",
+      "keywords": ["coffee cupping", "cupping protocol", "coffee evaluation", "professional tasting"],
+      "ogImageAlt": "Coffee cupping techniques"
+    }
+  },
+  {
+    "id": "storage",
+    "name": "Storage",
+    "description": "Coffee storage methods and tips",
+    "color": "#6b7280",
+    "slug": "storage"
+  },
+  {
+    "id": "freshness",
+    "name": "Freshness",
+    "description": "Coffee freshness and preservation",
+    "color": "#059669",
+    "slug": "freshness"
+  },
+  {
+    "id": "extraction",
+    "name": "Extraction",
+    "description": "Coffee extraction techniques and theory",
+    "color": "#7c3aed",
+    "slug": "extraction"
+  },
+  {
+    "id": "cold-brew",
+    "name": "Cold Brew",
+    "description": "Cold brew coffee methods and recipes",
+    "color": "#0ea5e9",
+    "slug": "cold-brew"
+  },
+  {
+    "id": "summer-coffee",
+    "name": "Summer Coffee",
+    "description": "Refreshing coffee drinks for warm weather",
+    "color": "#f59e0b",
+    "slug": "summer-coffee"
+  },
+  {
+    "id": "concentrate",
+    "name": "Concentrate",
+    "description": "Coffee concentrate preparations",
+    "color": "#92400e",
+    "slug": "concentrate"
+  },
+  {
+    "id": "french-press",
+    "name": "French Press",
+    "description": "French press brewing methods",
+    "color": "#dc2626",
+    "slug": "french-press"
+  },
+  {
+    "id": "brewing",
+    "name": "Brewing",
+    "description": "General coffee brewing techniques",
+    "color": "#8b5cf6",
+    "slug": "brewing"
+  },
+  {
+    "id": "equipment",
+    "name": "Equipment",
+    "description": "Coffee equipment reviews and guides",
+    "color": "#10b981",
+    "slug": "equipment"
+  },
+  {
+    "id": "comparison",
+    "name": "Comparison",
+    "description": "Coffee product comparisons",
+    "color": "#3b82f6",
+    "slug": "comparison"
+  },
+  {
+    "id": "business-tips",
+    "name": "Business Tips",
+    "description": "Coffee business advice and tips",
+    "color": "#6366f1",
+    "slug": "business-tips"
+  },
+  {
+    "id": "entrepreneurship",
+    "name": "Entrepreneurship",
+    "description": "Coffee industry entrepreneurship",
+    "color": "#8b5cf6",
+    "slug": "entrepreneurship"
+  },
+  {
+    "id": "ethical-coffee",
+    "name": "Ethical Coffee",
+    "description": "Ethical coffee sourcing and practices",
+    "color": "#059669",
+    "slug": "ethical-coffee"
+  },
+  {
+    "id": "fair-trade",
+    "name": "Fair Trade",
+    "description": "Fair trade coffee and practices",
+    "color": "#16a34a",
+    "slug": "fair-trade"
   }
 ]

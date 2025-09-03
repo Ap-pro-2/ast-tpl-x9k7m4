@@ -8,11 +8,15 @@ import {
   generateBlogListingSchema,
   getSiteSettings,
   getPageData,
+  getCategoriesWithPostCounts,
+  formatDate,
+  generateExcerpt,
 } from "../../core/blogLogic";
+import { getCollection } from 'astro:content';
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import BlogList from "../../components/blog/BlogList.astro";
 import Breadcrumb from "../../components/navigation/Breadcrumb.astro";
 import Schema from "../../core/seo/Schema.astro";
+import BlogCardHorizontal from "../../components/ui/BlogCardHorizontal.astro";
 import { generateBreadcrumbs } from "../../core/navigation/breadcrumbUtils";
 
 // Use core logic
@@ -23,6 +27,34 @@ const pageData = await getPageData("blog-main");
 const seoData = await generateBlogListingSEO(1, page.lastPage);
 const blogListingSchema = await generateBlogListingSchema(page.data, 1);
 const breadcrumbs = generateBreadcrumbs("/blog");
+
+// Get categories with post counts for sidebar
+const categoriesWithCounts = await getCategoriesWithPostCounts();
+const hotCategories = categoriesWithCounts.slice(0, 6); // Top 6 categories
+
+// Get collections for helper functions
+const allCategories = await getCollection('categories');
+const allAuthors = await getCollection('authors');
+
+// Helper functions
+function getCategoryData(categoryRef: string | { id: string } | undefined) {
+  if (!categoryRef) return { name: null, color: 'var(--color-primary)' };
+  
+  const categoryId = typeof categoryRef === 'string' ? categoryRef : categoryRef.id;
+  const category = allCategories.find(cat => cat.data.id === categoryId || cat.id === categoryId);
+  return {
+    name: category?.data.name || null,
+    color: category?.data.color || 'var(--color-primary)'
+  };
+}
+
+function getAuthorName(authorRef: string | { id: string } | undefined): string {
+  if (!authorRef) return 'Author';
+  
+  const authorId = typeof authorRef === 'string' ? authorRef : authorRef.id;
+  const author = allAuthors.find(auth => auth.data.id === authorId || auth.id === authorId);
+  return author?.data.name || 'Author';
+}
 
 // Enhanced SEO data - merge page data with generated SEO
 const enhancedSeoData = {
@@ -55,72 +87,112 @@ const enhancedSeoData = {
   <meta property="og:url" content={seoData.canonicalUrl} slot="head" />
   <Schema item={blogListingSchema} slot="head" />
 
-  <section
-    class="py-6 lg:py-8"
-    style="background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary))"
-  >
+  <!-- Hero Section -->
+  <section class="theme-hero-section py-8 lg:py-12">
     <div class="container max-w-7xl">
       <Breadcrumb items={breadcrumbs} />
-
-      <div class="text-center">
-        <!-- Professional Badge -->
-        <div
-          class="inline-flex items-center gap-2 px-4 py-2 mb-6"
-          style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full); border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent)"
-        >
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
-              clip-rule="evenodd"></path>
-          </svg>
-          <span class="text-sm font-semibold">Articles</span>
-        </div>
-
-        <h1
-          class="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight"
-          style="color: var(--text-primary); font-family: var(--font-heading)"
-        >
+      
+      <div class="theme-page-header">
+        <h1 class="theme-page-title">
           All Articles
         </h1>
 
-        <p
-          class="text-lg lg:text-xl max-w-3xl mx-auto mb-8 leading-relaxed"
-          style="color: var(--text-secondary); font-family: var(--font-body)"
-        >
-          Discover our curated collection of articles, guides, and insights.
-          From expert tips to in-depth tutorials, explore content that matters
-          to you.
+        <p class="theme-page-description">
+          {
+            pageData?.description ||
+              "Discover our curated collection of coffee articles, guides, and insights. From expert brewing tips to in-depth equipment reviews."
+          }
         </p>
-
-        {
-          page.lastPage > 1 && (
-            <div
-              class="inline-flex items-center gap-2 px-4 py-2"
-              style="background: var(--bg-tertiary); color: var(--text-muted); border-radius: var(--radius-full); border: 1px solid var(--border-light)"
-            >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span class="text-sm font-medium">
-                Page {page.currentPage} of {page.lastPage}
-              </span>
-            </div>
-          )
-        }
       </div>
     </div>
   </section>
 
-  <BlogList posts={page.data} pagination={page} />
+  <!-- Main Blog Content -->
+  <section class="py-12 lg:py-16" style="background: var(--bg-primary)">
+    <div class="container max-w-7xl">
+      
+      <!-- Blog Layout - Left: Posts, Right: Sidebar -->
+      <div class="blog-page-layout">
+        
+        <!-- Left Column - Main Posts -->
+        <div class="blog-main-column">
+          {page.data.map((post, index) => (
+            <BlogCardHorizontal post={post} />
+          ))}
+          
+          <!-- Pagination -->
+          {page.lastPage > 1 && (
+            <div class="blog-pagination">
+              <nav class="blog-pagination-nav">
+                
+                <!-- Previous Page -->
+                {page.currentPage > 1 && (
+                  <a 
+                    href={page.currentPage === 2 ? '/blog' : `/blog/${page.currentPage - 1}`}
+                    class="blog-page-btn blog-page-nav"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Previous</span>
+                  </a>
+                )}
+                
+                <!-- Page Numbers -->
+                {Array.from({ length: page.lastPage }, (_, i) => i + 1).map((pageNum) => (
+                  <a 
+                    href={pageNum === 1 ? '/blog' : `/blog/${pageNum}`}
+                    class={`blog-page-btn ${pageNum === page.currentPage ? 'active' : ''}`}
+                  >
+                    {pageNum}
+                  </a>
+                ))}
+                
+                <!-- Next Page -->
+                {page.currentPage < page.lastPage && (
+                  <a 
+                    href={`/blog/${page.currentPage + 1}`}
+                    class="blog-page-btn blog-page-nav"
+                  >
+                    <span>Next</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </a>
+                )}
+              </nav>
+            </div>
+          )}
+        </div>
+        
+        <!-- Right Sidebar -->
+        <aside class="blog-sidebar">
+          
+          <!-- Hot Categories -->
+          <div class="blog-sidebar-section">
+            <h3 class="blog-sidebar-title">Hot Categories</h3>
+            <div class="hot-categories-grid">
+              {hotCategories.map((category) => (
+                <article class="hot-category-card" 
+                         style={`--category-color: ${category.data.color}`}>
+                  <a href={`/categories/${category.data.slug}`} class="hot-category-link">
+                    <h4 class="hot-category-name">
+                      {category.data.name}
+                    </h4>
+                    <p class="hot-category-desc">
+                      {category.data.description}
+                    </p>
+                    <div class="hot-category-count">
+                      {category.postCount} {category.postCount === 1 ? 'article' : 'articles'}
+                    </div>
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+          
+        </aside>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

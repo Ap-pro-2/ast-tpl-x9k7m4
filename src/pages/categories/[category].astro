@@ -45,39 +45,22 @@ const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
     <link rel="preconnect" href={settings.imageDomain} slot="head" />
   )}
 
-  <section class="py-6 lg:py-8" style="background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary))">
+  <!-- Hero Section -->
+  <section class="theme-hero-section py-8 lg:py-12">
     <div class="container max-w-7xl">
       <Breadcrumb items={breadcrumbs} />
       
-      <div class="text-center">
-        <!-- Professional Badge -->
-        <div class="inline-flex items-center gap-2 px-4 py-2 mb-6" 
-             style="background: color-mix(in srgb, var(--color-primary-accessible) 10%, transparent); color: var(--color-primary-accessible); border-radius: var(--radius-full); border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent)">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-          </svg>
-          <span class="text-sm font-semibold">Category</span>
-        </div>
-        
-        <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight" 
-            style="color: var(--text-primary); font-family: var(--font-heading)">
+      <div class="theme-page-header">
+        <h1 class="theme-page-title">
           {categoryName}
         </h1>
-        
-        {categoryDescription && (
-          <p class="text-lg lg:text-xl max-w-3xl mx-auto mb-8 leading-relaxed" 
-             style="color: var(--text-secondary); font-family: var(--font-body)">
-            {categoryDescription}
-          </p>
-        )}
-        
-        <div class="inline-flex items-center gap-2 px-4 py-2" 
-             style="background: var(--bg-tertiary); color: var(--text-muted); border-radius: var(--radius-full); border: 1px solid var(--border-light)">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-          </svg>
-          <span class="text-sm font-medium">{posts.length} {posts.length === 1 ? 'article' : 'articles'}</span>
-        </div>
+
+        <p class="theme-page-description">
+          {
+            categoryDescription ||
+              `Explore all articles in the ${categoryName} category. Discover insights, tips, and stories curated specifically for this topic.`
+          }
+        </p>
       </div>
     </div>
   </section>

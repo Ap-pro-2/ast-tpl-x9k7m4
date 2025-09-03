@@ -1,0 +1,32 @@
+{
+  "id": "hario-v60-dripper",
+  "title": "Hario V60 Ceramic Coffee Dripper",
+  "description": "The classic V60 dripper for precise pour-over coffee brewing with spiral ridges.",
+  "price": "$23.95",
+  "originalPrice": "$27.95",
+  "image": "https://images.pexels.com/photos/4226896/pexels-photo-4226896.jpeg?auto=compress&cs=tinysrgb&w=800",
+  "imageAlt": "Hario V60 ceramic dripper",
+  "affiliateUrl": "https://hario-usa.com/collections/v60-series/products/v60-ceramic-dripper",
+  "category": "brewing-equipment",
+  "rating": 4.7,
+  "reviewCount": 4563,
+  "brand": "Hario",
+  "features": [
+    "Ceramic construction",
+    "Spiral ridges for even extraction",
+    "60-degree cone angle",
+    "Size 02 for 1-4 cups"
+  ],
+  "pros": [
+    "Affordable entry point",
+    "Excellent heat retention",
+    "Easy to use"
+  ],
+  "cons": [
+    "Requires practice",
+    "Fragile ceramic",
+    "Needs specific filters"
+  ],
+  "badge": "Best Starter",
+  "buttonText": "Get V60"
+}

@@ -144,7 +144,7 @@ const activeSocialLinks = Object.entries(settings.social || {})
               recentPosts.map((post) => (
                 <li>
                   <a
-                    href={`/blog/${post.id}`}
+                    href={`/${post.id}`}
                     class="flex items-start gap-3 group transition-all"
                     style="transition: all var(--animation-duration) var(--animation-easing)"
                     aria-label={`Read ${post.data.title}`}

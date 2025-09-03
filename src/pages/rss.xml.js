@@ -47,7 +47,7 @@ export async function GET(context) {
 
       return {
         title: post.data.title,
-        link: `/blog/${post.id}`,
+        link: `/${post.id}`,
         description: post.data.description || '',
         pubDate: post.data.pubDate,
         author: author ? `${userSettings.email || 'hello@example.com'} (${author.name})` : userSettings.email || 'hello@example.com',

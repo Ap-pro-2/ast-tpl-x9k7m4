@@ -17,6 +17,8 @@ class Section3Slider {
   private startX: number = 0;
   private isDragging: boolean = false;
   private isInitialized: boolean = false;
+  private cardWidth: number = 0;
+  private gap: number = 24;
   
   constructor() {
     this.init();
@@ -66,14 +68,22 @@ class Section3Slider {
                         window.innerWidth >= 640 ? 2 : 1;
     this.totalCards = this.track ? this.track.children.length : 0;
     this.maxIndex = Math.max(0, this.totalCards - this.cardsPerView);
+    
+    // Cache card width to avoid forced reflows
+    if (this.track && this.track.children.length > 0) {
+      // Use requestAnimationFrame to ensure DOM is painted before reading
+      requestAnimationFrame(() => {
+        if (this.track && this.track.children.length > 0) {
+          this.cardWidth = this.track.children[0].getBoundingClientRect().width;
+        }
+      });
+    }
   }
   
   updateSlider() {
-    if (!this.track) return;
+    if (!this.track || this.cardWidth === 0) return;
     
-    const cardWidth = this.track.children[0]?.getBoundingClientRect().width || 0;
-    const gap = 24; // 1.5rem gap
-    const translateX = this.currentIndex * (cardWidth + gap);
+    const translateX = this.currentIndex * (this.cardWidth + this.gap);
     
     this.track.style.transform = `translateX(-${translateX}px)`;
     
@@ -168,14 +178,19 @@ class Section3Slider {
       });
     }
     
-    // Window resize
+    // Window resize with debouncing
     let resizeTimeout: number;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = window.setTimeout(() => {
+        // Recalculate layout and card width on resize
         this.calculateLayout();
         this.currentIndex = Math.min(this.currentIndex, this.maxIndex);
-        this.updateSlider();
+        
+        // Update slider after cardWidth is recalculated
+        requestAnimationFrame(() => {
+          this.updateSlider();
+        });
       }, 300);
     });
   }

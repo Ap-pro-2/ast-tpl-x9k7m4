@@ -3,7 +3,7 @@
     "id": "brewing-guides",
     "name": "Brewing Guides",
     "description": "Step-by-step coffee brewing tutorials and techniques",
-    "color": "#8b5cf6",
+    "color": "#1e293b",
     "slug": "brewing-guides",
     "seo": {
       "title": "Coffee Brewing Guides & Tutorials",
@@ -16,7 +16,7 @@
     "id": "equipment-reviews",
     "name": "Equipment Reviews",
     "description": "Honest reviews of coffee equipment and accessories",
-    "color": "#10b981",
+    "color": "#fbbf24",
     "slug": "equipment-reviews",
     "seo": {
       "title": "Coffee Equipment Reviews & Recommendations",
@@ -29,7 +29,7 @@
     "id": "coffee-culture",
     "name": "Coffee Culture",
     "description": "Stories about coffee culture and traditions worldwide",
-    "color": "#f59e0b",
+    "color": "#0f172a",
     "slug": "coffee-culture",
     "seo": {
       "title": "Coffee Culture & Traditions Around the World",
@@ -42,7 +42,7 @@
     "id": "bean-spotlight",
     "name": "Bean Spotlight",
     "description": "Featured coffee beans and origin stories",
-    "color": "#ef4444",
+    "color": "#f1f5f9",
     "slug": "bean-spotlight",
     "seo": {
       "title": "Coffee Bean Reviews & Origin Stories",
@@ -55,7 +55,7 @@
     "id": "business",
     "name": "Business",
     "description": "Coffee business insights and industry news",
-    "color": "#3b82f6",
+    "color": "#f8fafc",
     "slug": "business",
     "seo": {
       "title": "Coffee Business & Industry Insights",
@@ -68,7 +68,7 @@
     "id": "uncategorized",
     "name": "Uncategorized",
     "description": "General posts and articles",
-    "color": "#6b7280",
+    "color": "#374151",
     "slug": "uncategorized",
     "seo": {
       "title": "Uncategorized Articles & Posts",

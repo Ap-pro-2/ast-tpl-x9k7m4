@@ -3,7 +3,7 @@
     "id": "pour-over",
     "name": "Pour Over",
     "description": "Pour over brewing methods and techniques",
-    "color": "#8b5cf6",
+    "color": "#0f172a",
     "slug": "pour-over",
     "seo": {
       "title": "Pour Over Coffee - Brewing Guides & Tips",
@@ -16,7 +16,7 @@
     "id": "espresso",
     "name": "Espresso",
     "description": "All things espresso - machines, techniques, and recipes",
-    "color": "#ef4444",
+    "color": "#f1f5f9",
     "slug": "espresso",
     "seo": {
       "title": "Espresso Coffee - Machines, Techniques & Recipes",
@@ -29,7 +29,7 @@
     "id": "grinders",
     "name": "Grinders",
     "description": "Coffee grinder reviews and recommendations",
-    "color": "#10b981",
+    "color": "#1e293b",
     "slug": "grinders",
     "seo": {
       "title": "Coffee Grinder Reviews & Buying Guide",
@@ -42,7 +42,7 @@
     "id": "single-origin",
     "name": "Single Origin",
     "description": "Single origin coffee beans and their stories",
-    "color": "#f59e0b",
+    "color": "#e2e8f0",
     "slug": "single-origin",
     "seo": {
       "title": "Single Origin Coffee - Bean Reviews & Stories",

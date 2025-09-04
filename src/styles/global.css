@@ -1191,7 +1191,6 @@
   }
 
   .magazine-sidebar-category-tag {
-    color: white;
     padding: 0.375rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.625rem;
@@ -2225,7 +2224,6 @@
   }
 
   .magazine-politics-category-tag {
-    color: white;
     padding: 0.375rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.625rem;
@@ -2330,7 +2328,6 @@
   }
 
   .magazine-hotspot-category-tag {
-    color: white;
     padding: 0.25rem 0.5rem;
     border-radius: var(--radius-sm);
     font-size: 0.5rem;
@@ -3231,7 +3228,6 @@
   }
 
   .slider-category-badge {
-    color: white;
     padding: 0.375rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.625rem;

@@ -4,9 +4,10 @@
  * Matches the established theme system
  */
 
-import { getEntry } from 'astro:content';
+import { getEntry, getCollection } from 'astro:content';
 import { formatDate } from '../../core/blogLogic';
 import OptimizedImage from '../ui/OptimizedImage.astro';
+import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
 interface Props {
   title: string;
@@ -53,6 +54,10 @@ const tagNames = postTags.map((tag: any) => {
   if (tag?.data?.name) return tag.data.name;
   return null;
 }).filter(Boolean);
+
+// Get tag data for colors
+const allTags = await getCollection('tags');
+const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
 ---
 
 <article class="theme-card overflow-hidden group">
@@ -72,7 +77,7 @@ const tagNames = postTags.map((tag: any) => {
       <!-- Category Badge -->
       {category && (
         <div class="absolute top-3 left-3">
-          <span class="theme-badge">
+          <span class="px-2 py-1 text-xs font-medium rounded-md" style={getBadgeStyleString(category.data.color)}>
             {category.data.name}
           </span>
         </div>
@@ -114,15 +119,18 @@ const tagNames = postTags.map((tag: any) => {
     <!-- Tags -->
     {tagNames.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-4">
-        {tagNames.slice(0, 3).map((tag: string) => (
-          <span class="text-xs px-2 py-1" 
-                style="color: var(--text-accent); background: color-mix(in srgb, var(--color-primary) 10%, transparent); border-radius: var(--radius-md)">
-            #{tag}
-          </span>
-        ))}
+        {tagNames.slice(0, 3).map((tag: string) => {
+          const tagData = tagDataMap.get(tag);
+          const tagColor = tagData?.color || '#6b7280';
+          return (
+            <span class="text-xs px-2 py-1 font-medium rounded-md" style={getBadgeStyleString(tagColor)}>
+              #{tag}
+            </span>
+          );
+        })}
         {tagNames.length > 3 && (
-          <span class="text-xs px-2 py-1" 
-                style="color: var(--text-muted); background: var(--bg-tertiary); border-radius: var(--radius-md)">
+          <span class="text-xs px-2 py-1 font-medium rounded-md" 
+                style="color: var(--text-muted); background: var(--bg-tertiary)">
             +{tagNames.length - 3}
           </span>
         )}

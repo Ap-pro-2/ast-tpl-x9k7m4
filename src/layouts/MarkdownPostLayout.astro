@@ -12,6 +12,7 @@ import HorizontalAuthorCard from "../components/ui/HorizontalAuthorCard.astro";
 import TableOfContents from "../components/ui/TableOfContents.astro";
 import SimpleBannerAd from "../components/ads/SimpleBannerAd.astro";
 import ShareArticle from "../components/ui/ShareArticle.astro";
+import { getBadgeStyleString } from "../core/utils/colorUtils";
 
 const { frontmatter, schemaData, headings } = Astro.props;
 
@@ -455,10 +456,9 @@ if (
                 const categorySlug = categoryData?.data.slug || category.id;
                 const categoryName = categoryData?.data.name || category.id;
                 return (
-                  <a href={`/categories/${categorySlug}`} class="post-category-card" style={`background: ${categoryColor}`}>
+                  <a href={`/categories/${categorySlug}`} class="post-category-card" style={getBadgeStyleString(categoryColor)}>
                     <div class="post-category-content">
                       <span class="post-category-name">{categoryName.toUpperCase()}</span>
-                      <span class="post-category-count">{category.postCount}</span>
                     </div>
                   </a>
                 );
@@ -670,54 +670,7 @@ if (
     });
   </script>
 
-  <!-- Smooth Header Boundary Animation -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebar = document.querySelector<HTMLElement>('.share-sidebar');
-      if (!sidebar) return;
-      
-      let hideTimeout: ReturnType<typeof setTimeout> | null = null;
-      
-      function checkHeaderBoundary(): void {
-        const header = document.querySelector<HTMLElement>('header');
-        if (!header || !sidebar) return;
-        
-        const headerRect = header.getBoundingClientRect();
-        const sidebarRect = sidebar.getBoundingClientRect();
-        
-        // Clear any pending timeout
-        if (hideTimeout !== null) {
-          clearTimeout(hideTimeout);
-          hideTimeout = null;
-        }
-        
-        // If sidebar is overlapping with header, hide it smoothly
-        if (sidebarRect.top < headerRect.bottom + 15) {
-          sidebar.classList.add('hidden');
-        } else {
-          // Small delay before showing to prevent flickering
-          hideTimeout = setTimeout(() => {
-            if (sidebar) {
-              sidebar.classList.remove('hidden');
-            }
-          }, 100);
-        }
-      }
-      
-      // Use throttled scroll for better performance
-      let isScrolling = false;
-      window.addEventListener('scroll', function() {
-        if (!isScrolling) {
-          requestAnimationFrame(function() {
-            checkHeaderBoundary();
-            isScrolling = false;
-          });
-          isScrolling = true;
-        }
-      });
-      
-      checkHeaderBoundary();
-    });
-  </script>
+  <!-- Social Sidebar Boundary Control -->
+  <script src="../scripts/social-sidebar.ts"></script>
 
 </BaseLayout>

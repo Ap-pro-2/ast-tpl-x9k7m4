@@ -7,6 +7,7 @@
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
+import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
 interface Props {
   post: any;
@@ -53,7 +54,7 @@ try {
           <!-- Category Badge on Image -->
           {category && (
             <div class="category-badge-overlay">
-              <span class="category-badge">
+              <span class="px-2 py-1 text-xs font-semibold rounded-md uppercase tracking-wide" style={getBadgeStyleString(category.data.color)}>
                 {category.data.name}
               </span>
             </div>
@@ -66,8 +67,8 @@ try {
         
         <!-- Category (if no image) -->
         {!post.data.image?.url && category && (
-          <div class="category-standalone">
-            <span class="category-badge">
+          <div class="mb-3">
+            <span class="px-2 py-1 text-xs font-semibold rounded-md uppercase tracking-wide" style={getBadgeStyleString(category.data.color)}>
               {category.data.name}
             </span>
           </div>
@@ -167,22 +168,6 @@ try {
     left: 0.75rem;
   }
   
-  .category-standalone {
-    margin-bottom: 0.75rem;
-  }
-  
-  .category-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: color-mix(in srgb, var(--color-primary-accessible) 10%, var(--surface-card));
-    color: var(--color-primary-accessible);
-    border: 1px solid color-mix(in srgb, var(--color-primary-accessible) 20%, transparent);
-    border-radius: var(--radius-md);
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-  }
   
   /* Content Container */
   .content-container {

@@ -149,10 +149,23 @@ if (
   <!-- Post Layout with Sidebar -->
   <div class="py-6 sm:py-8 lg:py-12 xl:py-16" style="background: var(--bg-primary)">
     <div class="container max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Two Column Layout -->
-      <div class="post-layout-grid">
-        <!-- Main Content Column -->
-        <main class="post-main-content">
+      
+      <!-- Two Column Layout with Social Sidebar -->
+      <div class="post-layout-container">
+        
+        <!-- Social Share Sidebar - Left Edge (Desktop Only) -->
+        <div class="share-sidebar hidden xl:block">
+          <ShareArticle 
+            title={frontmatter.title}
+            url={`${settings.siteUrl}/${frontmatter.title}`}
+            description={frontmatter.description}
+            isVertical={true}
+          />
+        </div>
+        
+        <div class="post-layout-grid">
+          <!-- Main Content Column -->
+          <main class="post-main-content">
         <article
           class="theme-card overflow-hidden"
           style="transition: all var(--animation-duration) var(--animation-easing);"
@@ -346,15 +359,17 @@ if (
               )
             }
 
-            <!-- Share Article Component -->
-            <ShareArticle 
-              title={frontmatter.title}
-              url={`${settings.siteUrl}/${frontmatter.title}`}
-              description={frontmatter.description}
-              className="mt-8"
-            />
           </div>
         </article>
+
+        <!-- Share Article Component - Mobile Only -->
+        <div class="mt-8 xl:hidden">
+          <ShareArticle 
+            title={frontmatter.title}
+            url={`${settings.siteUrl}/${frontmatter.title}`}
+            description={frontmatter.description}
+          />
+        </div>
 
         <!-- Horizontal Author Card - Deferred for better performance -->
         {
@@ -418,6 +433,7 @@ if (
 
         <!-- Sidebar Column -->
         <aside class="post-sidebar">
+
           <!-- Sidebar Ad Unit - Top Position -->
           <div class="post-sidebar-section">
             <SimpleBannerAd 
@@ -436,10 +452,12 @@ if (
               {hotCategories.map((category) => {
                 const categoryData = allCategories.find(cat => cat.data.id === category.id || cat.id === category.id);
                 const categoryColor = categoryData?.data.color || 'var(--color-primary)';
+                const categorySlug = categoryData?.data.slug || category.id;
+                const categoryName = categoryData?.data.name || category.id;
                 return (
-                  <a href={`/categories/${category.slug || category.id}`} class="post-category-card" style={`background: ${categoryColor}`}>
+                  <a href={`/categories/${categorySlug}`} class="post-category-card" style={`background: ${categoryColor}`}>
                     <div class="post-category-content">
-                      <span class="post-category-name">{category.name?.toUpperCase() || ''}</span>
+                      <span class="post-category-name">{categoryName.toUpperCase()}</span>
                       <span class="post-category-count">{category.postCount}</span>
                     </div>
                   </a>
@@ -483,12 +501,69 @@ if (
           </div>
 
         </aside>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Video Content Optimization Styles -->
+  <!-- Social Share Sidebar Styles -->
   <style>
+    /* Post layout container with sidebar */
+    .post-layout-container {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    /* Social Share Sidebar - Left Edge */
+    .share-sidebar {
+      position: sticky;
+      top: 8rem;
+      z-index: 100;
+      height: fit-content;
+      flex-shrink: 0;
+      margin-left: -2rem;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .share-sidebar.hidden {
+      opacity: 0;
+      transform: translateX(-20px);
+      pointer-events: none;
+    }
+
+    /* Responsive positioning for different screen sizes */
+    @media (min-width: 1200px) {
+      .share-sidebar {
+        margin-left: -2rem;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .share-sidebar {
+        margin-left: -3rem;
+      }
+    }
+
+    @media (min-width: 1600px) {
+      .share-sidebar {
+        margin-left: -4rem;
+      }
+    }
+
+    /* Hide on tablets and mobile */
+    @media (max-width: 1199px) {
+      .share-sidebar {
+        display: none;
+      }
+      
+      .post-layout-container {
+        display: block;
+      }
+    }
+
     /* Video content optimizations */
     .video-content-optimized {
       /* Ensure videos are responsive within prose content */
@@ -594,4 +669,55 @@ if (
       });
     });
   </script>
+
+  <!-- Smooth Header Boundary Animation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.querySelector<HTMLElement>('.share-sidebar');
+      if (!sidebar) return;
+      
+      let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+      
+      function checkHeaderBoundary(): void {
+        const header = document.querySelector<HTMLElement>('header');
+        if (!header || !sidebar) return;
+        
+        const headerRect = header.getBoundingClientRect();
+        const sidebarRect = sidebar.getBoundingClientRect();
+        
+        // Clear any pending timeout
+        if (hideTimeout !== null) {
+          clearTimeout(hideTimeout);
+          hideTimeout = null;
+        }
+        
+        // If sidebar is overlapping with header, hide it smoothly
+        if (sidebarRect.top < headerRect.bottom + 15) {
+          sidebar.classList.add('hidden');
+        } else {
+          // Small delay before showing to prevent flickering
+          hideTimeout = setTimeout(() => {
+            if (sidebar) {
+              sidebar.classList.remove('hidden');
+            }
+          }, 100);
+        }
+      }
+      
+      // Use throttled scroll for better performance
+      let isScrolling = false;
+      window.addEventListener('scroll', function() {
+        if (!isScrolling) {
+          requestAnimationFrame(function() {
+            checkHeaderBoundary();
+            isScrolling = false;
+          });
+          isScrolling = true;
+        }
+      });
+      
+      checkHeaderBoundary();
+    });
+  </script>
+
 </BaseLayout>

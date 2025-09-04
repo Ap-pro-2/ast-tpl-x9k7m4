@@ -10,7 +10,7 @@
       "id": "between-hero-and-content-banner",
       "name": "Ad between hero and content",
       "enabled": true,
-      "image": "/as-affiliate-AltText.ai-1456x180.png",
+      "image": "https://images.astropress.dev/advertisement01.jpg",
       "link": "https://example.com/coffee-sale",
       "alt": "Coffee Equipment Sale - 30% Off All Items",
       "placement": "between-hero-and-content"
@@ -19,7 +19,7 @@
       "id": "ad-section-2-sidebar-banner",
       "name": "Ad Section 2 Sidebar Banner",
       "enabled": true,
-      "image": "/as-affiliate-Grigora-300x250.png",
+      "image": "https://images.astropress.dev/g_categories_img03.png",
       "link": "https://example.com/premium-beans",
       "alt": "Premium Coffee Beans - Fresh Roasted Daily",
       "placement": "ad-section-2-sidebar"
@@ -28,7 +28,7 @@
       "id": "ad-section-2-horizontal-banner",
       "name": "Ad Section 2 Horizontal Banner",
       "enabled": true,
-      "image": "/as-affiliate-AltText.ai-1456x180.png",
+      "image": "https://images.astropress.dev/advertisement01.jpg",
       "link": "https://example.com/coffee-sale",
       "alt": "Coffee Equipment Sale - 30% Off All Items",
       "placement": "ad-section-2-horizontal"
@@ -37,7 +37,7 @@
       "id": "article-banner",
       "name": "Article Content Banner",
       "enabled": true,
-      "image": "/advertisement01.jpg",
+      "image": "https://images.astropress.dev/advertisement01.jpg",
       "link": "https://example.com/brewing-course",
       "alt": "Coffee Brewing Course - Learn From Experts",
       "placement": "article-content"
@@ -46,7 +46,7 @@
       "id": "article-sidebar",
       "name": "Article Sidebar Banner",
       "enabled": true,
-      "image": "/as-affiliate-Grigora-300x250.png",
+      "image": "https://images.astropress.dev/g_categories_img03.png",
       "link": "https://example.com/coffee-grinder",
       "alt": "Premium Coffee Grinder - Perfect Consistency",
       "placement": "article-sidebar"
@@ -55,7 +55,7 @@
       "id": "homepage-between-posts",
       "name": "Homepage Between Blog Posts",
       "enabled": true,
-      "image": "/advertisement01.jpg",
+      "image": "https://images.astropress.dev/advertisement01.jpg",
       "link": "https://example.com/coffee-subscription",
       "alt": "Premium Coffee Subscription - Monthly Delivery",
       "placement": "homepage-between-posts"
@@ -64,7 +64,7 @@
       "id": "categories-sidebar",
       "name": "Categories Sidebar Banner",
       "enabled": true,
-      "image": "/as-affiliate-Grigora-300x250.png",
+      "image": "https://images.astropress.dev/g_categories_img03.png",
       "link": "https://example.com/coffee-equipment",
       "alt": "Premium Coffee Equipment - Professional Grade",
       "placement": "categories-sidebar"
@@ -73,7 +73,7 @@
       "id": "tags-sidebar",
       "name": "Tags Sidebar Banner",
       "enabled": true,
-      "image": "/as-affiliate-Grigora-300x250.png",
+      "image": "https://images.astropress.dev/g_categories_img03.png",
       "link": "https://example.com/coffee-courses",
       "alt": "Coffee Brewing Courses - Master Your Skills",
       "placement": "tags-sidebar"

@@ -100,14 +100,14 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
     )}
     
     <!-- Title -->
-    <h3 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text-primary); font-family: var(--font-heading)">
+    <h2 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text-primary); font-family: var(--font-heading)">
       <a href={url || `/${postData.id}`} 
          style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
          onmouseover="this.style.color='var(--text-accent)'"
          onmouseout="this.style.color='var(--text-primary)'">
         {postData.data.title}
       </a>
-    </h3>
+    </h2>
     
     <!-- Description -->
     {postData.data.description && (

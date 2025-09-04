@@ -170,15 +170,15 @@ const enhancedSeoData = {
           
           <!-- Hot Categories -->
           <div class="blog-sidebar-section">
-            <h3 class="blog-sidebar-title">Hot Categories</h3>
+            <h2 class="blog-sidebar-title">Hot Categories</h2>
             <div class="hot-categories-grid">
               {hotCategories.map((category) => (
                 <article class="hot-category-card" 
                          style={`--category-color: ${category.data.color}`}>
                   <a href={`/categories/${category.data.slug}`} class="hot-category-link">
-                    <h4 class="hot-category-name">
+                    <h3 class="hot-category-name">
                       {category.data.name}
-                    </h4>
+                    </h3>
                     <p class="hot-category-desc">
                       {category.data.description}
                     </p>

@@ -46,11 +46,54 @@ export function getAccessibleTextColor(backgroundColor: string): 'white' | 'blac
   
   const bgLuminance = getLuminance(rgb.r, rgb.g, rgb.b);
   
-  // Use a simple threshold approach based on luminance
-  // If background luminance is less than 0.5, use white text
-  // If background luminance is 0.5 or greater, use black text
-  // This ensures proper contrast for WCAG AA compliance
-  return bgLuminance < 0.5 ? 'white' : 'black';
+  // Calculate actual contrast ratios
+  const contrastWithWhite = getContrastRatio(1.0, bgLuminance); // white luminance is 1.0
+  const contrastWithBlack = getContrastRatio(0.0, bgLuminance); // black luminance is 0.0
+  
+  // WCAG AA requires 4.5:1 contrast ratio for normal text
+  // Choose the text color that provides better contrast
+  if (contrastWithWhite >= 4.5 && contrastWithWhite >= contrastWithBlack) {
+    return 'white';
+  } else if (contrastWithBlack >= 4.5) {
+    return 'black';
+  } else {
+    // If neither provides sufficient contrast, choose the better one
+    return contrastWithWhite > contrastWithBlack ? 'white' : 'black';
+  }
+}
+
+/**
+ * Darken a color by reducing its lightness
+ */
+function darkenColor(hex: string, amount: number = 0.2): string {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  
+  // Convert to HSL, reduce lightness, convert back
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
+  
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const diff = max - min;
+  const sum = max + min;
+  
+  const l = sum / 2;
+  
+  if (diff === 0) {
+    // Grayscale - just darken
+    const newL = Math.max(0, l - amount);
+    const newRgb = Math.round(newL * 255);
+    return `#${newRgb.toString(16).padStart(2, '0').repeat(3)}`;
+  }
+  
+  // For colored backgrounds, darken by reducing each component
+  const newR = Math.max(0, Math.round(rgb.r * (1 - amount)));
+  const newG = Math.max(0, Math.round(rgb.g * (1 - amount)));
+  const newB = Math.max(0, Math.round(rgb.b * (1 - amount)));
+  
+  return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
 }
 
 /**
@@ -60,9 +103,33 @@ export function getAccessibleBadgeStyles(backgroundColor: string): {
   backgroundColor: string; 
   color: string; 
 } {
-  const textColor = getAccessibleTextColor(backgroundColor);
+  const rgb = hexToRgb(backgroundColor);
+  if (!rgb) return { backgroundColor, color: 'white' };
+  
+  const bgLuminance = getLuminance(rgb.r, rgb.g, rgb.b);
+  const contrastWithWhite = getContrastRatio(1.0, bgLuminance);
+  const contrastWithBlack = getContrastRatio(0.0, bgLuminance);
+  
+  // If background color doesn't provide sufficient contrast with any text color,
+  // darken it until it does
+  let adjustedColor = backgroundColor;
+  let adjustedLuminance = bgLuminance;
+  let attempts = 0;
+  const maxAttempts = 3;
+  
+  while (attempts < maxAttempts && 
+         Math.max(getContrastRatio(1.0, adjustedLuminance), getContrastRatio(0.0, adjustedLuminance)) < 4.5) {
+    adjustedColor = darkenColor(adjustedColor, 0.15);
+    const adjustedRgb = hexToRgb(adjustedColor);
+    if (adjustedRgb) {
+      adjustedLuminance = getLuminance(adjustedRgb.r, adjustedRgb.g, adjustedRgb.b);
+    }
+    attempts++;
+  }
+  
+  const textColor = getAccessibleTextColor(adjustedColor);
   return {
-    backgroundColor,
+    backgroundColor: adjustedColor,
     color: textColor
   };
 }

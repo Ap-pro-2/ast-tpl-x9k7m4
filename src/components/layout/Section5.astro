@@ -1,0 +1,106 @@
+---
+/**
+ * Section5 - Newsletter Section
+ * Horizontal newsletter form with name and email fields
+ */
+
+import HorizontalForm from '../HorizontalForm.astro';
+---
+
+<!-- Section5 - Newsletter Section -->
+<section class="section5-newsletter">
+  <div class="container max-w-7xl">
+    <div class="section5-content">
+      
+      <!-- Newsletter Header -->
+      <div class="section5-header">
+        <h2 class="section5-title">Get Subscribe To Our Latest News & Update</h2>
+      </div>
+
+      <!-- Newsletter Form -->
+      <div class="section5-form">
+        <HorizontalForm source="section5-newsletter" />
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<style>
+/* Section5 Newsletter Styles */
+.section5-newsletter {
+  background: var(--bg-secondary);
+  padding: 2rem 0 3rem 0;
+}
+
+@media (min-width: 1024px) {
+  .section5-newsletter {
+    padding: 3rem 0 4rem 0;
+  }
+}
+
+.section5-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  text-align: center;
+}
+
+/* Newsletter Header */
+.section5-header {
+  max-width: 600px;
+}
+
+.section5-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  margin: 0;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .section5-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section5-title {
+    font-size: 2.75rem;
+  }
+}
+
+/* Newsletter Form Container */
+.section5-form {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .section5-newsletter {
+    padding: 3rem 0 4rem 0;
+  }
+  
+  .section5-content {
+    gap: 2rem;
+  }
+  
+  .section5-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .section5-title {
+    font-size: 1.5rem;
+  }
+  
+  .section5-content {
+    gap: 1.5rem;
+  }
+}
+</style>

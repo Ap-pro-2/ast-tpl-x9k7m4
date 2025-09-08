@@ -4822,3 +4822,167 @@
     }
   }
 }
+
+/* =================================
+   HORIZONTAL NEWSLETTER FORM THEME
+   ================================= */
+@layer components {
+  /* Horizontal Form Container */
+  .theme-horizontal-form-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Horizontal Form */
+  .theme-horizontal-form {
+    width: 100%;
+  }
+
+  .theme-horizontal-form-fields {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .theme-horizontal-form-fields {
+      flex-wrap: nowrap;
+    }
+  }
+
+  /* Form Groups */
+  .theme-horizontal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  /* Horizontal Form Inputs */
+  .theme-horizontal-form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    background: white;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all var(--animation-duration) var(--animation-easing);
+    outline: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .theme-horizontal-form-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .theme-horizontal-form-input:focus {
+    border-color: var(--color-primary-accessible);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+    transform: translateY(-1px);
+  }
+
+  .theme-horizontal-form-input:hover {
+    border-color: var(--color-primary-accessible-light);
+    transform: translateY(-1px);
+  }
+
+  /* Submit Button */
+  .theme-horizontal-form-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    background: var(--color-primary-accessible);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-easing);
+    text-decoration: none;
+    min-width: 140px;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3);
+    flex-shrink: 0;
+  }
+
+  .theme-horizontal-form-submit:hover {
+    background: var(--color-primary-accessible-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.4);
+  }
+
+  .theme-horizontal-form-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  .theme-horizontal-form-submit:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Error and Success Messages */
+  .theme-horizontal-form-error,
+  .theme-horizontal-form-success {
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .theme-horizontal-form-error {
+    background: var(--bg-error-light);
+    color: var(--text-error);
+    border: 1px solid var(--border-error);
+  }
+
+  .theme-horizontal-form-success {
+    background: var(--bg-success-light);
+    color: var(--text-success);
+    border: 1px solid var(--border-success);
+  }
+
+  .theme-horizontal-form-error p,
+  .theme-horizontal-form-success p {
+    margin: 0;
+    color: inherit;
+  }
+
+  /* Field Error Messages */
+  .theme-horizontal-form-field-error {
+    color: var(--text-error);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0;
+    padding-left: 0.25rem;
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 767px) {
+    .theme-horizontal-form-fields {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .theme-horizontal-form-group {
+      min-width: auto;
+    }
+    
+    .theme-horizontal-form-submit {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

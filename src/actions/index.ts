@@ -8,6 +8,7 @@ export const server = {
     accept: 'form',
     input: z.object({
       email: z.string().email('Please enter a valid email address'),
+      name: z.string().min(2, 'Please enter at least 2 characters').optional(),
       source: z.string().default('website'),
     }),
     handler: async (input, context) => {
@@ -20,6 +21,7 @@ export const server = {
           },
           body: JSON.stringify({
             email: input.email,
+            name: input.name,
             source: input.source
           })
         });

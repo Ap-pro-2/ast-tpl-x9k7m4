@@ -1,5 +1,9 @@
 ---
-// No server-side logic needed for client-side forms
+interface Props {
+  source?: string;
+}
+
+const { source = 'website' } = Astro.props;
 ---
 
 <div class="theme-form-container">
@@ -23,6 +27,9 @@
       />
       <p id="email-error" class="theme-form-field-error" style="display: none;"></p>
     </div>
+    
+    <!-- Hidden input for source tracking -->
+    <input type="hidden" name="source" value={source} />
     
     <button type="submit" class="theme-form-submit" id="submit-btn">
       Subscribe

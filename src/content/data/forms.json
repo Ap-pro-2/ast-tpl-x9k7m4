@@ -1,0 +1,37 @@
+[
+  {
+    "id": "main",
+    "enabled": true,
+    "forms": [
+      {
+        "id": "sidebar-lead",
+        "enabled": true,
+        "type": "vertical",
+        "title": "Subscribe to Updates",
+        "buttonText": "Subscribe",
+        "placement": "section4-sidebar"
+      },
+      {
+        "id": "newsletter-horizontal",
+        "enabled": true,
+        "type": "horizontal", 
+        "title": "Get Subscribe To Our Latest News & Update",
+        "description": "Download our free ebook and stay updated with the latest news and insights.",
+        "image": "/paper-ebook.png",
+        "imageAlt": "Free ebook download",
+        "buttonText": "Submit Now",
+        "placement": "section5-newsletter"
+      },
+      {
+        "id": "contact-us",
+        "enabled": true,
+        "type": "contact",
+        "title": "Get In Touch",
+        "description": "Have a question or want to work with us? We'd love to hear from you.",
+        "buttonText": "Send Message",
+        "placement": "contact-page",
+        "fields": ["name", "email", "message"]
+      }
+    ]
+  }
+]

@@ -345,6 +345,35 @@ const ads = defineCollection({
   })
 });
 
+// Forms collection - simple schema for form management
+const forms = defineCollection({
+  loader: file("src/content/data/forms.json"),
+  schema: z.object({
+    id: z.string(),
+    enabled: z.boolean(),
+    forms: z.array(z.object({
+      id: z.string(),
+      enabled: z.boolean().default(true),
+      type: z.enum(['vertical', 'horizontal', 'contact']).default('vertical'),
+      title: z.string(),
+      description: z.string().optional(),
+      image: z.string().optional(),
+      imageAlt: z.string().optional(),
+      buttonText: z.string().default('Subscribe'),
+      placement: z.enum([
+        'section4-sidebar',
+        'section5-newsletter', 
+        'between-hero-and-content',
+        'article-sidebar',
+        'homepage-sidebar',
+        'footer',
+        'contact-page'
+      ]),
+      fields: z.array(z.enum(['name', 'email', 'message'])).optional(),
+    }))
+  })
+});
+
 export const collections = {
   blog,
   authors,
@@ -355,5 +384,6 @@ export const collections = {
   affiliateCategories,
   affiliateProducts,
   affiliateComparisons,
-  ads
+  ads,
+  forms
 };

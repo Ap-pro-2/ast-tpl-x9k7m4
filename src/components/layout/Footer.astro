@@ -257,6 +257,18 @@ const activeSocialLinks = Object.entries(settings.social || {})
             </li>
             <li>
               <a
+                href="/contact"
+                class="text-sm transition-colors"
+                style="color: var(--text-muted); transition: color var(--animation-duration) var(--animation-easing)"
+                onmouseover="this.style.color='var(--color-primary)'"
+                onmouseout="this.style.color='var(--text-muted)'"
+                aria-label="Contact us"
+              >
+                Contact Us
+              </a>
+            </li>
+            <li>
+              <a
                 href="/legal/privacy"
                 class="text-sm transition-colors"
                 style="color: var(--text-muted); transition: color var(--animation-duration) var(--animation-easing)"

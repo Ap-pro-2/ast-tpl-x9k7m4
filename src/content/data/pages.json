@@ -140,6 +140,30 @@
     }
   },
   {
+    "id": "contact-us",
+    "title": "Contact Us",
+    "slug": "contact",
+    "description": "Get in touch with our coffee experts. We'd love to hear from you and answer any questions about coffee.",
+    "content": "",
+    "published": true,
+    "noindex": false,
+    "seo": {
+      "title": "Contact Us | AstroPress Coffee - Get In Touch",
+      "description": "Have questions about coffee? Want to collaborate with us? Contact the AstroPress Coffee team. We'd love to hear from you and help with all things coffee.",
+      "keywords": [
+        "contact us",
+        "coffee questions",
+        "coffee experts",
+        "get in touch",
+        "coffee help",
+        "coffee consultation",
+        "coffee advice"
+      ],
+      "ogImage": "/images/seo/contact-us-og.jpg",
+      "canonical": "/contact"
+    }
+  },
+  {
     "id": "terms-of-service",
     "title": "Terms of Service",
     "slug": "legal/terms",

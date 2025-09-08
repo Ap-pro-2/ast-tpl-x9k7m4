@@ -10,7 +10,7 @@ import {
   createPaginationData,
   getTagsWithPostCounts
 } from '../../core/blogLogic';
-import LeadForm from '../LeadForm.astro';
+import UniversalForm from '../forms/UniversalForm.astro';
 import BlogCardHorizontal from '../ui/BlogCardHorizontal.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
 
@@ -74,14 +74,8 @@ const page = paginationData;
         
         <!-- Newsletter Signup -->
         <div class="section4-widget section4-newsletter-widget">
-          <div class="section4-widget-header">
-            <div class="section4-widget-line"></div>
-            <h3 class="section4-widget-title">Newsletter</h3>
-          </div>
-          <div class="section4-newsletter-description">
-            <p>Stay updated with our latest articles and insights. Join our community!</p>
-          </div>
-          <LeadForm source="section4-sidebar" />
+          <!-- Universal Form handles its own title -->
+          <UniversalForm placement="section4-sidebar" />
         </div>
         
         <!-- Tags Section -->

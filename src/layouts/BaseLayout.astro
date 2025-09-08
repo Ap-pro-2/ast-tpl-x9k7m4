@@ -183,6 +183,9 @@ const preconnectUrls = getGoogleFontsPreconnects();
 
     <!-- View Transitions for smooth navigation -->
     <ClientRouter />
+    
+    <!-- Turnstile CDN Script - Always load for persistence across navigation -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 
     <!-- View Transition Scripts -->
     <script is:inline>
@@ -217,6 +220,117 @@ const preconnectUrls = getGoogleFontsPreconnects();
       });
     </script>
 
+    <!-- Turnstile Script - Proper Astro Navigation Pattern -->
+    <script is:inline>
+      // Initialize global Turnstile state
+      if (!window.turnstileStates) {
+        window.turnstileStates = new Map();
+      }
+      
+      function waitForTurnstile(callback, maxAttempts = 10) {
+        if (typeof window.turnstile !== 'undefined') {
+          callback();
+        } else if (maxAttempts > 0) {
+          console.log('⏳ Waiting for Turnstile API to load...');
+          setTimeout(() => waitForTurnstile(callback, maxAttempts - 1), 100);
+        } else {
+          console.error('❌ Turnstile API failed to load after 1 second');
+        }
+      }
+      
+      function initializeTurnstile() {
+        console.log('🔐 Initializing Turnstile widgets...');
+        
+        const widgets = document.querySelectorAll('.cf-turnstile');
+        console.log(`📊 Found ${widgets.length} Turnstile widgets`);
+        
+        if (widgets.length === 0) {
+          console.log('ℹ️ No Turnstile widgets found on this page');
+          return;
+        }
+        
+        waitForTurnstile(() => {
+          widgets.forEach((widget, index) => {
+            const form = widget.closest('form');
+            if (!form) {
+              console.warn(`Widget ${index + 1}: No parent form found`);
+              return;
+            }
+
+            const formId = form.id.replace('-form', '');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            
+            if (!submitBtn) {
+              console.warn(`Widget ${index + 1}: No submit button found for form ${formId}`);
+              return;
+            }
+
+            console.log(`✅ Setting up Turnstile for form: ${formId}`);
+
+            // Initially disable submit button
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+
+            // Create callback functions
+            const successCallback = `onTurnstileSuccess_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            const errorCallback = `onTurnstileError_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            const expiredCallback = `onTurnstileExpired_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+            // Success callback
+            window[successCallback] = function(token) {
+              console.log(`✅ Turnstile success for ${formId}`);
+              window.turnstileStates.set(formId, { verified: true, token });
+              submitBtn.disabled = false;
+              submitBtn.style.opacity = '1';
+            };
+
+            // Error callback
+            window[errorCallback] = function(errorCode) {
+              console.error(`❌ Turnstile error for ${formId}:`, errorCode);
+              window.turnstileStates.set(formId, { verified: false, error: errorCode });
+              submitBtn.disabled = true;
+              submitBtn.style.opacity = '0.6';
+            };
+
+            // Expired callback
+            window[expiredCallback] = function() {
+              console.warn(`⏰ Turnstile expired for ${formId}`);
+              window.turnstileStates.set(formId, { verified: false });
+              submitBtn.disabled = true;
+              submitBtn.style.opacity = '0.6';
+            };
+            
+            // Try to render the widget immediately
+            try {
+              if (window.turnstile && typeof window.turnstile.render === 'function') {
+                console.log(`🎨 Rendering Turnstile widget for ${formId}`);
+                window.turnstile.render(widget, {
+                  sitekey: widget.getAttribute('data-sitekey'),
+                  callback: successCallback,
+                  'error-callback': errorCallback,
+                  'expired-callback': expiredCallback,
+                  theme: widget.getAttribute('data-theme') || 'auto',
+                  size: widget.getAttribute('data-size') || 'normal'
+                });
+              }
+            } catch (error) {
+              console.error(`Failed to render Turnstile widget for ${formId}:`, error);
+            }
+          });
+          
+          console.log(`🏁 Turnstile initialization complete. Widgets configured: ${widgets.length}`);
+        });
+      }
+
+      // THIS IS THE KEY: Use astro:page-load for navigation
+      document.addEventListener('astro:page-load', () => {
+        console.log('🔄 astro:page-load - Initializing Turnstile');
+        initializeTurnstile();
+      });
+      
+      // Also run on initial page load
+      initializeTurnstile();
+    </script>
 
     <slot name="head" />
   </head>

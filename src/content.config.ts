@@ -345,7 +345,7 @@ const ads = defineCollection({
   })
 });
 
-// Forms collection - simple schema for form management
+// Forms collection - comprehensive schema for form management with Turnstile support
 const forms = defineCollection({
   loader: file("src/content/data/forms.json"),
   schema: z.object({
@@ -355,7 +355,7 @@ const forms = defineCollection({
       id: z.string(),
       enabled: z.boolean().default(true),
       type: z.enum(['vertical', 'horizontal', 'contact']).default('vertical'),
-      title: z.string(),
+      title: z.string().optional(),
       description: z.string().optional(),
       image: z.string().optional(),
       imageAlt: z.string().optional(),
@@ -370,6 +370,14 @@ const forms = defineCollection({
         'contact-page'
       ]),
       fields: z.array(z.enum(['name', 'email', 'message'])).optional(),
+      // Turnstile configuration for spam protection
+      turnstile: z.object({
+        enabled: z.boolean().default(false),
+        theme: z.enum(['auto', 'light', 'dark']).default('auto'),
+        size: z.enum(['normal', 'flexible', 'compact']).default('flexible'),
+        appearance: z.enum(['always', 'execute', 'interaction-only']).default('always'),
+        action: z.string().optional() // Custom action identifier for analytics
+      }).optional(),
     }))
   })
 });

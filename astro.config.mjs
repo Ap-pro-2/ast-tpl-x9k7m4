@@ -22,13 +22,27 @@ export default defineConfig({
     imageService: 'cloudflare'
   }),
 
-  // 🔐 Add environment schema for Blog API security
+  // 🔐 Add environment schema for API security
   env: {
     schema: {
       // Secret API key for your blog APIs
       BLOG_API_KEY: envField.string({
         context: "server",
         access: "secret"
+      }),
+      // Cloudflare Turnstile configuration
+      TURNSTILE_SITE_KEY: envField.string({
+        context: "client",
+        access: "public"
+      }),
+      TURNSTILE_SECRET_KEY: envField.string({
+        context: "server",
+        access: "secret"
+      }),
+      TURNSTILE_ENABLED: envField.boolean({
+        context: "server",
+        access: "public",
+        default: false
       })
     }
   },

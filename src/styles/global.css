@@ -5247,6 +5247,12 @@
     border: 1px solid var(--border-light);
   }
 
+  /* Contact page specific styling - full width in 2-column layout */
+  .universal-form[data-placement="contact-page"] .theme-contact-form-container {
+    max-width: none;
+    margin: 0;
+  }
+
   .theme-contact-form {
     width: 100%;
   }

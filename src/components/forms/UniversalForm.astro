@@ -19,6 +19,13 @@ import {
   getFormElementIds,
   getFormSource
 } from '../../core/formsLogic';
+import { 
+  isTurnstileEnabled,
+  getTurnstileSiteKey,
+  getTurnstileElementId,
+  getTurnstileCallbacks,
+  generateTurnstileWidgetConfig
+} from '../../core/turnstileLogic';
 
 // --- Component Props ---
 export interface Props {
@@ -53,7 +60,31 @@ if (formsEnabled) {
 
 // No filtering needed - keep it simple
 const filteredForms = forms;
+
+// --- Turnstile Integration ---
+const turnstileEnabled = await isTurnstileEnabled();
+const turnstileSiteKey = await getTurnstileSiteKey();
+
+console.log('🔐 Turnstile Debug:');
+console.log('- Enabled:', turnstileEnabled);
+console.log('- Site Key:', turnstileSiteKey ? 'Present' : 'Missing');
+console.log('- Forms:', filteredForms.length);
+console.log('- Forms with Turnstile:', filteredForms.filter(form => form.turnstile?.enabled).length);
+
+// Generate Turnstile configurations for each form
+const formTurnstileConfigs = new Map();
+if (turnstileEnabled && turnstileSiteKey) {
+  for (const form of filteredForms) {
+    if (form.turnstile?.enabled) {
+      console.log(`- Configuring Turnstile for form: ${form.id}`);
+      const config = await generateTurnstileWidgetConfig(form.id, form.turnstile);
+      formTurnstileConfigs.set(form.id, config);
+    }
+  }
+}
 ---
+
+{/* Note: Turnstile CDN script is now loaded globally in BaseLayout */}
 
 {/* --- Enhanced Rendering Logic for Multiple Form Types --- */}
 
@@ -131,6 +162,23 @@ const filteredForms = forms;
                           </div>
                         ))}
                         
+                        {/* Turnstile Widget - Horizontal Form */}
+                        {formTurnstileConfigs.has(form.id) && (
+                          <div class="turnstile-container">
+                            <div 
+                              class="cf-turnstile" 
+                              data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
+                              data-theme={formTurnstileConfigs.get(form.id).theme}
+                              data-size={formTurnstileConfigs.get(form.id).size}
+                              data-appearance={formTurnstileConfigs.get(form.id).appearance}
+                              data-action={formTurnstileConfigs.get(form.id).action}
+                              data-callback={formTurnstileConfigs.get(form.id).callback}
+                              data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
+                              data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
+                            ></div>
+                          </div>
+                        )}
+                        
                         <button type="submit" class="theme-horizontal-form-submit" id={elementIds.submitBtn}>
                           {form.buttonText}
                         </button>
@@ -187,6 +235,23 @@ const filteredForms = forms;
                   </div>
                 ))}
                 
+                {/* Turnstile Widget - Vertical Form */}
+                {formTurnstileConfigs.has(form.id) && (
+                  <div class="turnstile-container">
+                    <div 
+                      class="cf-turnstile" 
+                      data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
+                      data-theme={formTurnstileConfigs.get(form.id).theme}
+                      data-size={formTurnstileConfigs.get(form.id).size}
+                      data-appearance={formTurnstileConfigs.get(form.id).appearance}
+                      data-action={formTurnstileConfigs.get(form.id).action}
+                      data-callback={formTurnstileConfigs.get(form.id).callback}
+                      data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
+                      data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
+                    ></div>
+                  </div>
+                )}
+                
                 {/* Hidden input for source tracking */}
                 <input type="hidden" name="source" value={formSource} />
                 
@@ -231,6 +296,23 @@ const filteredForms = forms;
                     </div>
                   ))}
                   
+                  {/* Turnstile Widget - Contact Form */}
+                  {formTurnstileConfigs.has(form.id) && (
+                    <div class="turnstile-container">
+                      <div 
+                        class="cf-turnstile" 
+                        data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
+                        data-theme={formTurnstileConfigs.get(form.id).theme}
+                        data-size={formTurnstileConfigs.get(form.id).size}
+                        data-appearance={formTurnstileConfigs.get(form.id).appearance}
+                        data-action={formTurnstileConfigs.get(form.id).action}
+                        data-callback={formTurnstileConfigs.get(form.id).callback}
+                        data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
+                        data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
+                      ></div>
+                    </div>
+                  )}
+                  
                   <button type="submit" class="theme-contact-form-submit" id={elementIds.submitBtn}>
                     {form.buttonText}
                   </button>
@@ -264,6 +346,23 @@ const filteredForms = forms;
                       ></p>
                     </div>
                   ))}
+                  
+                  {/* Turnstile Widget - General Horizontal Form */}
+                  {formTurnstileConfigs.has(form.id) && (
+                    <div class="turnstile-container">
+                      <div 
+                        class="cf-turnstile" 
+                        data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
+                        data-theme={formTurnstileConfigs.get(form.id).theme}
+                        data-size={formTurnstileConfigs.get(form.id).size}
+                        data-appearance={formTurnstileConfigs.get(form.id).appearance}
+                        data-action={formTurnstileConfigs.get(form.id).action}
+                        data-callback={formTurnstileConfigs.get(form.id).callback}
+                        data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
+                        data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
+                      ></div>
+                    </div>
+                  )}
                   
                   <button type="submit" class="theme-horizontal-form-submit" id={elementIds.submitBtn}>
                     {form.buttonText}
@@ -344,6 +443,45 @@ const filteredForms = forms;
     margin: 1rem 0;
   }
 
+  /* Turnstile Widget Styling */
+  .turnstile-container {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Placement-specific turnstile styling */
+  .universal-form[data-placement="section5-newsletter"] .turnstile-container {
+    justify-content: flex-start;
+    margin: 1rem 0;
+  }
+
+  .universal-form[data-placement="section4-sidebar"] .turnstile-container {
+    margin: 1rem 0;
+  }
+
+  .universal-form[data-placement="contact-page"] .turnstile-container {
+    margin: 1.5rem 0;
+  }
+
+  /* Turnstile error state styling */
+  .turnstile-error {
+    background: var(--bg-error-light, #fee);
+    color: var(--text-error, #dc2626);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 8px);
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+    text-align: center;
+    border: 1px solid var(--border-error, #fca5a5);
+  }
+
+  /* Button state when Turnstile is pending */
+  button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .universal-forms {
@@ -360,14 +498,18 @@ const filteredForms = forms;
 <script>
   import { actions } from 'astro:actions';
 
+  // Simplified form handling - Turnstile state is managed by global turnstile.ts script
+  // This script only handles form submission logic
 
   // Function to initialize a single form
   function initializeForm(formElement: HTMLFormElement) {
     const formId = formElement.id;
     const submitBtn = formElement.querySelector('button[type="submit"]') as HTMLButtonElement;
-    const nameInput = formElement.querySelector('input[name="name"]') as HTMLInputElement;
-    const emailInput = formElement.querySelector('input[name="email"]') as HTMLInputElement;
-    const messageInput = formElement.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
+    const turnstileWidget = formElement.querySelector('.cf-turnstile') as HTMLElement;
+    
+    // Check if this form uses Turnstile
+    const hasTurnstile = turnstileWidget !== null;
+    const baseFormId = formId.replace('-form', '');
     
     // Get error elements - support vertical, horizontal, and contact form structures
     const nameError = document.getElementById(formId.replace('-form', '-name-error')) as HTMLElement;
@@ -388,18 +530,35 @@ const filteredForms = forms;
     // Show loading state
     function setLoading(loading: boolean) {
       if (submitBtn) {
-        submitBtn.disabled = loading;
         const originalText = submitBtn.dataset.originalText || submitBtn.textContent;
         if (!submitBtn.dataset.originalText) {
           submitBtn.dataset.originalText = originalText || '';
         }
         submitBtn.textContent = loading ? 'Sending...' : originalText;
+        // Don't disable button here if Turnstile is present - let Turnstile handle it
+        if (!hasTurnstile) {
+          submitBtn.disabled = loading;
+        }
       }
     }
 
     formElement.addEventListener('submit', async (event) => {
       event.preventDefault();
       hideMessages();
+      
+      // Check Turnstile verification if enabled
+      if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstileStates) {
+        const turnstileState = (window as any).turnstileStates.get(baseFormId);
+        
+        if (!turnstileState || !turnstileState.verified) {
+          if (errorMessage) {
+            errorMessage.textContent = 'Please complete the security verification.';
+            errorMessage.style.display = 'block';
+          }
+          return;
+        }
+      }
+      
       setLoading(true);
 
       try {
@@ -438,6 +597,27 @@ const filteredForms = forms;
           }
           formElement.reset();
           
+          // Reset Turnstile widget if present
+          if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstile) {
+            const widget = formElement.querySelector('.cf-turnstile');
+            if (widget) {
+              try {
+                (window as any).turnstile.reset(widget);
+                // Reset our state
+                if ((window as any).turnstileStates) {
+                  (window as any).turnstileStates.set(baseFormId, { verified: false });
+                }
+                // Re-disable submit button
+                if (submitBtn) {
+                  submitBtn.disabled = true;
+                  submitBtn.style.opacity = '0.6';
+                }
+              } catch (e) {
+                console.warn('Failed to reset Turnstile widget:', e);
+              }
+            }
+          }
+          
           // Hide success message after 5 seconds
           setTimeout(() => {
             if (successMessage) successMessage.style.display = 'none';
@@ -454,12 +634,15 @@ const filteredForms = forms;
   // Initialize all universal forms on the page
   document.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('.universal-form form') as NodeListOf<HTMLFormElement>;
+    console.log(`📋 UniversalForm: Found ${forms.length} forms to initialize`);
     forms.forEach(initializeForm);
   });
 
   // Handle dynamic content and page transitions (Astro view transitions)
   document.addEventListener('astro:page-load', () => {
     const forms = document.querySelectorAll('.universal-form form') as NodeListOf<HTMLFormElement>;
+    console.log(`📋 UniversalForm (after navigation): Found ${forms.length} forms to initialize`);
     forms.forEach(initializeForm);
   });
 </script>
+

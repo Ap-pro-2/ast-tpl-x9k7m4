@@ -38,51 +38,20 @@ const pageData = contactPage?.data || {
     </div>
   </section>
 
-  <!-- Contact Form Section -->
+
+  <!-- Contact Form and Image Section -->
   <section class="contact-form-section">
-    <div class="container max-w-4xl">
-      <div class="contact-form-container">
-        <UniversalForm placement="contact-page" />
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact Info Section -->
-  <section class="contact-info-section">
-    <div class="container max-w-4xl">
-      <div class="contact-info-grid">
-        <div class="contact-info-card">
-          <div class="contact-info-icon">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-            </svg>
-          </div>
-          <h3 class="contact-info-title">Email</h3>
-          <p class="contact-info-text">hello@astropress.com</p>
-          <p class="contact-info-subtext">We'll respond within 24 hours</p>
+    <div class="container">
+      <div class="contact-layout">
+        <div class="contact-form-wrapper">
+          <UniversalForm placement="contact-page" />
         </div>
-
-        <div class="contact-info-card">
-          <div class="contact-info-icon">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-          </div>
-          <h3 class="contact-info-title">Location</h3>
-          <p class="contact-info-text">Remote Team</p>
-          <p class="contact-info-subtext">Working from coffee shops worldwide</p>
-        </div>
-
-        <div class="contact-info-card">
-          <div class="contact-info-icon">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <h3 class="contact-info-title">Response Time</h3>
-          <p class="contact-info-text">Within 24 hours</p>
-          <p class="contact-info-subtext">Monday to Friday, 9AM - 5PM EST</p>
+        <div class="contact-image-wrapper">
+          <img 
+            src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+            alt="Professional team ready to help with your inquiries"
+            loading="lazy"
+          />
         </div>
       </div>
     </div>
@@ -121,77 +90,44 @@ const pageData = contactPage?.data || {
 
 /* Contact Form Section */
 .contact-form-section {
-  padding: 4rem 0;
+  padding: 6rem 0;
   background: var(--bg-secondary);
 }
 
-.contact-form-container {
-  max-width: 600px;
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Contact Info Section */
-.contact-info-section {
-  padding: 4rem 0;
-  background: var(--bg-primary);
+.contact-form-wrapper {
+  max-width: 100%;
 }
 
-.contact-info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+.contact-image-wrapper {
+  max-width: 100%;
 }
 
-.contact-info-card {
-  background: var(--surface-card);
-  padding: 2rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform var(--animation-duration) var(--animation-easing);
+.contact-image-wrapper img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  aspect-ratio: 4/3;
 }
 
-.contact-info-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.contact-info-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  background: var(--color-primary-accessible);
-  color: white;
-  border-radius: var(--radius-full);
-  margin-bottom: 1rem;
-}
-
-.contact-info-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  font-family: var(--font-heading);
-  margin: 0 0 0.5rem 0;
-}
-
-.contact-info-text {
-  font-size: 1rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  margin: 0 0 0.25rem 0;
-}
-
-.contact-info-subtext {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
 
 /* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .contact-layout {
+    gap: 3rem;
+  }
+}
+
 @media (max-width: 768px) {
   .contact-hero {
     padding: 3rem 0 1.5rem 0;
@@ -206,20 +142,16 @@ const pageData = contactPage?.data || {
   }
   
   .contact-form-section {
-    padding: 3rem 0;
+    padding: 4rem 0;
   }
   
-  .contact-info-section {
-    padding: 3rem 0;
-  }
-  
-  .contact-info-grid {
+  .contact-layout {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 3rem;
   }
   
-  .contact-info-card {
-    padding: 1.5rem;
+  .contact-image-wrapper {
+    order: -1;
   }
 }
 
@@ -232,8 +164,12 @@ const pageData = contactPage?.data || {
     font-size: 1rem;
   }
   
-  .contact-info-card {
-    padding: 1.25rem;
+  .contact-form-section {
+    padding: 3rem 0;
+  }
+  
+  .contact-layout {
+    gap: 2rem;
   }
 }
 </style>

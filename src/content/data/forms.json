@@ -9,7 +9,13 @@
         "type": "vertical",
         "title": "Subscribe to Updates",
         "buttonText": "Subscribe",
-        "placement": "section4-sidebar"
+        "placement": "section4-sidebar",
+        "turnstile": {
+          "enabled": false,
+          "theme": "auto",
+          "size": "flexible",
+          "action": "sidebar"
+        }
       },
       {
         "id": "newsletter-horizontal",
@@ -20,17 +26,27 @@
         "image": "/paper-ebook.png",
         "imageAlt": "Free ebook download",
         "buttonText": "Submit Now",
-        "placement": "section5-newsletter"
+        "placement": "section5-newsletter",
+        "turnstile": {
+          "enabled": true,
+          "theme": "auto", 
+          "size": "flexible",
+          "action": "newsletter"
+        }
       },
       {
         "id": "contact-us",
         "enabled": true,
         "type": "contact",
-        "title": "Get In Touch",
-        "description": "Have a question or want to work with us? We'd love to hear from you.",
         "buttonText": "Send Message",
         "placement": "contact-page",
-        "fields": ["name", "email", "message"]
+        "fields": ["name", "email", "message"],
+        "turnstile": {
+          "enabled": true,
+          "theme": "auto",
+          "size": "flexible",
+          "action": "contact"
+        }
       }
     ]
   }

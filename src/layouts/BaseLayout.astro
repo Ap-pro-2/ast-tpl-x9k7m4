@@ -249,8 +249,28 @@ const preconnectUrls = getGoogleFontsPreconnects();
           return;
         }
         
+        // First, ensure all forms have enabled submit buttons by default
+        const allForms = document.querySelectorAll('form');
+        allForms.forEach(form => {
+          const submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            const hasTurnstile = form.querySelector('.cf-turnstile');
+            if (!hasTurnstile) {
+              // Forms without Turnstile should have enabled buttons
+              submitBtn.disabled = false;
+              submitBtn.style.opacity = '1';
+            }
+          }
+        });
+        
         waitForTurnstile(() => {
           widgets.forEach((widget, index) => {
+            // Skip if widget is already rendered to prevent duplicates
+            if (widget.innerHTML && widget.innerHTML.trim() !== '') {
+              console.log(`⚠️ Widget ${index + 1} already rendered, skipping...`);
+              return;
+            }
+            
             const form = widget.closest('form');
             if (!form) {
               console.warn(`Widget ${index + 1}: No parent form found`);
@@ -267,7 +287,7 @@ const preconnectUrls = getGoogleFontsPreconnects();
 
             console.log(`✅ Setting up Turnstile for form: ${formId}`);
 
-            // Initially disable submit button
+            // Initially disable submit button ONLY for forms with Turnstile
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.6';
 
@@ -300,11 +320,11 @@ const preconnectUrls = getGoogleFontsPreconnects();
               submitBtn.style.opacity = '0.6';
             };
             
-            // Try to render the widget immediately
+            // Try to render the widget
             try {
               if (window.turnstile && typeof window.turnstile.render === 'function') {
                 console.log(`🎨 Rendering Turnstile widget for ${formId}`);
-                window.turnstile.render(widget, {
+                const widgetId = window.turnstile.render(widget, {
                   sitekey: widget.getAttribute('data-sitekey'),
                   callback: successCallback,
                   'error-callback': errorCallback,
@@ -312,6 +332,7 @@ const preconnectUrls = getGoogleFontsPreconnects();
                   theme: widget.getAttribute('data-theme') || 'auto',
                   size: widget.getAttribute('data-size') || 'normal'
                 });
+                console.log(`🎯 Widget rendered with ID: ${widgetId}`);
               }
             } catch (error) {
               console.error(`Failed to render Turnstile widget for ${formId}:`, error);
@@ -322,7 +343,30 @@ const preconnectUrls = getGoogleFontsPreconnects();
         });
       }
 
+      // Cleanup function to prevent duplicates
+      function cleanupTurnstile() {
+        console.log('🧹 Cleaning up Turnstile...');
+        
+        // Clear existing widgets
+        const widgets = document.querySelectorAll('.cf-turnstile');
+        widgets.forEach(widget => {
+          if (widget.innerHTML && widget.innerHTML.trim() !== '') {
+            widget.innerHTML = '';
+          }
+        });
+        
+        // Clear state
+        if (window.turnstileStates) {
+          window.turnstileStates.clear();
+        }
+      }
+
       // THIS IS THE KEY: Use astro:page-load for navigation
+      document.addEventListener('astro:before-swap', () => {
+        console.log('🔄 astro:before-swap - Cleaning up Turnstile');
+        cleanupTurnstile();
+      });
+      
       document.addEventListener('astro:page-load', () => {
         console.log('🔄 astro:page-load - Initializing Turnstile');
         initializeTurnstile();

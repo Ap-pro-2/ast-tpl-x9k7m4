@@ -563,6 +563,15 @@ if (turnstileEnabled && turnstileSiteKey) {
 
       try {
         const formData = new FormData(formElement);
+        
+        // Add Turnstile token if present
+        if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstileStates) {
+          const turnstileState = (window as any).turnstileStates.get(baseFormId);
+          if (turnstileState && turnstileState.token) {
+            formData.append('cf-turnstile-response', turnstileState.token);
+            console.log('✅ Added Turnstile token to form submission');
+          }
+        }
         const { data, error } = await actions.leads(formData);
 
         setLoading(false);

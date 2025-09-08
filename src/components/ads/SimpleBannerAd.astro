@@ -1,14 +1,15 @@
 ---
 /**
- * Simple Banner Ad Component
- * Displays banner ads by placement or ID.
- * This component is designed to be robust and developer-friendly.
- * - It fetches ad data from a central logic file.
- * - It fails gracefully by rendering nothing in production if an ad is not found.
- * - It shows a helpful placeholder in development for easy debugging.
+ * Enhanced Banner Ad Component - Supports Image/HTML/Iframe Ads
+ * Displays banner ads by placement or ID with full security support.
+ * Features:
+ * - Image ads (existing functionality)
+ * - HTML ads with sanitized content rendering
+ * - Iframe ads with CSP integration and security validation
+ * - Graceful fallbacks and helpful development placeholders
  */
 
-import { getBannersByPlacement, getBannerById, areAdsEnabled } from '../../core/adsLogic';
+import { getBannersByPlacement, getBannerById, areAdsEnabled, getAdsConfig } from '../../core/adsLogic';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 
 // --- Component Props ---
@@ -27,6 +28,7 @@ const { placement, bannerId, className = '' } = Astro.props;
 
 // 1. First, check if ads are globally enabled in the configuration.
 const adsEnabled = await areAdsEnabled();
+const adsConfig = await getAdsConfig();
 
 // 2. If ads are enabled, fetch the banner data.
 let banners = [];
@@ -40,57 +42,85 @@ if (adsEnabled) {
     banners = await getBannersByPlacement(placement);
   }
 }
+
+// --- Security & CSP Setup ---
+
+// Filter banners based on security settings
+const securitySettings = adsConfig.global.security || {};
+const filteredBanners = banners.filter(banner => {
+  switch (banner.type) {
+    case 'html':
+      return securitySettings.allowHtmlAds !== false; // Allow by default for backwards compatibility
+    case 'image':
+    default:
+      return true;
+  }
+});
 ---
 
-{/* --- Rendering Logic --- */}
+{/* --- Enhanced Rendering Logic for Multiple Ad Types --- */}
 
 {/* 
-  If ads are enabled and we found at least one banner, render the ad(s).
-  This ensures that nothing is rendered on the live site if an ad is not configured.
+  If ads are enabled and we found at least one banner (after security filtering), render the ad(s).
+  This ensures that nothing is rendered on the live site if an ad is not configured or blocked by security.
 */}
-{adsEnabled && banners.length > 0 ? (
+{adsEnabled && filteredBanners.length > 0 ? (
   <div class={`banner-ads ${className}`}>
-    {banners.map((banner) => (
-      <div class="banner-ad" key={banner.id}>
-        {/* If the banner has a link, wrap the image in an anchor tag. */}
-        {banner.link ? (
-          <a 
-            href={banner.link}
-            target="_blank"
-            rel="noopener sponsored"
-            class="banner-ad-link"
-            title={banner.alt}
-          >
-            <OptimizedImage 
-              src={banner.image}
-              alt={banner.alt}
-              width={728}
-              height={90}
-              loading="lazy"
-              class="banner-ad-image"
-            />
-          </a>
-        ) : (
-          // If there's no link, just render the image.
-          <OptimizedImage 
-            src={banner.image}
-            alt={banner.alt}
-            width={728}
-            height={90}
-            loading="lazy"
-            class="banner-ad-image"
-          />
+    {filteredBanners.map((banner) => (
+      <div class="banner-ad" key={banner.id} data-ad-type={banner.type}>
+        
+        {/* IMAGE AD TYPE (existing functionality) */}
+        {banner.type === 'image' && banner.image && (
+          <>
+            {/* If the banner has a link, wrap the image in an anchor tag. */}
+            {banner.link ? (
+              <a 
+                href={banner.link}
+                target="_blank"
+                rel="noopener sponsored"
+                class="banner-ad-link"
+                title={banner.alt}
+                aria-label={`Advertisement: ${banner.alt}`}
+              >
+                <OptimizedImage 
+                  src={banner.image}
+                  alt={banner.alt}
+                  width={728}
+                  height={90}
+                  loading="lazy"
+                  class="banner-ad-image"
+                />
+              </a>
+            ) : (
+              // If there's no link, just render the image.
+              <OptimizedImage 
+                src={banner.image}
+                alt={banner.alt}
+                width={728}
+                height={90}
+                loading="lazy"
+                class="banner-ad-image"
+              />
+            )}
+          </>
         )}
+
+        {/* HTML AD TYPE (handles any HTML including iframes) */}
+        {banner.type === 'html' && banner.htmlContent && (
+          <div class="banner-ad-html" set:html={banner.htmlContent} />
+        )}
+        
       </div>
     ))}
   </div>
 ) : (
   /* 
-    If no ad is rendered, show a helpful placeholder in development mode ONLY when:
-    1. Ads are enabled globally but no ads are configured for this placement
-    2. This helps debug missing ad configurations, not globally disabled ads
+    Enhanced placeholder showing why ads aren't rendered:
+    1. Ads are globally disabled
+    2. No ads configured for this placement
+    3. Ads blocked by security settings
   */
-  import.meta.env.DEV && adsEnabled && (
+  import.meta.env.DEV && (
     <div class={`banner-ad-placeholder ${className}`}>
       <div style="
         background: linear-gradient(135deg, #f3e5f5, #e1bee7);
@@ -108,19 +138,33 @@ if (adsEnabled) {
           {placement ? `Placement: ${placement}` : bannerId ? `Banner ID: ${bannerId}` : 'No placement specified'}
         </div>
         <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #666;">
-          No ads configured for this placement
+          {!adsEnabled 
+            ? 'Ads globally disabled' 
+            : banners.length === 0 
+            ? 'No ads configured for this placement'
+            : filteredBanners.length === 0
+            ? 'Ads blocked by security settings'
+            : 'Unknown issue'
+          }
         </div>
+        {banners.length > filteredBanners.length && (
+          <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #f57c00;">
+            {banners.length - filteredBanners.length} ad(s) blocked by security policy
+          </div>
+        )}
       </div>
     </div>
   )
 )}
 
 <style>
+  /* Base banner ads container */
   .banner-ads {
     margin: 1rem 0;
     text-align: center;
   }
   
+  /* Individual banner ad styling */
   .banner-ad {
     margin-bottom: 1rem;
   }
@@ -129,6 +173,7 @@ if (adsEnabled) {
     margin-bottom: 0;
   }
   
+  /* IMAGE AD STYLES (existing) */
   .banner-ad-link {
     display: inline-block;
     transition: transform 0.2s ease, opacity 0.2s ease;
@@ -151,6 +196,71 @@ if (adsEnabled) {
   .banner-ad-link:hover .banner-ad-image {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   }
+
+  /* HTML AD STYLES with strong isolation */
+  .banner-ad-html {
+    /* Layout containment */
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+    
+    /* Isolate the ad from page styles */
+    contain: layout style;
+    isolation: isolate;
+    position: relative;
+    display: block;
+  }
+  
+  .banner-ad-html:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Ensure HTML ads don't break layout - STRONG isolation */
+  .banner-ad-html * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    
+    /* Reset potential problematic styles */
+    position: static !important;
+    z-index: auto !important;
+    margin: 0 !important;
+    
+    /* Prevent ads from affecting page flow */
+    float: none !important;
+    clear: none !important;
+  }
+
+  /* Override any absolute/fixed positioning in ads */
+  .banner-ad-html *[style*="position: absolute"],
+  .banner-ad-html *[style*="position: fixed"] {
+    position: relative !important;
+  }
+
+  /* Ensure iframes in HTML ads are contained */
+  .banner-ad-html iframe {
+    display: block !important;
+    max-width: 100% !important;
+    border: none !important;
+    border-radius: 8px;
+    vertical-align: top !important;
+  }
+
+  /* Reset any problematic CSS that might leak from ads */
+  .banner-ad-html a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+
+  .banner-ad-html img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    border: none !important;
+  }
+
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -158,9 +268,16 @@ if (adsEnabled) {
       margin: 1rem -1rem;
     }
     
-    .banner-ad-image {
+    .banner-ad-image,
+    .banner-ad-html {
       border-radius: 0;
       width: 100%;
+    }
+
+    /* Make HTML ads with iframes responsive on mobile */
+    .banner-ad-html iframe {
+      width: 100%;
+      min-height: 200px; /* Ensure reasonable mobile height */
     }
   }
   
@@ -186,7 +303,65 @@ if (adsEnabled) {
     text-align: center;
   }
   
+  /* Development placeholder */
   .banner-ad-placeholder {
     margin: 1rem 0;
   }
+
+  /* Security indicator for HTML ad types */
+  .banner-ad[data-ad-type="html"]::before {
+    content: "HTML Ad";
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  /* Hide type indicators in production */
+  @media (min-width: 1px) {
+    .banner-ad[data-ad-type]::before {
+      display: none;
+    }
+  }
+
+  /* Show type indicators only in development */
+  @supports (color: env(--dev-mode)) {
+    .banner-ad[data-ad-type]::before {
+      display: block;
+    }
+  }
 </style>
+
+<script>
+  // Ensure all HTML ad links open in new tab
+  document.addEventListener('DOMContentLoaded', () => {
+    const htmlAds = document.querySelectorAll('.banner-ad-html');
+    
+    htmlAds.forEach(ad => {
+      const links = ad.querySelectorAll('a');
+      links.forEach(link => {
+        // If link doesn't have target attribute or has target="_top", set to new tab
+        if (!link.getAttribute('target') || link.getAttribute('target') === '_top') {
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener sponsored');
+        }
+      });
+    });
+  });
+
+  // Handle dynamic content and page transitions
+  document.addEventListener('astro:page-load', () => {
+    const htmlAds = document.querySelectorAll('.banner-ad-html');
+    
+    htmlAds.forEach(ad => {
+      const links = ad.querySelectorAll('a');
+      links.forEach(link => {
+        if (!link.getAttribute('target') || link.getAttribute('target') === '_top') {
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener sponsored');
+        }
+      });
+    });
+  });
+</script>

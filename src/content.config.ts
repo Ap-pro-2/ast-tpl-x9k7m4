@@ -278,7 +278,7 @@ const affiliateComparisons = defineCollection({
   }),
 });
 
-// Ads collection - comprehensive schema for advertisement management
+// Ads collection - comprehensive schema for advertisement management (supports image/html/iframe)
 const ads = defineCollection({
   loader: file("src/content/data/ads.json"),
   schema: z.object({
@@ -286,14 +286,36 @@ const ads = defineCollection({
     global: z.object({
       enabled: z.boolean(),
       testMode: z.boolean().default(false),
+      // Security settings for HTML ads
+      security: z.object({
+        allowHtmlAds: z.boolean().default(false),
+      }).optional(),
     }),
     banners: z.array(z.object({
       id: z.string(),
       name: z.string(),
       enabled: z.boolean().default(true),
-      image: z.string(),
+      // Ad type - determines which content fields are used
+      type: z.enum(['image', 'html']).default('image'),
+      
+      // Image ad properties (existing - backwards compatible)
+      image: z.string().optional(),
       link: z.string().url().optional(),
-      alt: z.string(),
+      alt: z.string().optional(),
+      
+      // HTML ad properties (pure HTML only, no iframes)
+      htmlContent: z.string().optional().refine((content) => {
+        if (!content) return true; // Allow empty/undefined
+        
+        // Check for iframe tags (case insensitive)
+        const hasIframe = /<iframe[\s\S]*?<\/iframe>/gi.test(content) || /<iframe[^>]*\/?>/gi.test(content);
+        
+        return !hasIframe;
+      }, {
+        message: "HTML content cannot contain iframe tags. Use only pure HTML elements like <a>, <img>, <div>, etc."
+      }),
+      
+      // Common properties
       placement: z.enum([
         'between-hero-and-content',
         'ad-section-2-sidebar', 
@@ -304,7 +326,22 @@ const ads = defineCollection({
         'categories-sidebar',
         'tags-sidebar'
       ]),
-    }))
+      priority: z.number().default(1), // For ad ordering
+    })).refine((banners) => {
+      // Custom validation: ensure each ad has the required content for its type
+      return banners.every(banner => {
+        switch (banner.type) {
+          case 'image':
+            return banner.image && banner.alt;
+          case 'html':
+            return banner.htmlContent;
+          default:
+            return false;
+        }
+      });
+    }, {
+      message: "Each ad must have the required content fields for its type (image+alt for 'image', htmlContent for 'html')"
+    })
   })
 });
 

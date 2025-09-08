@@ -10,7 +10,7 @@ import {
   createPaginationData,
   getTagsWithPostCounts
 } from '../../core/blogLogic';
-import AuthorCard from '../ui/AuthorCard.astro';
+import LeadForm from '../LeadForm.astro';
 import BlogCardHorizontal from '../ui/BlogCardHorizontal.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
 
@@ -72,9 +72,16 @@ const page = paginationData;
       <!-- Sticky Sidebar -->
       <aside class="section4-sidebar">
         
-        <!-- Author Card -->
-        <div class="section4-widget">
-          <AuthorCard />
+        <!-- Newsletter Signup -->
+        <div class="section4-widget section4-newsletter-widget">
+          <div class="section4-widget-header">
+            <div class="section4-widget-line"></div>
+            <h3 class="section4-widget-title">Newsletter</h3>
+          </div>
+          <div class="section4-newsletter-description">
+            <p>Stay updated with our latest articles and insights. Join our community!</p>
+          </div>
+          <LeadForm />
         </div>
         
         <!-- Tags Section -->
@@ -228,13 +235,25 @@ const page = paginationData;
   /* Widgets inherit their own styling */
 }
 
-.section4-tags-widget {
+.section4-tags-widget,
+.section4-newsletter-widget {
   background: var(--bg-secondary);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
   padding: 1.5rem;
   backdrop-filter: blur(4px);
+}
+
+.section4-newsletter-description {
+  margin-bottom: 1.5rem;
+}
+
+.section4-newsletter-description p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .section4-widget-header {

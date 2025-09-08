@@ -3,16 +3,18 @@
     "id": "main",
     "global": {
       "enabled": true,
-      "testMode": true
+      "testMode": true,
+      "security": {
+        "allowHtmlAds": true
+      }
     },
     "banners": [
     {
       "id": "between-hero-and-content-banner",
       "name": "Ad between hero and content",
       "enabled": true,
-      "image": "https://images.astropress.dev/advertisement01.jpg",
-      "link": "https://example.com/coffee-sale",
-      "alt": "Coffee Equipment Sale - 30% Off All Items",
+      "type": "html",
+      "htmlContent": "<a rel=\"sponsored\" href=\"https://appsumo.8odi.net/c/3188174/3205585/7443\" target=\"_top\" id=\"3205585\"><img src=\"//a.impactradius-go.com/display-ad/7443-3205585\" border=\"0\" alt=\"\" width=\"1456\" height=\"180\"/></a><img height=\"0\" width=\"0\" src=\"https://appsumo.8odi.net/i/3188174/3205585/7443\" style=\"position:absolute;visibility:hidden;\" border=\"0\" />",
       "placement": "between-hero-and-content"
     },
     {
@@ -28,9 +30,8 @@
       "id": "ad-section-2-horizontal-banner",
       "name": "Ad Section 2 Horizontal Banner",
       "enabled": true,
-      "image": "https://images.astropress.dev/advertisement01.jpg",
-      "link": "https://example.com/coffee-sale",
-      "alt": "Coffee Equipment Sale - 30% Off All Items",
+      "type": "html",
+      "htmlContent": "<a rel=\"sponsored\" href=\"https://appsumo.8odi.net/c/3188174/3205585/7443\" target=\"_top\" id=\"3205585\"><img src=\"//a.impactradius-go.com/display-ad/7443-3205585\" border=\"0\" alt=\"\" width=\"1456\" height=\"180\"/></a><img height=\"0\" width=\"0\" src=\"https://appsumo.8odi.net/i/3188174/3205585/7443\" style=\"position:absolute;visibility:hidden;\" border=\"0\" />",
       "placement": "ad-section-2-horizontal"
     },
     {
@@ -46,18 +47,16 @@
       "id": "article-sidebar",
       "name": "Article Sidebar Banner",
       "enabled": true,
-      "image": "https://images.astropress.dev/g_categories_img03.png",
-      "link": "https://example.com/coffee-grinder",
-      "alt": "Premium Coffee Grinder - Perfect Consistency",
+      "type": "html",
+      "htmlContent": "<a rel=\"sponsored\" href=\"https://1.envato.market/c/3188174/3249423/4662?subId1=ULVG\" target=\"_top\" id=\"3249423\"><img src=\"//a.impactradius-go.com/display-ad/4662-3249423\" border=\"0\" alt=\"\" width=\"300\" height=\"250\"/></a><img height=\"0\" width=\"0\" src=\"https://1.envato.market/i/3188174/3249423/4662\" style=\"position:absolute;visibility:hidden;\" border=\"0\" />",
       "placement": "article-sidebar"
     },
     {
       "id": "homepage-between-posts",
       "name": "Homepage Between Blog Posts",
       "enabled": true,
-      "image": "https://images.astropress.dev/advertisement01.jpg",
-      "link": "https://example.com/coffee-subscription",
-      "alt": "Premium Coffee Subscription - Monthly Delivery",
+      "type": "html",
+      "htmlContent": "<a rel=\"sponsored\" href=\"https://appsumo.8odi.net/c/3188174/3205585/7443\" target=\"_top\" id=\"3205585\"><img src=\"//a.impactradius-go.com/display-ad/7443-3205585\" border=\"0\" alt=\"\" width=\"1456\" height=\"180\"/></a><img height=\"0\" width=\"0\" src=\"https://appsumo.8odi.net/i/3188174/3205585/7443\" style=\"position:absolute;visibility:hidden;\" border=\"0\" />",
       "placement": "homepage-between-posts"
     },
     {

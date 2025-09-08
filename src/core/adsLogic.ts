@@ -1,22 +1,40 @@
 /**
- * Simple Banner Ads System - Now with Zod validation and type safety
- * Only handles banner ads with images
+ * Enhanced Banner Ads System - Supports Image/HTML/Iframe ads with security
+ * Features comprehensive type safety, validation, and security filtering
  */
 
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-// Use Astro's inferred types from our Zod schema
+// Use Astro's inferred types from our enhanced Zod schema
 export type AdsEntry = CollectionEntry<'ads'>;
 export type AdsData = AdsEntry['data'];
 export type BannerAd = AdsData['banners'][0];
 
-// For backwards compatibility, keep the old interface
+// Enhanced ads configuration interface with security settings
 export interface AdsConfig {
   global: {
     enabled: boolean;
     testMode?: boolean;
+    security?: {
+      allowHtmlAds?: boolean;
+      allowIframeAds?: boolean;
+      allowedIframeDomains?: string[];
+    };
   };
   banners: BannerAd[];
+}
+
+// Type guards for different ad types
+export function isImageAd(banner: BannerAd): banner is BannerAd & { type: 'image'; image: string; alt: string } {
+  return banner.type === 'image' && !!banner.image && !!banner.alt;
+}
+
+export function isHtmlAd(banner: BannerAd): banner is BannerAd & { type: 'html'; htmlContent: string } {
+  return banner.type === 'html' && !!banner.htmlContent;
+}
+
+export function isIframeAd(banner: BannerAd): banner is BannerAd & { type: 'iframe'; iframeUrl: string } {
+  return banner.type === 'iframe' && !!banner.iframeUrl;
 }
 
 /**
@@ -101,4 +119,128 @@ export async function getBannersByPlacement(placement: string): Promise<BannerAd
 export async function hasAdsForPlacement(placement: string): Promise<boolean> {
   const banners = await getBannersByPlacement(placement);
   return banners.length > 0;
+}
+
+/**
+ * Security validation functions
+ */
+
+/**
+ * Check if HTML ads are allowed in the current configuration
+ */
+export async function areHtmlAdsAllowed(): Promise<boolean> {
+  const config = await getAdsConfig();
+  return config.global.security?.allowHtmlAds !== false; // Allow by default for backwards compatibility
+}
+
+/**
+ * Check if iframe ads are allowed in the current configuration
+ */
+export async function areIframeAdsAllowed(): Promise<boolean> {
+  const config = await getAdsConfig();
+  return config.global.security?.allowIframeAds === true; // Require explicit enabling
+}
+
+/**
+ * Check if a specific iframe domain is allowed
+ */
+export async function isIframeDomainAllowed(url: string): Promise<boolean> {
+  const config = await getAdsConfig();
+  const allowedDomains = config.global.security?.allowedIframeDomains || [];
+  
+  if (allowedDomains.length === 0) {
+    // If no specific domains are configured, allow any domain if iframe ads are enabled
+    return await areIframeAdsAllowed();
+  }
+  
+  try {
+    const iframeUrl = new URL(url);
+    return allowedDomains.includes(iframeUrl.hostname);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Filter banners based on security settings
+ */
+export async function filterBannersBySecurity(banners: BannerAd[]): Promise<BannerAd[]> {
+  const config = await getAdsConfig();
+  const securitySettings = config.global.security || {};
+  
+  return banners.filter(async (banner) => {
+    switch (banner.type) {
+      case 'html':
+        return securitySettings.allowHtmlAds !== false;
+      
+      case 'iframe':
+        if (!securitySettings.allowIframeAds) return false;
+        
+        // Check domain allowlist
+        if (securitySettings.allowedIframeDomains?.length > 0 && banner.iframeUrl) {
+          return await isIframeDomainAllowed(banner.iframeUrl);
+        }
+        
+        return true;
+      
+      case 'image':
+      default:
+        return true;
+    }
+  });
+}
+
+/**
+ * Enhanced banner fetching with security filtering
+ */
+
+/**
+ * Get banner ads by placement with security filtering applied
+ */
+export async function getSecureBannersByPlacement(placement: string): Promise<BannerAd[]> {
+  const banners = await getBannersByPlacement(placement);
+  return await filterBannersBySecurity(banners);
+}
+
+/**
+ * Get banner by ID with security validation
+ */
+export async function getSecureBannerById(id: string): Promise<BannerAd | null> {
+  const banner = await getBannerById(id);
+  if (!banner) return null;
+  
+  const filtered = await filterBannersBySecurity([banner]);
+  return filtered.length > 0 ? banner : null;
+}
+
+/**
+ * Validation helpers for different ad types
+ */
+
+/**
+ * Validate image ad has required fields
+ */
+export function validateImageAd(banner: BannerAd): boolean {
+  return banner.type === 'image' && !!banner.image && !!banner.alt;
+}
+
+/**
+ * Validate HTML ad has required fields
+ */
+export function validateHtmlAd(banner: BannerAd): boolean {
+  return banner.type === 'html' && !!banner.htmlContent;
+}
+
+/**
+ * Validate iframe ad has required fields and URL is valid
+ */
+export function validateIframeAd(banner: BannerAd): boolean {
+  if (banner.type !== 'iframe' || !banner.iframeUrl) return false;
+  
+  try {
+    new URL(banner.iframeUrl);
+    return true;
+  } catch {
+    return false;
+  }
 }

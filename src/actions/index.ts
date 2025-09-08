@@ -1,5 +1,6 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
+import { BLOG_API_KEY } from 'astro:env/server';
 
 export const server = {
   // Main lead capture action that calls the AstroPress API
@@ -15,7 +16,7 @@ export const server = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.BLOG_API_KEY}`
+            'Authorization': `Bearer ${BLOG_API_KEY}`
           },
           body: JSON.stringify({
             email: input.email,

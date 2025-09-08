@@ -2,7 +2,7 @@
   {
     "id": "main",
     "global": {
-      "enabled": true,
+      "enabled": false,
       "testMode": true,
       "security": {
         "allowHtmlAds": true

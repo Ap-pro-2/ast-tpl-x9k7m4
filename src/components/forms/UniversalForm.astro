@@ -164,12 +164,10 @@ if (turnstileEnabled && turnstileSiteKey) {
                         {formTurnstileConfigs.has(form.id) && (
                           <div class="turnstile-container">
                             <div 
-                              class="cf-turnstile" 
+                              class="cf-turnstile"
                               data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                              data-theme={formTurnstileConfigs.get(form.id).theme}
-                              data-size={formTurnstileConfigs.get(form.id).size}
-                              data-appearance={formTurnstileConfigs.get(form.id).appearance}
-                              data-action={formTurnstileConfigs.get(form.id).action}
+                              data-theme="auto"
+                              data-size="flexible"
                               data-callback="onTurnstileSuccess"
                               data-error-callback="onTurnstileError"
                               data-expired-callback="onTurnstileExpired"
@@ -239,10 +237,8 @@ if (turnstileEnabled && turnstileSiteKey) {
                     <div 
                       class="cf-turnstile" 
                       data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                      data-theme={formTurnstileConfigs.get(form.id).theme}
-                      data-size={formTurnstileConfigs.get(form.id).size}
-                      data-appearance={formTurnstileConfigs.get(form.id).appearance}
-                      data-action={formTurnstileConfigs.get(form.id).action}
+                      data-theme="auto"
+                      data-size="flexible"
                       data-callback="onTurnstileSuccess"
                       data-error-callback="onTurnstileError"
                       data-expired-callback="onTurnstileExpired"
@@ -300,10 +296,11 @@ if (turnstileEnabled && turnstileSiteKey) {
                       <div 
                         class="cf-turnstile" 
                         data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                        data-theme={formTurnstileConfigs.get(form.id).theme}
-                        data-size={formTurnstileConfigs.get(form.id).size}
-                        data-appearance={formTurnstileConfigs.get(form.id).appearance}
-                        data-action={formTurnstileConfigs.get(form.id).action}
+                        data-theme="auto"
+                        data-size="flexible"
+                        data-callback="onTurnstileSuccess"
+                        data-error-callback="onTurnstileError"
+                        data-expired-callback="onTurnstileExpired"
                       ></div>
                     </div>
                   )}
@@ -348,10 +345,11 @@ if (turnstileEnabled && turnstileSiteKey) {
                       <div 
                         class="cf-turnstile" 
                         data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                        data-theme={formTurnstileConfigs.get(form.id).theme}
-                        data-size={formTurnstileConfigs.get(form.id).size}
-                        data-appearance={formTurnstileConfigs.get(form.id).appearance}
-                        data-action={formTurnstileConfigs.get(form.id).action}
+                        data-theme="auto"
+                        data-size="flexible"
+                        data-callback="onTurnstileSuccess"
+                        data-error-callback="onTurnstileError"
+                        data-expired-callback="onTurnstileExpired"
                       ></div>
                     </div>
                   )}
@@ -553,12 +551,14 @@ if (turnstileEnabled && turnstileSiteKey) {
       try {
         const formData = new FormData(formElement);
         
-        // Add Turnstile token if present
-        if (hasTurnstile && typeof window !== 'undefined') {
-          const token = (window as any).turnstileTokens?.[baseFormId];
+        // With implicit rendering, Turnstile automatically adds cf-turnstile-response
+        // Check if token is present in the form data
+        if (hasTurnstile) {
+          const token = formData.get('cf-turnstile-response');
           if (token) {
-            formData.append('cf-turnstile-response', token);
-            console.log('✅ Added Turnstile token to form submission');
+            console.log('✅ Turnstile token found in form data');
+          } else {
+            console.warn('⚠️ No Turnstile token found - widget may not have completed');
           }
         }
         const { data, error } = await actions.leads(formData);
@@ -624,12 +624,48 @@ if (turnstileEnabled && turnstileSiteKey) {
     });
   }
 
+  // Turnstile callback functions - exactly as per CF docs
+  (window as any).onTurnstileSuccess = function(token: string) {
+    console.log("Turnstile success:", token);
+    // Enable all submit buttons with Turnstile
+    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
+      (btn as HTMLButtonElement).disabled = false;
+    });
+  };
+  
+  (window as any).onTurnstileError = function(errorCode: string) {
+    console.error("Turnstile error:", errorCode);
+    // Keep all submit buttons disabled
+    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
+      (btn as HTMLButtonElement).disabled = true;
+    });
+  };
+  
+  (window as any).onTurnstileExpired = function() {
+    console.warn("Turnstile token expired");
+    // Disable all submit buttons
+    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
+      (btn as HTMLButtonElement).disabled = true;
+    });
+  };
+
   // Initialize forms with proper deduplication
   function initializeForms() {
+    
     const forms = document.querySelectorAll('.universal-form form:not([data-initialized])') as NodeListOf<HTMLFormElement>;
     console.log(`📋 UniversalForm: Found ${forms.length} forms to initialize`);
     forms.forEach((form) => {
       form.setAttribute('data-initialized', 'true');
+      
+      // Disable submit button if Turnstile is present
+      const hasTurnstile = form.querySelector('.cf-turnstile');
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      if (hasTurnstile && submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        console.log('🔒 Submit button disabled - waiting for Turnstile');
+      }
+      
       initializeForm(form);
     });
   }

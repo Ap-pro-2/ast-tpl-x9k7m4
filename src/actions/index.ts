@@ -40,35 +40,13 @@ export const server = {
                            context.request.headers.get('X-Real-IP') ||
                            'unknown';
           
-          // Extract action from source for validation
-          const expectedAction = input.source.split('-')[0] || 'form';
-          
-          // Get expected hostname - use actual request hostname in development
-          let expectedHostname;
-          if (process.env.NODE_ENV === 'development' || context.request.url.includes('localhost')) {
-            // In development, use the actual hostname from the request
-            expectedHostname = new URL(context.request.url).hostname;
-          } else {
-            // In production, use the configured site hostname
-            const { getSiteSettings } = await import('../core/blogLogic');
-            const settings = await getSiteSettings();
-            const siteUrl = new URL(settings.siteUrl);
-            expectedHostname = siteUrl.hostname;
-          }
-          
-          console.log(`Expected hostname: ${expectedHostname}`);
-          
           console.log(`🔍 VALIDATION ATTEMPT:`);
           console.log(`- Token: ${input['cf-turnstile-response'].substring(0, 20)}...`);
           console.log(`- Client IP: ${clientIP}`);
-          console.log(`- Expected Action: ${expectedAction}`);
-          console.log(`- Expected Hostname: ${expectedHostname}`);
           
           const validation = await validateTurnstileToken(
             input['cf-turnstile-response'],
-            clientIP,
-            expectedAction,
-            expectedHostname
+            clientIP
           );
           
           console.log(`🔍 VALIDATION RESULT:`, validation);

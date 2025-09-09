@@ -30,14 +30,18 @@ export default defineConfig({
         context: "server",
         access: "secret"
       }),
-      // Cloudflare Turnstile configuration
+      // Cloudflare Turnstile configuration (optional)
       TURNSTILE_SITE_KEY: envField.string({
         context: "client",
-        access: "public"
+        access: "public",
+        optional: true,
+        default: ""
       }),
       TURNSTILE_SECRET_KEY: envField.string({
         context: "server",
-        access: "secret"
+        access: "secret",
+        optional: true,
+        default: ""
       }),
       TURNSTILE_ENABLED: envField.boolean({
         context: "server",

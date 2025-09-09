@@ -39,7 +39,11 @@ export interface TurnstileValidationResult {
  */
 export async function isTurnstileEnabled(): Promise<boolean> {
   try {
-    return TURNSTILE_ENABLED;
+    // Check if both enabled flag is true AND we have the required keys
+    const enabled = TURNSTILE_ENABLED;
+    const hasKeys = TURNSTILE_SITE_KEY && TURNSTILE_SECRET_KEY && 
+                    TURNSTILE_SITE_KEY.trim() !== '' && TURNSTILE_SECRET_KEY.trim() !== '';
+    return enabled && hasKeys;
   } catch (error) {
     console.warn('Failed to check Turnstile enabled status:', error);
     return false;
@@ -54,7 +58,7 @@ export async function getTurnstileSiteKey(): Promise<string | null> {
     const enabled = await isTurnstileEnabled();
     if (!enabled) return null;
     
-    return TURNSTILE_SITE_KEY;
+    return TURNSTILE_SITE_KEY || null;
   } catch (error) {
     console.warn('Failed to get Turnstile site key:', error);
     return null;

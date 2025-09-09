@@ -220,120 +220,71 @@ const preconnectUrls = getGoogleFontsPreconnects();
       });
     </script>
 
-    <!-- Turnstile Script - Proper Astro Navigation Pattern -->
+    <!-- Turnstile Script - Simplified Navigation Pattern -->
     <script is:inline>
-      // Initialize global Turnstile state
-      if (!window.turnstileStates) {
-        window.turnstileStates = new Map();
-      }
+      // Simple global state for Turnstile tokens
+      window.turnstileTokens = window.turnstileTokens || {};
       
       function waitForTurnstile(callback, maxAttempts = 10) {
         if (typeof window.turnstile !== 'undefined') {
           callback();
         } else if (maxAttempts > 0) {
-          console.log('⏳ Waiting for Turnstile API to load...');
           setTimeout(() => waitForTurnstile(callback, maxAttempts - 1), 100);
         } else {
-          console.error('❌ Turnstile API failed to load after 1 second');
+          console.error('❌ Turnstile API failed to load');
         }
       }
       
       function initializeTurnstile() {
-        console.log('🔐 Initializing Turnstile widgets...');
+        const widgets = document.querySelectorAll('.cf-turnstile:not([data-rendered])');
         
-        const widgets = document.querySelectorAll('.cf-turnstile');
-        console.log(`📊 Found ${widgets.length} Turnstile widgets`);
-        
-        if (widgets.length === 0) {
-          return;
-        }
+        if (widgets.length === 0) return;
         
         waitForTurnstile(() => {
-          widgets.forEach((widget, index) => {
-            // Skip if widget is already rendered
-            if (widget.innerHTML && widget.innerHTML.trim() !== '') {
-              return;
-            }
-            
-            const form = widget.closest('form');
-            if (!form) return;
-
-            const formId = form.id.replace('-form', '');
-            console.log(`✅ Setting up Turnstile for form: ${formId}`);
-
-            // Create callback functions
-            const successCallback = `onTurnstileSuccess_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
-            const errorCallback = `onTurnstileError_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
-            const expiredCallback = `onTurnstileExpired_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
-
-            // Success callback - just store the token
-            window[successCallback] = function(token) {
-              console.log(`✅ Turnstile success for ${formId}`);
-              window.turnstileStates.set(formId, { verified: true, token });
-            };
-
-            // Error callback - just log
-            window[errorCallback] = function(errorCode) {
-              console.error(`❌ Turnstile error for ${formId}:`, errorCode);
-              window.turnstileStates.set(formId, { verified: false, error: errorCode });
-            };
-
-            // Expired callback - just log
-            window[expiredCallback] = function() {
-              console.warn(`⏰ Turnstile expired for ${formId}`);
-              window.turnstileStates.set(formId, { verified: false });
-            };
-            
-            // Render the widget
+          widgets.forEach((widget) => {
             try {
-              if (window.turnstile && typeof window.turnstile.render === 'function') {
-                window.turnstile.render(widget, {
-                  sitekey: widget.getAttribute('data-sitekey'),
-                  callback: successCallback,
-                  'error-callback': errorCallback,
-                  'expired-callback': expiredCallback,
-                  theme: widget.getAttribute('data-theme') || 'auto',
-                  size: widget.getAttribute('data-size') || 'normal'
-                });
-              }
+              const form = widget.closest('form');
+              if (!form) return;
+
+              const formId = form.id.replace('-form', '');
+              
+              // Mark as rendered to avoid duplicates
+              widget.setAttribute('data-rendered', 'true');
+              
+              // Simple callback approach
+              window.turnstile.render(widget, {
+                sitekey: widget.getAttribute('data-sitekey'),
+                theme: widget.getAttribute('data-theme') || 'auto',
+                size: widget.getAttribute('data-size') || 'normal',
+                callback: function(token) {
+                  console.log(`✅ Turnstile verified for ${formId}`);
+                  window.turnstileTokens[formId] = token;
+                },
+                'error-callback': function(errorCode) {
+                  console.error(`❌ Turnstile error for ${formId}:`, errorCode);
+                  delete window.turnstileTokens[formId];
+                },
+                'expired-callback': function() {
+                  console.warn(`⏰ Turnstile expired for ${formId}`);
+                  delete window.turnstileTokens[formId];
+                }
+              });
             } catch (error) {
-              console.error(`Failed to render Turnstile widget for ${formId}:`, error);
+              console.error('Turnstile render error:', error);
             }
           });
         });
       }
 
-      // Cleanup function to prevent duplicates
-      function cleanupTurnstile() {
-        console.log('🧹 Cleaning up Turnstile...');
-        
-        // Clear existing widgets
-        const widgets = document.querySelectorAll('.cf-turnstile');
-        widgets.forEach(widget => {
-          if (widget.innerHTML && widget.innerHTML.trim() !== '') {
-            widget.innerHTML = '';
-          }
-        });
-        
-        // Clear state
-        if (window.turnstileStates) {
-          window.turnstileStates.clear();
-        }
-      }
-
-      // THIS IS THE KEY: Use astro:page-load for navigation
-      document.addEventListener('astro:before-swap', () => {
-        console.log('🔄 astro:before-swap - Cleaning up Turnstile');
-        cleanupTurnstile();
-      });
+      // Clean navigation approach
+      document.addEventListener('astro:page-load', initializeTurnstile);
       
-      document.addEventListener('astro:page-load', () => {
-        console.log('🔄 astro:page-load - Initializing Turnstile');
+      // Initialize on first load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeTurnstile);
+      } else {
         initializeTurnstile();
-      });
-      
-      // Also run on initial page load
-      initializeTurnstile();
+      }
     </script>
 
     <slot name="head" />

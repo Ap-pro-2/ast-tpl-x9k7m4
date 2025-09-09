@@ -22,8 +22,6 @@ import {
 import { 
   isTurnstileEnabled,
   getTurnstileSiteKey,
-  getTurnstileElementId,
-  getTurnstileCallbacks,
   generateTurnstileWidgetConfig
 } from '../../core/turnstileLogic';
 
@@ -172,9 +170,6 @@ if (turnstileEnabled && turnstileSiteKey) {
                               data-size={formTurnstileConfigs.get(form.id).size}
                               data-appearance={formTurnstileConfigs.get(form.id).appearance}
                               data-action={formTurnstileConfigs.get(form.id).action}
-                              data-callback={formTurnstileConfigs.get(form.id).callback}
-                              data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
-                              data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
                             ></div>
                           </div>
                         )}
@@ -245,9 +240,6 @@ if (turnstileEnabled && turnstileSiteKey) {
                       data-size={formTurnstileConfigs.get(form.id).size}
                       data-appearance={formTurnstileConfigs.get(form.id).appearance}
                       data-action={formTurnstileConfigs.get(form.id).action}
-                      data-callback={formTurnstileConfigs.get(form.id).callback}
-                      data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
-                      data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
                     ></div>
                   </div>
                 )}
@@ -306,9 +298,6 @@ if (turnstileEnabled && turnstileSiteKey) {
                         data-size={formTurnstileConfigs.get(form.id).size}
                         data-appearance={formTurnstileConfigs.get(form.id).appearance}
                         data-action={formTurnstileConfigs.get(form.id).action}
-                        data-callback={formTurnstileConfigs.get(form.id).callback}
-                        data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
-                        data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
                       ></div>
                     </div>
                   )}
@@ -357,9 +346,6 @@ if (turnstileEnabled && turnstileSiteKey) {
                         data-size={formTurnstileConfigs.get(form.id).size}
                         data-appearance={formTurnstileConfigs.get(form.id).appearance}
                         data-action={formTurnstileConfigs.get(form.id).action}
-                        data-callback={formTurnstileConfigs.get(form.id).callback}
-                        data-error-callback={formTurnstileConfigs.get(form.id)['error-callback']}
-                        data-expired-callback={formTurnstileConfigs.get(form.id)['expired-callback']}
                       ></div>
                     </div>
                   )}
@@ -544,10 +530,10 @@ if (turnstileEnabled && turnstileSiteKey) {
       hideMessages();
       
       // Check Turnstile verification if enabled
-      if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstileStates) {
-        const turnstileState = (window as any).turnstileStates.get(baseFormId);
+      if (hasTurnstile && typeof window !== 'undefined') {
+        const token = (window as any).turnstileTokens?.[baseFormId];
         
-        if (!turnstileState || !turnstileState.verified) {
+        if (!token) {
           if (errorMessage) {
             errorMessage.textContent = 'Please complete the security verification.';
             errorMessage.style.display = 'block';
@@ -562,10 +548,10 @@ if (turnstileEnabled && turnstileSiteKey) {
         const formData = new FormData(formElement);
         
         // Add Turnstile token if present
-        if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstileStates) {
-          const turnstileState = (window as any).turnstileStates.get(baseFormId);
-          if (turnstileState && turnstileState.token) {
-            formData.append('cf-turnstile-response', turnstileState.token);
+        if (hasTurnstile && typeof window !== 'undefined') {
+          const token = (window as any).turnstileTokens?.[baseFormId];
+          if (token) {
+            formData.append('cf-turnstile-response', token);
             console.log('✅ Added Turnstile token to form submission');
           }
         }
@@ -610,8 +596,8 @@ if (turnstileEnabled && turnstileSiteKey) {
               try {
                 (window as any).turnstile.reset(widget);
                 // Reset our state
-                if ((window as any).turnstileStates) {
-                  (window as any).turnstileStates.set(baseFormId, { verified: false });
+                if ((window as any).turnstileTokens) {
+                  delete (window as any).turnstileTokens[baseFormId];
                 }
               } catch (e) {
                 console.warn('Failed to reset Turnstile widget:', e);

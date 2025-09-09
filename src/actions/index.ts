@@ -1,6 +1,6 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
-import { BLOG_API_KEY } from 'astro:env/server';
+import { BLOG_API_KEY, TURNSTILE_ENABLED, TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY } from 'astro:env/server';
 import { validateTurnstileToken, isTurnstileEnabled } from '../core/turnstileLogic';
 
 export const server = {

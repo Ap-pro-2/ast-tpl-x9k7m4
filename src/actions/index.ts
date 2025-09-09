@@ -42,23 +42,13 @@ export const server = {
           // Extract action from source for validation
           const expectedAction = input.source.split('-')[0] || 'form';
           
-          // For test keys, disable hostname validation in development
-          let expectedHostname = undefined;
+          // Get expected hostname from site settings for production validation
+          const { getSiteSettings } = await import('../core/blogLogic');
+          const settings = await getSiteSettings();
+          const siteUrl = new URL(settings.siteUrl);
+          const expectedHostname = siteUrl.hostname;
           
-          // Only validate hostname for production keys (not test keys)
-          const isTestKey = input['cf-turnstile-response'] && 
-                          (TURNSTILE_SITE_KEY.startsWith('0x4AAAAAAB0') || 
-                           TURNSTILE_SECRET_KEY.startsWith('0x4AAAAAAB0'));
-          
-          if (!isTestKey) {
-            const { getSiteSettings } = await import('../core/blogLogic');
-            const settings = await getSiteSettings();
-            const siteUrl = new URL(settings.siteUrl);
-            expectedHostname = siteUrl.hostname;
-            console.log(`Expected hostname: ${expectedHostname}`);
-          } else {
-            console.log('Using test keys - skipping hostname validation');
-          }
+          console.log(`Expected hostname: ${expectedHostname}`);
           
           const validation = await validateTurnstileToken(
             input['cf-turnstile-response'],

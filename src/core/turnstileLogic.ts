@@ -61,9 +61,11 @@ export async function isTurnstileEnabled(): Promise<boolean> {
     console.log(`- Enabled flag: ${!!enabled}`);
     console.log(`- Final enabled state: ${enabled && hasKeys}`);
     
-    // Warn about demo keys
-    if (enabled && hasKeys && siteKey.startsWith('0x4AAAAAAB0')) {
-      console.warn('⚠️ Using demo Turnstile keys - replace with real keys from Cloudflare dashboard');
+    // Log key status
+    if (enabled && hasKeys) {
+      console.log('✅ Turnstile configured with valid keys');
+    } else if (enabled && !hasKeys) {
+      console.warn('⚠️ Turnstile enabled but keys are missing or empty');
     }
     
     return enabled && hasKeys;

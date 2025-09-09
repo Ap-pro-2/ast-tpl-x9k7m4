@@ -170,6 +170,9 @@ if (turnstileEnabled && turnstileSiteKey) {
                               data-size={formTurnstileConfigs.get(form.id).size}
                               data-appearance={formTurnstileConfigs.get(form.id).appearance}
                               data-action={formTurnstileConfigs.get(form.id).action}
+                              data-callback="onTurnstileSuccess"
+                              data-error-callback="onTurnstileError"
+                              data-expired-callback="onTurnstileExpired"
                             ></div>
                           </div>
                         )}
@@ -240,6 +243,9 @@ if (turnstileEnabled && turnstileSiteKey) {
                       data-size={formTurnstileConfigs.get(form.id).size}
                       data-appearance={formTurnstileConfigs.get(form.id).appearance}
                       data-action={formTurnstileConfigs.get(form.id).action}
+                      data-callback="onTurnstileSuccess"
+                      data-error-callback="onTurnstileError"
+                      data-expired-callback="onTurnstileExpired"
                     ></div>
                   </div>
                 )}

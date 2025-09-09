@@ -1,6 +1,6 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
-import { BLOG_API_KEY, TURNSTILE_ENABLED, TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY } from 'astro:env/server';
+import { BLOG_API_KEY, TURNSTILE_ENABLED, TURNSTILE_SECRET_KEY } from 'astro:env/server';
 import { validateTurnstileToken, isTurnstileEnabled } from '../core/turnstileLogic';
 
 export const server = {
@@ -19,6 +19,7 @@ export const server = {
         // Turnstile validation if enabled and token provided
         console.log('🔍 SERVER ACTION DEBUG:');
         console.log(`- Environment TURNSTILE_ENABLED: ${TURNSTILE_ENABLED} (type: ${typeof TURNSTILE_ENABLED})`);
+        console.log(`- Environment TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY ? TURNSTILE_SECRET_KEY.substring(0, 10) + '...' : 'NOT SET'}`);
         console.log(`- Environment BLOG_API_KEY: ${BLOG_API_KEY ? BLOG_API_KEY.substring(0, 10) + '...' : 'NOT SET'}`);
         
         const turnstileEnabled = await isTurnstileEnabled();
@@ -42,13 +43,26 @@ export const server = {
           // Extract action from source for validation
           const expectedAction = input.source.split('-')[0] || 'form';
           
-          // Get expected hostname from site settings for production validation
-          const { getSiteSettings } = await import('../core/blogLogic');
-          const settings = await getSiteSettings();
-          const siteUrl = new URL(settings.siteUrl);
-          const expectedHostname = siteUrl.hostname;
+          // Get expected hostname - use actual request hostname in development
+          let expectedHostname;
+          if (process.env.NODE_ENV === 'development' || context.request.url.includes('localhost')) {
+            // In development, use the actual hostname from the request
+            expectedHostname = new URL(context.request.url).hostname;
+          } else {
+            // In production, use the configured site hostname
+            const { getSiteSettings } = await import('../core/blogLogic');
+            const settings = await getSiteSettings();
+            const siteUrl = new URL(settings.siteUrl);
+            expectedHostname = siteUrl.hostname;
+          }
           
           console.log(`Expected hostname: ${expectedHostname}`);
+          
+          console.log(`🔍 VALIDATION ATTEMPT:`);
+          console.log(`- Token: ${input['cf-turnstile-response'].substring(0, 20)}...`);
+          console.log(`- Client IP: ${clientIP}`);
+          console.log(`- Expected Action: ${expectedAction}`);
+          console.log(`- Expected Hostname: ${expectedHostname}`);
           
           const validation = await validateTurnstileToken(
             input['cf-turnstile-response'],
@@ -57,8 +71,11 @@ export const server = {
             expectedHostname
           );
           
+          console.log(`🔍 VALIDATION RESULT:`, validation);
+          
           if (!validation.valid) {
-            console.error('Turnstile validation failed:', validation.error);
+            console.error('❌ Turnstile validation failed:', validation.error);
+            console.error('❌ Full validation data:', validation.data);
             throw new ActionError({
               code: 'BAD_REQUEST',
               message: 'Security verification failed. Please try again.'

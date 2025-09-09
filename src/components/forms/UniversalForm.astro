@@ -618,18 +618,24 @@ if (turnstileEnabled && turnstileSiteKey) {
     });
   }
 
-  // Initialize all universal forms on the page
-  document.addEventListener('DOMContentLoaded', () => {
-    const forms = document.querySelectorAll('.universal-form form') as NodeListOf<HTMLFormElement>;
+  // Initialize forms with proper deduplication
+  function initializeForms() {
+    const forms = document.querySelectorAll('.universal-form form:not([data-initialized])') as NodeListOf<HTMLFormElement>;
     console.log(`📋 UniversalForm: Found ${forms.length} forms to initialize`);
-    forms.forEach(initializeForm);
-  });
+    forms.forEach((form) => {
+      form.setAttribute('data-initialized', 'true');
+      initializeForm(form);
+    });
+  }
 
   // Handle dynamic content and page transitions (Astro view transitions)
-  document.addEventListener('astro:page-load', () => {
-    const forms = document.querySelectorAll('.universal-form form') as NodeListOf<HTMLFormElement>;
-    console.log(`📋 UniversalForm (after navigation): Found ${forms.length} forms to initialize`);
-    forms.forEach(initializeForm);
-  });
+  document.addEventListener('astro:page-load', initializeForms);
+  
+  // Initialize on first load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeForms);
+  } else {
+    initializeForms();
+  }
 </script>
 

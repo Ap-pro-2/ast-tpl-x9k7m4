@@ -39,13 +39,36 @@ export interface TurnstileValidationResult {
  */
 export async function isTurnstileEnabled(): Promise<boolean> {
   try {
-    // Check if both enabled flag is true AND we have the required keys
+    // Read environment variables directly
     const enabled = TURNSTILE_ENABLED;
-    const hasKeys = TURNSTILE_SITE_KEY && TURNSTILE_SECRET_KEY && 
-                    TURNSTILE_SITE_KEY.trim() !== '' && TURNSTILE_SECRET_KEY.trim() !== '';
+    const siteKey = TURNSTILE_SITE_KEY;
+    const secretKey = TURNSTILE_SECRET_KEY;
+    
+    // Comprehensive environment logging
+    console.log('🔍 TURNSTILE ENVIRONMENT DEBUG:');
+    console.log(`Raw Environment Values:`);
+    console.log(`- TURNSTILE_ENABLED (type: ${typeof enabled}): ${enabled}`);
+    console.log(`- TURNSTILE_SITE_KEY (type: ${typeof siteKey}): "${siteKey}"`);
+    console.log(`- TURNSTILE_SECRET_KEY (type: ${typeof secretKey}): "${secretKey ? secretKey.substring(0, 15) + '...' : 'EMPTY/UNDEFINED'}"`);
+    
+    // Validation checks
+    const hasKeys = siteKey && secretKey && 
+                    siteKey.trim() !== '' && secretKey.trim() !== '';
+    
+    console.log(`Validation Results:`);
+    console.log(`- Has site key: ${!!(siteKey && siteKey.trim() !== '')}`);
+    console.log(`- Has secret key: ${!!(secretKey && secretKey.trim() !== '')}`);
+    console.log(`- Enabled flag: ${!!enabled}`);
+    console.log(`- Final enabled state: ${enabled && hasKeys}`);
+    
+    // Warn about demo keys
+    if (enabled && hasKeys && siteKey.startsWith('0x4AAAAAAB0')) {
+      console.warn('⚠️ Using demo Turnstile keys - replace with real keys from Cloudflare dashboard');
+    }
+    
     return enabled && hasKeys;
   } catch (error) {
-    console.warn('Failed to check Turnstile enabled status:', error);
+    console.error('❌ Failed to check Turnstile enabled status:', error);
     return false;
   }
 }

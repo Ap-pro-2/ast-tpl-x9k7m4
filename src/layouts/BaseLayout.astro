@@ -259,6 +259,23 @@ const preconnectUrls = getGoogleFontsPreconnects();
       
       function onTurnstileError(errorCode) {
         console.error('❌ Turnstile error:', errorCode);
+        
+        // Check if we're using demo/example keys
+        const widgets = document.querySelectorAll('.cf-turnstile[data-sitekey]');
+        const sitekey = widgets.length > 0 ? widgets[0].getAttribute('data-sitekey') : '';
+        
+        if (sitekey && sitekey.startsWith('0x4AAAAAAB0')) {
+          console.warn('⚠️ Using demo/example Turnstile keys!');
+          console.log('🔧 To fix: Create real Turnstile widget at https://dash.cloudflare.com/?to=/:account/turnstile');
+          console.log('📋 Then replace demo keys in .env with your real site key and secret key');
+          console.log('🌐 Make sure to add your domain (localhost for dev) to the widget configuration');
+          
+          // Show user-friendly message in the widget area
+          widgets.forEach(widget => {
+            widget.innerHTML = '<div style="padding: 10px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; font-size: 12px; color: #856404;">⚠️ Demo keys - Setup real Turnstile keys for testing</div>';
+          });
+        }
+        
         // Clear any stored tokens on error
         window.turnstileTokens = {};
       }

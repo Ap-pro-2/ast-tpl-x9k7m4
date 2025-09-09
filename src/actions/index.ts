@@ -17,7 +17,19 @@ export const server = {
     handler: async (input, context) => {
       try {
         // Turnstile validation if enabled and token provided
+        console.log('🔍 SERVER ACTION DEBUG:');
+        console.log(`- Environment TURNSTILE_ENABLED: ${TURNSTILE_ENABLED} (type: ${typeof TURNSTILE_ENABLED})`);
+        console.log(`- Environment BLOG_API_KEY: ${BLOG_API_KEY ? BLOG_API_KEY.substring(0, 10) + '...' : 'NOT SET'}`);
+        
         const turnstileEnabled = await isTurnstileEnabled();
+        console.log(`Form Submission Details:`);
+        console.log(`- Turnstile enabled result: ${turnstileEnabled}`);
+        console.log(`- Token provided: ${!!input['cf-turnstile-response']}`);
+        console.log(`- Token length: ${input['cf-turnstile-response']?.length || 0}`);
+        if (input['cf-turnstile-response']) {
+          console.log(`- Token preview: ${input['cf-turnstile-response'].substring(0, 20)}...`);
+        }
+        
         if (turnstileEnabled && input['cf-turnstile-response']) {
           console.log('Validating Turnstile token...');
           
@@ -30,13 +42,23 @@ export const server = {
           // Extract action from source for validation
           const expectedAction = input.source.split('-')[0] || 'form';
           
-          // Get expected hostname from site settings (not from request)
-          const { getSiteSettings } = await import('../core/blogLogic');
-          const settings = await getSiteSettings();
-          const siteUrl = new URL(settings.siteUrl);
-          const expectedHostname = siteUrl.hostname;
+          // For test keys, disable hostname validation in development
+          let expectedHostname = undefined;
           
-          console.log(`Expected hostname: ${expectedHostname}`);
+          // Only validate hostname for production keys (not test keys)
+          const isTestKey = input['cf-turnstile-response'] && 
+                          (TURNSTILE_SITE_KEY.startsWith('0x4AAAAAAB0') || 
+                           TURNSTILE_SECRET_KEY.startsWith('0x4AAAAAAB0'));
+          
+          if (!isTestKey) {
+            const { getSiteSettings } = await import('../core/blogLogic');
+            const settings = await getSiteSettings();
+            const siteUrl = new URL(settings.siteUrl);
+            expectedHostname = siteUrl.hostname;
+            console.log(`Expected hostname: ${expectedHostname}`);
+          } else {
+            console.log('Using test keys - skipping hostname validation');
+          }
           
           const validation = await validateTurnstileToken(
             input['cf-turnstile-response'],

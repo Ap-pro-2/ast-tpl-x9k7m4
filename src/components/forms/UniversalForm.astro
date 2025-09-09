@@ -535,10 +535,7 @@ if (turnstileEnabled && turnstileSiteKey) {
           submitBtn.dataset.originalText = originalText || '';
         }
         submitBtn.textContent = loading ? 'Sending...' : originalText;
-        // Don't disable button here if Turnstile is present - let Turnstile handle it
-        if (!hasTurnstile) {
-          submitBtn.disabled = loading;
-        }
+        submitBtn.disabled = loading;
       }
     }
 
@@ -615,11 +612,6 @@ if (turnstileEnabled && turnstileSiteKey) {
                 // Reset our state
                 if ((window as any).turnstileStates) {
                   (window as any).turnstileStates.set(baseFormId, { verified: false });
-                }
-                // Re-disable submit button
-                if (submitBtn) {
-                  submitBtn.disabled = true;
-                  submitBtn.style.opacity = '0.6';
                 }
               } catch (e) {
                 console.warn('Failed to reset Turnstile widget:', e);

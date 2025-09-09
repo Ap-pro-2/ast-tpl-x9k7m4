@@ -30,15 +30,19 @@ export const server = {
           // Extract action from source for validation
           const expectedAction = input.source.split('-')[0] || 'form';
           
-          // Get hostname from request
-          const url = new URL(context.request.url);
-          const hostname = url.hostname;
+          // Get expected hostname from site settings (not from request)
+          const { getSiteSettings } = await import('../core/blogLogic');
+          const settings = await getSiteSettings();
+          const siteUrl = new URL(settings.siteUrl);
+          const expectedHostname = siteUrl.hostname;
+          
+          console.log(`Expected hostname: ${expectedHostname}`);
           
           const validation = await validateTurnstileToken(
             input['cf-turnstile-response'],
             clientIP,
             expectedAction,
-            hostname
+            expectedHostname
           );
           
           if (!validation.valid) {

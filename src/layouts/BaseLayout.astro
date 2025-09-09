@@ -245,86 +245,49 @@ const preconnectUrls = getGoogleFontsPreconnects();
         console.log(`📊 Found ${widgets.length} Turnstile widgets`);
         
         if (widgets.length === 0) {
-          console.log('ℹ️ No Turnstile widgets found on this page');
           return;
         }
         
-        // First, ensure all forms have enabled submit buttons by default
-        const allForms = document.querySelectorAll('form');
-        allForms.forEach(form => {
-          const submitBtn = form.querySelector('button[type="submit"]');
-          if (submitBtn) {
-            const hasTurnstile = form.querySelector('.cf-turnstile');
-            if (!hasTurnstile) {
-              // Forms without Turnstile should have enabled buttons
-              submitBtn.disabled = false;
-              submitBtn.style.opacity = '1';
-            }
-          }
-        });
-        
         waitForTurnstile(() => {
           widgets.forEach((widget, index) => {
-            // Skip if widget is already rendered to prevent duplicates
+            // Skip if widget is already rendered
             if (widget.innerHTML && widget.innerHTML.trim() !== '') {
-              console.log(`⚠️ Widget ${index + 1} already rendered, skipping...`);
               return;
             }
             
             const form = widget.closest('form');
-            if (!form) {
-              console.warn(`Widget ${index + 1}: No parent form found`);
-              return;
-            }
+            if (!form) return;
 
             const formId = form.id.replace('-form', '');
-            const submitBtn = form.querySelector('button[type="submit"]');
-            
-            if (!submitBtn) {
-              console.warn(`Widget ${index + 1}: No submit button found for form ${formId}`);
-              return;
-            }
-
             console.log(`✅ Setting up Turnstile for form: ${formId}`);
-
-            // Initially disable submit button ONLY for forms with Turnstile
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
 
             // Create callback functions
             const successCallback = `onTurnstileSuccess_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
             const errorCallback = `onTurnstileError_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
             const expiredCallback = `onTurnstileExpired_${formId.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
-            // Success callback
+            // Success callback - just store the token
             window[successCallback] = function(token) {
               console.log(`✅ Turnstile success for ${formId}`);
               window.turnstileStates.set(formId, { verified: true, token });
-              submitBtn.disabled = false;
-              submitBtn.style.opacity = '1';
             };
 
-            // Error callback
+            // Error callback - just log
             window[errorCallback] = function(errorCode) {
               console.error(`❌ Turnstile error for ${formId}:`, errorCode);
               window.turnstileStates.set(formId, { verified: false, error: errorCode });
-              submitBtn.disabled = true;
-              submitBtn.style.opacity = '0.6';
             };
 
-            // Expired callback
+            // Expired callback - just log
             window[expiredCallback] = function() {
               console.warn(`⏰ Turnstile expired for ${formId}`);
               window.turnstileStates.set(formId, { verified: false });
-              submitBtn.disabled = true;
-              submitBtn.style.opacity = '0.6';
             };
             
-            // Try to render the widget
+            // Render the widget
             try {
               if (window.turnstile && typeof window.turnstile.render === 'function') {
-                console.log(`🎨 Rendering Turnstile widget for ${formId}`);
-                const widgetId = window.turnstile.render(widget, {
+                window.turnstile.render(widget, {
                   sitekey: widget.getAttribute('data-sitekey'),
                   callback: successCallback,
                   'error-callback': errorCallback,
@@ -332,14 +295,11 @@ const preconnectUrls = getGoogleFontsPreconnects();
                   theme: widget.getAttribute('data-theme') || 'auto',
                   size: widget.getAttribute('data-size') || 'normal'
                 });
-                console.log(`🎯 Widget rendered with ID: ${widgetId}`);
               }
             } catch (error) {
               console.error(`Failed to render Turnstile widget for ${formId}:`, error);
             }
           });
-          
-          console.log(`🏁 Turnstile initialization complete. Widgets configured: ${widgets.length}`);
         });
       }
 

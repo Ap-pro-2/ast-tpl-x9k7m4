@@ -28,7 +28,7 @@ const processedContent = rawMdxContent
 
 // Enhanced SEO data from pages collection
 const seoData = {
-  pageTitle: pageData?.seo?.title || `About Us | ${settings.siteName}`,
+  pageTitle: pageData?.seo?.title || `About Us`,
   description: pageData?.seo?.description || pageData?.description || `Learn about ${settings.siteName} and our mission`,
   keywords: pageData?.seo?.keywords || [],
   ogImage: pageData?.seo?.ogImage || settings.defaultOgImage,

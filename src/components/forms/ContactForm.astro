@@ -1,0 +1,186 @@
+---
+import { getFormById } from '../../core/formsLogic';
+
+export interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Get form data from forms.json
+const formData = await getFormById('contact-us');
+
+// If form is disabled or not found, don't render
+if (!formData) {
+  return;
+}
+
+const { title, description, buttonText } = formData.data;
+
+---
+
+<div class={`contact-form-wrapper ${className}`}>
+  <!-- Error Message -->
+  <div id="contact-form-error-message" class="theme-contact-form-error" style="display: none;">
+    Something went wrong. Please try again.
+  </div>
+  
+  <!-- Success Message -->
+  <div id="contact-form-success-message" class="theme-contact-form-success" style="display: none;">
+    Thank you! Your message has been sent successfully.
+  </div>
+
+  <!-- Contact Form -->
+  <div class="theme-contact-form-container">
+    <form id="contact-form" class="theme-contact-form">
+      <div class="form-fields">
+        <!-- Name Field -->
+        <div class="theme-contact-form-field">
+          <label class="theme-contact-form-label" for="contact-form-name">
+            Name
+          </label>
+          <input
+            type="text"
+            id="contact-form-name"
+            name="name"
+            placeholder="Your Name"
+            required
+            class="theme-contact-form-input"
+          />
+          <p id="contact-form-name-error" class="theme-contact-form-field-error" style="display: none;"></p>
+        </div>
+
+        <!-- Email Field -->
+        <div class="theme-contact-form-field">
+          <label class="theme-contact-form-label" for="contact-form-email">
+            Email
+          </label>
+          <input
+            type="email"
+            id="contact-form-email"
+            name="email"
+            placeholder="Your Email"
+            required
+            class="theme-contact-form-input"
+          />
+          <p id="contact-form-email-error" class="theme-contact-form-field-error" style="display: none;"></p>
+        </div>
+
+        <!-- Message Field -->
+        <div class="theme-contact-form-field">
+          <label class="theme-contact-form-label" for="contact-form-message">
+            Message
+          </label>
+          <textarea
+            id="contact-form-message"
+            name="message"
+            placeholder="Your Message"
+            required
+            class="theme-contact-form-input"
+            rows="5"
+          ></textarea>
+          <p id="contact-form-message-error" class="theme-contact-form-field-error" style="display: none;"></p>
+        </div>
+        
+        <button type="submit" class="theme-contact-form-submit" id="contact-form-submit-btn">
+          {buttonText}
+        </button>
+      </div>
+      
+      <!-- Hidden field for source tracking -->
+      <input type="hidden" name="source" value="contact-page-contact-us" />
+    </form>
+  </div>
+</div>
+
+<script>
+  import { actions } from 'astro:actions';
+
+  function initializeContactForm() {
+    const formElement = document.getElementById('contact-form') as HTMLFormElement;
+    if (!formElement || formElement.hasAttribute('data-initialized')) return;
+    
+    formElement.setAttribute('data-initialized', 'true');
+    
+    const submitBtn = document.getElementById('contact-form-submit-btn') as HTMLButtonElement;
+    const nameError = document.getElementById('contact-form-name-error') as HTMLElement;
+    const emailError = document.getElementById('contact-form-email-error') as HTMLElement;
+    const messageError = document.getElementById('contact-form-message-error') as HTMLElement;
+    const errorMessage = document.getElementById('contact-form-error-message') as HTMLElement;
+    const successMessage = document.getElementById('contact-form-success-message') as HTMLElement;
+
+    function hideMessages() {
+      if (errorMessage) errorMessage.style.display = 'none';
+      if (successMessage) successMessage.style.display = 'none';
+      if (nameError) nameError.style.display = 'none';
+      if (emailError) emailError.style.display = 'none';
+      if (messageError) messageError.style.display = 'none';
+    }
+
+    function setLoading(loading: boolean) {
+      if (submitBtn) {
+        const originalText = submitBtn.dataset.originalText || submitBtn.textContent;
+        if (!submitBtn.dataset.originalText) {
+          submitBtn.dataset.originalText = originalText || '';
+        }
+        submitBtn.textContent = loading ? 'Sending...' : originalText;
+        submitBtn.disabled = loading;
+      }
+    }
+
+    formElement.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      hideMessages();
+      setLoading(true);
+
+      try {
+        const formData = new FormData(formElement);
+        const { data, error } = await actions.leads(formData);
+        setLoading(false);
+
+        if (error) {
+          if (error.code === 'BAD_REQUEST' && (error as any).fields) {
+            const fields = (error as any).fields;
+            if (fields.name && nameError) {
+              nameError.textContent = fields.name.join(', ');
+              nameError.style.display = 'block';
+            }
+            if (fields.email && emailError) {
+              emailError.textContent = fields.email.join(', ');
+              emailError.style.display = 'block';
+            }
+            if (fields.message && messageError) {
+              messageError.textContent = fields.message.join(', ');
+              messageError.style.display = 'block';
+            }
+          } else {
+            if (errorMessage) errorMessage.style.display = 'block';
+          }
+        } else {
+          if (successMessage) {
+            successMessage.style.display = 'block';
+            successMessage.style.visibility = 'visible';
+            formElement.reset();
+          }
+          
+          setTimeout(() => {
+            if (successMessage) successMessage.style.display = 'none';
+          }, 5000);
+        }
+      } catch (err) {
+        setLoading(false);
+        if (errorMessage) errorMessage.style.display = 'block';
+      }
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeContactForm);
+  
+  // Initialize immediately if already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeContactForm);
+  } else {
+    initializeContactForm();
+  }
+</script>

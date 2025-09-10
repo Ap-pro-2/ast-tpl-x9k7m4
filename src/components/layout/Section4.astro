@@ -7,7 +7,7 @@ import {
   createPaginationData,
   getTagsWithPostCounts
 } from '../../core/blogLogic';
-import UniversalForm from '../forms/UniversalForm.astro';
+import SidebarLeadForm from '../forms/SidebarLeadForm.astro';
 import BlogCardHorizontal from '../ui/BlogCardHorizontal.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
 
@@ -65,7 +65,7 @@ const page = paginationData;
       <aside class="section4-sidebar">
         
         <div class="section4-widget section4-newsletter-widget">
-          <UniversalForm placement="section4-sidebar" />
+          <SidebarLeadForm />
         </div>
         
         {tags.length > 0 && (

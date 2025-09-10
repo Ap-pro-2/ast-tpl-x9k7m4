@@ -350,35 +350,12 @@ const forms = defineCollection({
   loader: file("src/content/data/forms.json"),
   schema: z.object({
     id: z.string(),
-    enabled: z.boolean(),
-    forms: z.array(z.object({
-      id: z.string(),
-      enabled: z.boolean().default(true),
-      type: z.enum(['vertical', 'horizontal', 'contact']).default('vertical'),
-      title: z.string().optional(),
-      description: z.string().optional(),
-      image: z.string().optional(),
-      imageAlt: z.string().optional(),
-      buttonText: z.string().default('Subscribe'),
-      placement: z.enum([
-        'section4-sidebar',
-        'section5-newsletter', 
-        'between-hero-and-content',
-        'article-sidebar',
-        'homepage-sidebar',
-        'footer',
-        'contact-page'
-      ]),
-      fields: z.array(z.enum(['name', 'email', 'message'])).optional(),
-      
-      turnstile: z.object({
-        enabled: z.boolean().default(false),
-        theme: z.enum(['auto', 'light', 'dark']).default('auto'),
-        size: z.enum(['normal', 'flexible', 'compact']).default('flexible'),
-        appearance: z.enum(['always', 'execute', 'interaction-only']).default('always'),
-        action: z.string().optional() 
-      }).optional(),
-    }))
+    enabled: z.boolean().default(true),
+    title: z.string(),
+    description: z.string(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    buttonText: z.string(),
   })
 });
 

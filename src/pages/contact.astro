@@ -4,7 +4,7 @@ export const prerender = true;
 import { getCollection } from 'astro:content';
 import { getSiteSettings } from '../core/blogLogic';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import UniversalForm from '../components/forms/UniversalForm.astro';
+import ContactForm from '../components/forms/ContactForm.astro';
 
 const settings = await getSiteSettings();
 
@@ -17,7 +17,7 @@ const pageData = contactPage?.data;
 
 // Enhanced SEO data handling
 const seoData = {
-  pageTitle: pageData?.seo?.title || `Contact Us | ${settings.siteName}`,
+  pageTitle: pageData?.seo?.title || `Contact Us`,
   description: pageData?.seo?.description || pageData?.description || `Get in touch with ${settings.siteName} experts`,
   keywords: pageData?.seo?.keywords || ['contact us', 'coffee questions', 'get in touch'],
   ogImage: pageData?.seo?.ogImage || settings.defaultOgImage,
@@ -50,7 +50,7 @@ const seoData = {
     <div class="container">
       <div class="contact-layout">
         <div class="contact-form-wrapper">
-          <UniversalForm placement="contact-page" />
+          <ContactForm />
         </div>
         <div class="contact-image-wrapper">
           <img 

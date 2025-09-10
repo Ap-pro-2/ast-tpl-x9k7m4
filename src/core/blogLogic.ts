@@ -439,8 +439,8 @@ export async function generateBlogListingSEO(
   const pageData = await getPageData('all-posts');
   
   const pageTitle = currentPage === 1 
-    ? pageData?.seo?.title || `All Posts - ${settings.siteName}`
-    : `All Posts - Page ${currentPage} - ${settings.siteName}`;
+    ? pageData?.seo?.title || `All Posts`
+    : `All Posts - Page ${currentPage}`;
 
   const description = currentPage === 1
     ? pageData?.seo?.description || `Browse all blog posts from ${settings.siteName}.`
@@ -485,7 +485,7 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
     if (categoryData?.data.seo) {
       const customSEO = categoryData.data.seo;
       return {
-        pageTitle: customSEO.title || `${categoryName} Posts - ${settings.siteName}`,
+        pageTitle: customSEO.title || `${categoryName} Posts`,
         description: customSEO.description || categoryDescription || 
           `Browse all posts in the ${categoryName} category from ${settings.siteName}.`,
         ogimage: {
@@ -500,7 +500,7 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
     }
 
     
-    const pageTitle = `${categoryName} Posts - ${settings.siteName}`;
+    const pageTitle = `${categoryName} Posts`;
     const description = categoryDescription || 
       `Browse all posts in the ${categoryName} category from ${settings.siteName}.`;
 
@@ -546,7 +546,7 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
     if (tagData?.data.seo) {
       const customSEO = tagData.data.seo;
       return {
-        pageTitle: customSEO.title || `Posts tagged with: ${tagName} - ${settings.siteName}`,
+        pageTitle: customSEO.title || `Posts tagged with: ${tagName}`,
         description: customSEO.description || tagDescription || 
           `Browse all posts tagged with ${tagName} from ${settings.siteName}.`,
         ogimage: {
@@ -561,7 +561,7 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
     }
 
     
-    const pageTitle = `Posts tagged with: ${tagName} - ${settings.siteName}`;
+    const pageTitle = `Posts tagged with: ${tagName}`;
     const description = tagDescription || 
       `Browse all posts tagged with ${tagName} from ${settings.siteName}.`;
 

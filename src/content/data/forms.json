@@ -1,53 +1,27 @@
 [
   {
-    "id": "main",
+    "id": "sidebar-lead",
     "enabled": true,
-    "forms": [
-      {
-        "id": "sidebar-lead",
-        "enabled": true,
-        "type": "vertical",
-        "title": "Subscribe to Updates",
-        "buttonText": "Subscribe",
-        "placement": "section4-sidebar",
-        "turnstile": {
-          "enabled": false,
-          "theme": "auto",
-          "size": "flexible",
-          "action": "sidebar"
-        }
-      },
-      {
-        "id": "newsletter-horizontal",
-        "enabled": true,
-        "type": "horizontal", 
-        "title": "Get Subscribe To Our Latest News & Update",
-        "description": "Download our free ebook and stay updated with the latest news and insights.",
-        "image": "/paper-ebook.png",
-        "imageAlt": "Free ebook download",
-        "buttonText": "Submit Now",
-        "placement": "section5-newsletter",
-        "turnstile": {
-          "enabled": true,
-          "theme": "auto", 
-          "size": "flexible",
-          "action": "newsletter"
-        }
-      },
-      {
-        "id": "contact-us",
-        "enabled": true,
-        "type": "contact",
-        "buttonText": "Send Message",
-        "placement": "contact-page",
-        "fields": ["name", "email", "message"],
-        "turnstile": {
-          "enabled": true,
-          "theme": "auto",
-          "size": "flexible",
-          "action": "contact"
-        }
-      }
-    ]
+    "title": "Subscribe to Updates",
+    "description": "Get the latest coffee tips and brewing guides delivered to your inbox.",
+    "image": "/coffee-newsletter.jpg",
+    "imageAlt": "Coffee newsletter signup",
+    "buttonText": "Subscribe"
+  },
+  {
+    "id": "newsletter-horizontal",
+    "enabled": true,
+    "title": "Get Subscribe To Our Latest News & Update",
+    "description": "Download our free ebook and stay updated with the latest news and insights.",
+    "image": "/paper-ebook.png",
+    "imageAlt": "Free ebook download",
+    "buttonText": "Submit Now"
+  },
+  {
+    "id": "contact-us",
+    "enabled": true,
+    "title": "Contact Us",
+    "description": "Have questions about coffee? We're here to help.",
+    "buttonText": "Send Message"
   }
 ]

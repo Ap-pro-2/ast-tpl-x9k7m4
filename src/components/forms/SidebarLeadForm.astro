@@ -1,0 +1,203 @@
+---
+import { getFormById } from '../../core/formsLogic';
+
+export interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+
+// Get form data from forms.json
+const formData = await getFormById('sidebar-lead');
+
+// If form is disabled or not found, don't render
+if (!formData) {
+  return;
+}
+
+const { title, description, buttonText } = formData.data;
+
+---
+
+<div class={`sidebar-lead-form-wrapper ${className}`}>
+  <!-- Error Message -->
+  <div id="sidebar-lead-form-error-message" class="theme-form-error" style="display: none;">
+    Something went wrong. Please try again.
+  </div>
+  
+  <!-- Success Message -->
+  <div id="sidebar-lead-form-success-message" class="theme-form-success" style="display: none;">
+    Thank you! Your subscription has been confirmed.
+  </div>
+
+  <!-- Sidebar Lead Form -->
+  <div class="theme-form-container">
+    <!-- Form Header -->
+    <div class="sidebar-form-header">
+      <h3 class="sidebar-form-title">{title}</h3>
+      <p class="sidebar-form-description">{description}</p>
+    </div>
+    
+    <form id="sidebar-lead-form" class="theme-form">
+      <!-- Email Field -->
+      <div class="theme-form-field">
+        <label for="sidebar-lead-form-email">
+          Email
+        </label>
+        <input
+          type="email"
+          id="sidebar-lead-form-email"
+          name="email"
+          placeholder="Enter your email address"
+          required
+          class="theme-form-input"
+        />
+        <p id="sidebar-lead-form-email-error" class="theme-form-field-error" style="display: none;"></p>
+      </div>
+      
+      <!-- Hidden field for source tracking -->
+      <input type="hidden" name="source" value="section4-sidebar-sidebar-lead" />
+      
+      <button type="submit" class="theme-form-submit" id="sidebar-lead-form-submit-btn">
+        {buttonText}
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  import { actions } from 'astro:actions';
+
+  function initializeSidebarLeadForm() {
+    const formElement = document.getElementById('sidebar-lead-form') as HTMLFormElement;
+    if (!formElement || formElement.hasAttribute('data-initialized')) return;
+    
+    formElement.setAttribute('data-initialized', 'true');
+    
+    const submitBtn = document.getElementById('sidebar-lead-form-submit-btn') as HTMLButtonElement;
+    const emailError = document.getElementById('sidebar-lead-form-email-error') as HTMLElement;
+    const errorMessage = document.getElementById('sidebar-lead-form-error-message') as HTMLElement;
+    const successMessage = document.getElementById('sidebar-lead-form-success-message') as HTMLElement;
+
+    function hideMessages() {
+      if (errorMessage) errorMessage.style.display = 'none';
+      if (successMessage) successMessage.style.display = 'none';
+      if (emailError) emailError.style.display = 'none';
+    }
+
+    function setLoading(loading: boolean) {
+      if (submitBtn) {
+        const originalText = submitBtn.dataset.originalText || submitBtn.textContent;
+        if (!submitBtn.dataset.originalText) {
+          submitBtn.dataset.originalText = originalText || '';
+        }
+        submitBtn.textContent = loading ? 'Subscribing...' : originalText;
+        submitBtn.disabled = loading;
+      }
+    }
+
+    formElement.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      hideMessages();
+      setLoading(true);
+
+      try {
+        const formData = new FormData(formElement);
+        const { data, error } = await actions.leads(formData);
+        setLoading(false);
+
+        if (error) {
+          if (error.code === 'BAD_REQUEST' && (error as any).fields) {
+            const fields = (error as any).fields;
+            if (fields.email && emailError) {
+              emailError.textContent = fields.email.join(', ');
+              emailError.style.display = 'block';
+            }
+          } else {
+            if (errorMessage) errorMessage.style.display = 'block';
+          }
+        } else {
+          if (successMessage) {
+            successMessage.style.display = 'block';
+            successMessage.style.visibility = 'visible';
+            formElement.reset();
+          }
+          
+          setTimeout(() => {
+            if (successMessage) successMessage.style.display = 'none';
+          }, 5000);
+        }
+      } catch (err) {
+        setLoading(false);
+        if (errorMessage) errorMessage.style.display = 'block';
+      }
+    });
+  }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeSidebarLeadForm);
+  
+  // Initialize immediately if already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSidebarLeadForm);
+  } else {
+    initializeSidebarLeadForm();
+  }
+</script>
+
+<style>
+  .sidebar-form-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .sidebar-form-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.2;
+  }
+
+  .sidebar-form-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  /* Override theme-form-container styling for sidebar */
+  .sidebar-lead-form-wrapper .theme-form-container {
+    padding: 1.5rem;
+  }
+
+  /* Add proper spacing between field and button */
+  .sidebar-lead-form-wrapper .theme-form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Ensure button has proper spacing */
+  .sidebar-lead-form-wrapper .theme-form-submit {
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-form-title {
+      font-size: 1.125rem;
+    }
+    
+    .sidebar-form-description {
+      font-size: 0.8125rem;
+    }
+    
+    .sidebar-lead-form-wrapper .theme-form-container {
+      padding: 1.25rem;
+    }
+
+    /* Maintain spacing on mobile */
+    .sidebar-lead-form-wrapper .theme-form-field {
+      margin-bottom: 1.25rem;
+    }
+  }
+</style>

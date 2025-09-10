@@ -1,6 +1,4 @@
-/**
- * Simple JSON-LD Schema Generation for Astro Blog
- */
+
 
 import type { 
   Article, 
@@ -12,12 +10,10 @@ import type {
 } from 'schema-dts';
 import type { SiteSettings } from '../blogLogic';
 
-// Re-export SiteSettings for use in other files
+
 export type { SiteSettings } from '../blogLogic';
 
-/**
- * Author data interface
- */
+
 export interface AuthorData {
   id: string;
   name: string;
@@ -31,9 +27,7 @@ export interface AuthorData {
 
 
 
-/**
- * Blog frontmatter interface
- */
+
 export interface BlogFrontmatter {
   title: string;
   description: string;
@@ -61,18 +55,14 @@ export interface BlogFrontmatter {
   status: 'draft' | 'published';
 }
 
-/**
- * Blog schema props interface
- */
+
 export interface BlogSchemaProps {
   frontmatter: BlogFrontmatter;
   url: string;
   settings: SiteSettings;
 }
 
-/**
- * Generate Article schema
- */
+
 export function generateArticleSchema(props: BlogSchemaProps): WithContext<Article> {
   const { frontmatter, url, settings } = props;
 
@@ -119,9 +109,7 @@ export function generateArticleSchema(props: BlogSchemaProps): WithContext<Artic
   };
 }
 
-/**
- * Generate BlogPosting schema
- */
+
 export function generateBlogPostingSchema(props: BlogSchemaProps): WithContext<BlogPosting> {
   const articleSchema = generateArticleSchema(props);
   
@@ -131,9 +119,7 @@ export function generateBlogPostingSchema(props: BlogSchemaProps): WithContext<B
   };
 }
 
-/**
- * Generate Person schema
- */
+
 export function generatePersonSchema(author: AuthorData): WithContext<Person> {
   const sameAs: string[] = [];
   
@@ -158,37 +144,35 @@ export function generatePersonSchema(author: AuthorData): WithContext<Person> {
   };
 }
 
-/**
- * Generate Organization schema
- */
+
 export function generateOrganizationSchema(settings: SiteSettings): WithContext<Organization> {
   const sameAs: string[] = [];
   
-  // Twitter/X
+  
   if (settings.social?.twitter) {
     const handle = settings.social.twitter.replace('@', '');
     sameAs.push(`https://twitter.com/${handle}`);
   }
   
-  // GitHub
+  
   if (settings.social?.github) {
-    // Handle both full URLs and just usernames/org names
+    
     const githubUrl = settings.social.github.startsWith('http') 
       ? settings.social.github 
       : `https://github.com/${settings.social.github}`;
     sameAs.push(githubUrl);
   }
   
-  // LinkedIn
+  
   if (settings.social?.linkedin) {
-    // Handle both company and personal LinkedIn profiles
+    
     const linkedinUrl = settings.social.linkedin.startsWith('http')
       ? settings.social.linkedin
       : `https://linkedin.com/company/${settings.social.linkedin}`;
     sameAs.push(linkedinUrl);
   }
   
-  // Facebook
+  
   if (settings.social?.facebook) {
     const facebookUrl = settings.social.facebook.startsWith('http')
       ? settings.social.facebook
@@ -196,36 +180,36 @@ export function generateOrganizationSchema(settings: SiteSettings): WithContext<
     sameAs.push(facebookUrl);
   }
   
-  // Instagram
+  
   if (settings.social?.instagram) {
     const handle = settings.social.instagram.replace('@', '');
     sameAs.push(`https://instagram.com/${handle}`);
   }
   
-  // YouTube
+  
   if (settings.social?.youtube) {
     const youtubeUrl = settings.social.youtube.startsWith('http')
       ? settings.social.youtube
-      : `https://youtube.com/@${settings.social.youtube}`;
+      : `https://youtube.com/${settings.social.youtube}`;
     sameAs.push(youtubeUrl);
   }
   
-  // TikTok
+  
   if (settings.social?.tiktok) {
     const handle = settings.social.tiktok.replace('@', '');
     sameAs.push(`https://tiktok.com/@${handle}`);
   }
   
-  // Discord
+  
   if (settings.social?.discord) {
-    // Discord invites or server URLs
+    
     const discordUrl = settings.social.discord.startsWith('http')
       ? settings.social.discord
       : `https://discord.gg/${settings.social.discord}`;
     sameAs.push(discordUrl);
   }
   
-  // Reddit
+  
   if (settings.social?.reddit) {
     const subredditUrl = settings.social.reddit.startsWith('http')
       ? settings.social.reddit
@@ -233,13 +217,13 @@ export function generateOrganizationSchema(settings: SiteSettings): WithContext<
     sameAs.push(subredditUrl);
   }
   
-  // Mastodon
+  
   if (settings.social?.mastodon) {
-    // Mastodon handles are typically @user@instance.com
+    
     if (settings.social.mastodon.startsWith('http')) {
       sameAs.push(settings.social.mastodon);
     } else if (settings.social.mastodon.includes('@')) {
-      // Handle @user@instance.com format
+      
       const parts = settings.social.mastodon.replace('@', '').split('@');
       if (parts.length === 2) {
         sameAs.push(`https://${parts[1]}/@${parts[0]}`);
@@ -264,9 +248,7 @@ export function generateOrganizationSchema(settings: SiteSettings): WithContext<
   };
 }
 
-/**
- * Generate ImageObject schema
- */
+
 export function generateImageSchema(image: { url: string; alt: string }): ImageObject {
   return {
     "@type": "ImageObject",

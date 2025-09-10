@@ -33,7 +33,6 @@
     const url = button.getAttribute('data-url');
     
     if (!platform) {
-      console.error('Missing platform data attribute');
       return;
     }
     
@@ -191,11 +190,9 @@
       if (successful) {
         showCopySuccess(button);
       } else {
-        console.warn('Copy command was unsuccessful');
         showCopyError(button);
       }
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
       showCopyError(button);
     }
     

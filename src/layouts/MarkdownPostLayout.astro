@@ -1,5 +1,5 @@
 ---
-// Clean Blog Post Layout - Multi-Purpose Foundation
+
 import { formatDate, getAllPosts, getSiteSettings, getCategoriesWithPostCounts } from "../core/blogLogic";
 import { getEntry, getCollection } from "astro:content";
 import OptimizedImage from "../components/ui/OptimizedImage.astro";
@@ -16,7 +16,7 @@ import { getBadgeStyleString } from "../core/utils/colorUtils";
 
 const { frontmatter, schemaData, headings } = Astro.props;
 
-// Get data safely
+
 let author = null;
 let category = null;
 
@@ -36,12 +36,12 @@ try {
     category = await getEntry("categories", categoryId);
   }
 } catch (error) {
-  // Silently handle missing author/category data
+  
 }
 
 const formattedDate = formatDate(frontmatter.pubDate);
 
-// Generate breadcrumbs
+
 const pageData = {
   title: frontmatter.title,
   category: category
@@ -50,23 +50,23 @@ const pageData = {
 };
 const breadcrumbs = generateBreadcrumbs(`/${frontmatter.title}`, pageData);
 
-// Get sidebar data
+
 const allPosts = await getAllPosts();
 const settings = await getSiteSettings();
 const categories = await getCategoriesWithPostCounts();
 const allCategories = await getCollection('categories');
 
-// Get recent posts for sidebar (exclude current post)
+
 const recentPosts = allPosts
   .filter(post => post.id !== frontmatter.title)
   .slice(0, 4);
 
-// Get hot categories (top 4 most used)
+
 const hotCategories = categories
   .sort((a, b) => (b.postCount || 0) - (a.postCount || 0))
   .slice(0, 4);
 
-// Process tags safely
+
 let tagData: any[] = [];
 if (
   frontmatter.tags &&
@@ -508,14 +508,14 @@ if (
 
   <!-- Social Share Sidebar Styles -->
   <style>
-    /* Post layout container with sidebar */
+    
     .post-layout-container {
       display: flex;
       gap: 2rem;
       align-items: flex-start;
     }
 
-    /* Social Share Sidebar - Left Edge */
+    
     .share-sidebar {
       position: sticky;
       top: 8rem;
@@ -534,7 +534,7 @@ if (
       pointer-events: none;
     }
 
-    /* Responsive positioning for different screen sizes */
+    
     @media (min-width: 1200px) {
       .share-sidebar {
         margin-left: -2rem;
@@ -553,7 +553,7 @@ if (
       }
     }
 
-    /* Hide on tablets and mobile */
+    
     @media (max-width: 1199px) {
       .share-sidebar {
         display: none;
@@ -564,20 +564,20 @@ if (
       }
     }
 
-    /* Video content optimizations */
+    
     .video-content-optimized {
-      /* Ensure videos are responsive within prose content */
+      
       --tw-prose-body: var(--text-primary);
       --tw-prose-headings: var(--text-primary);
     }
 
     .video-content-optimized .youtube-embed-container {
-      /* Better spacing for videos in content */
+      
       margin: 2rem 0;
       max-width: 100%;
     }
 
-    /* Responsive video adjustments */
+    
     @media (max-width: 768px) {
       .video-content-optimized .youtube-embed-container {
         margin: 1.5rem 0;
@@ -585,7 +585,7 @@ if (
       }
     }
 
-    /* Enhanced prose styling for video content */
+    
     .video-content-optimized h2 {
       margin-top: 3rem;
       margin-bottom: 1.5rem;
@@ -603,7 +603,7 @@ if (
       color: var(--text-primary);
     }
 
-    /* Better spacing around videos */
+    
     .video-content-optimized .youtube-embed-container + h2,
     .video-content-optimized .youtube-embed-container + h3 {
       margin-top: 3rem;
@@ -613,7 +613,7 @@ if (
       margin-top: 2rem;
     }
 
-    /* Checklist styling improvements */
+    
     .video-content-optimized ul li input[type="checkbox"] {
       margin-right: 0.5rem;
       accent-color: var(--color-primary);
@@ -634,7 +634,7 @@ if (
       const blogContent = document.getElementById("blog-content");
       if (!blogContent) return;
 
-      // Handle external links only
+      
       const links = blogContent.querySelectorAll("a[href]");
 
       links.forEach((link) => {
@@ -664,7 +664,7 @@ if (
             );
           }
         } catch (e) {
-          // Silently continue for invalid URLs
+          
         }
       });
     });

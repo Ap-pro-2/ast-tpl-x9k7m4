@@ -1,30 +1,27 @@
 ---
-/**
- * Two-Sided Hero Section - Professional Blog Layout
- * Clean 2-column design with enriched content using core logic
- */
+
 
 import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts, getFeaturedPosts } from '../../core/blogLogic';
 import { formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 
-// Get dynamic data using core logic
+
 const posts = await getAllPosts();
 const settings = await getSiteSettings();
 const categories = await getCategoriesWithPostCounts();
 const allCategories = await getCollection('categories');
 
-// Get featured posts (posts marked with featured: true), sorted by most recent
+
 let featuredPosts = await getFeaturedPosts(5);
 
-// If we don't have enough featured posts, fill with recent posts
+
 if (featuredPosts.length < 5) {
   const recentPosts = posts.filter(post => !featuredPosts.some(fp => fp.id === post.id));
   featuredPosts = [...featuredPosts, ...recentPosts.slice(0, 5 - featuredPosts.length)];
 }
 
-// Helper function to get category name from ID
+
 function getCategoryName(categoryRef: string | { id: string } | undefined): string | null {
   if (!categoryRef) return null;
   
@@ -40,14 +37,11 @@ interface Props {
 const { showFeaturedPosts = true } = Astro.props;
 ---
 
-<!-- Professional Two-Sided Hero Section -->
 <section class="relative" style="background: var(--bg-primary)">
   
-  <!-- Hero Content -->
   <div class="py-16 lg:py-20">
     <div class="container max-w-7xl">
       
-      <!-- Site Header - Professional -->
       <div class="text-center mb-16 lg:mb-20">
         <div class="mb-6">
           <h1 class="text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight" 
@@ -61,17 +55,13 @@ const { showFeaturedPosts = true } = Astro.props;
         </p>
       </div>
 
-      <!-- Two-Sided Layout -->
       {showFeaturedPosts && featuredPosts.length > 0 && (
         <div class="grid lg:grid-cols-3 gap-12 lg:gap-16">
           
-          <!-- Left Side - Main Featured Article -->
           <div class="lg:col-span-2">
             
-            <!-- Featured Article -->
             <article class="group">
               
-              <!-- Featured Image -->
               {featuredPosts[0].data.image?.url && (
                 <div class="relative mb-8">
                   <div class="aspect-[16/9] overflow-hidden shadow-xl" 
@@ -86,7 +76,6 @@ const { showFeaturedPosts = true } = Astro.props;
                     />
                   </div>
                   
-                  <!-- Featured Badge -->
                   <div class="absolute top-6 left-6">
                     <span class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md" 
                           style="background: var(--color-primary); border-radius: var(--radius-full); box-shadow: 0 8px 32px rgba(0,0,0,0.2)">
@@ -99,9 +88,7 @@ const { showFeaturedPosts = true } = Astro.props;
                 </div>
               )}
               
-              <!-- Featured Content -->
               <div class="space-y-6">
-                <!-- Category & Meta -->
                 <div class="flex items-center gap-4">
                   {getCategoryName(featuredPosts[0].data.category) && (
                     <span class="text-sm font-semibold px-3 py-1.5" 
@@ -118,7 +105,6 @@ const { showFeaturedPosts = true } = Astro.props;
                   </div>
                 </div>
                 
-                <!-- Title -->
                 <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight" 
                     style="color: var(--text-primary); font-family: var(--font-heading)">
                   <a href={`/${featuredPosts[0].id}`} 
@@ -129,7 +115,6 @@ const { showFeaturedPosts = true } = Astro.props;
                   </a>
                 </h2>
                 
-                <!-- Description -->
                 {featuredPosts[0].data.description && (
                   <p class="text-lg lg:text-xl leading-relaxed" 
                      style="color: var(--text-secondary); font-family: var(--font-body)">
@@ -137,7 +122,6 @@ const { showFeaturedPosts = true } = Astro.props;
                   </p>
                 )}
                 
-                <!-- Read More Button -->
                 <div class="pt-2">
                   <a 
                     href={`/${featuredPosts[0].id}`}
@@ -157,10 +141,8 @@ const { showFeaturedPosts = true } = Astro.props;
             </article>
           </div>
           
-          <!-- Right Side - Recent Posts & Categories -->
           <div class="space-y-10">
             
-            <!-- Featured Posts - Professional List -->
             <div class="bg-white/50 p-6 backdrop-blur-sm" 
                  style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05)">
               
@@ -179,7 +161,6 @@ const { showFeaturedPosts = true } = Astro.props;
                          onmouseover="this.style.backgroundColor='var(--bg-tertiary)'; this.style.transform='translateY(-2px)'"
                          onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateY(0)'">
                       
-                      <!-- Thumbnail -->
                       {post.data.image?.url && (
                         <div class="flex-shrink-0 w-16 h-12 overflow-hidden" 
                              style="border-radius: var(--radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.1)">
@@ -193,7 +174,6 @@ const { showFeaturedPosts = true } = Astro.props;
                         </div>
                       )}
                       
-                      <!-- Post Info -->
                       <div class="flex-1 min-w-0">
                         <div class="flex items-start gap-2 mb-2">
                           <h4 class="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-accent transition-colors flex-1" 
@@ -226,7 +206,6 @@ const { showFeaturedPosts = true } = Astro.props;
                 ))}
               </div>
               
-              <!-- View All Link -->
               <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-light)">
                 <a href="/blog" 
                    class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"
@@ -242,7 +221,6 @@ const { showFeaturedPosts = true } = Astro.props;
               </div>
             </div>
             
-            <!-- Categories Section -->
             {categories.length > 0 && (
               <div class="bg-white/50 p-6 backdrop-blur-sm" 
                    style="background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 4px 24px rgba(0,0,0,0.05)">
@@ -276,7 +254,6 @@ const { showFeaturedPosts = true } = Astro.props;
                   ))}
                 </div>
                 
-                <!-- View All Categories -->
                 <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-light)">
                   <a href="/categories" 
                      class="inline-flex items-center gap-2 text-sm font-semibold transition-all duration-300 hover:gap-3"

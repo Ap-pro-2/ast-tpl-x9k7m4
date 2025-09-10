@@ -91,7 +91,6 @@ export async function GET(context) {
       `,
     });
   } catch (error) {
-    console.error('RSS Generation Error:', error);
     return new Response('Error generating RSS feed', { status: 500 });
   }
 }

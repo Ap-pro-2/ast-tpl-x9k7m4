@@ -1,8 +1,5 @@
 ---
-/**
- * Pure Sidebar Tags Component - No Styling
- * Multi-purpose foundation ready for any theme
- */
+
 
 import { getTagsWithPostCounts } from '../../core/blogLogic';
 
@@ -12,7 +9,7 @@ interface Props {
 
 const { limit = 10 } = Astro.props;
 
-// Get tags using core logic
+
 const tags = await getTagsWithPostCounts();
 const topTags = tags.slice(0, limit);
 ---

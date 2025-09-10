@@ -1,9 +1,5 @@
 ---
-/**
- * Category Block - Shows all products in a category
- * Usage: <CategoryBlock category="tech" limit={3} />
- * Dashboard-friendly: Automatically finds products by category
- */
+
 import { getCollection, getEntry } from 'astro:content';
 import ProductCard from '../ProductCard.astro';
 
@@ -15,21 +11,20 @@ export interface Props {
 
 const { category, limit = 6, title } = Astro.props;
 
-// Get all products in category from single dynamic collection
+
 const allProducts = await getCollection('affiliateProducts');
 const categoryProducts = allProducts
   .filter(product => {
-    // The category is a reference object, so we need to access its id
+    
     return product.data.category.id === category;
   })
   .slice(0, limit);
 
 if (categoryProducts.length === 0) {
-  console.warn(`CategoryBlock: No products found for category "${category}"`);
   return null;
 }
 
-// Get category info
+
 const categoryInfo = await getEntry('affiliateCategories', category);
 const displayTitle = title || `Best ${categoryInfo?.data.name || category} Products`;
 ---

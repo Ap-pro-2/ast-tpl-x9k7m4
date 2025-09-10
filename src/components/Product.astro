@@ -1,5 +1,5 @@
 ---
-// Simple wrapper for ProductCard that can be easily used in MDX
+
 import ProductCard from "./ProductCard.astro";
 
 export interface Props {
@@ -38,7 +38,7 @@ const {
   buttonText,
 } = Astro.props;
 
-// Parse comma-separated strings into arrays
+
 const featuresArray = features
   ? features.split(",").map((f) => f.trim())
   : undefined;

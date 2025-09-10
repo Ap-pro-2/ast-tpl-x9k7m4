@@ -18,14 +18,13 @@ export async function generateAuthorSchemaData(
   url: string,
   postCount: number = 0
 ) {
-  // Early validation
+  
   if (!author?.data?.name) {
-    console.warn("AuthorSchema: Invalid author data provided");
     return null;
   }
 
   try {
-    // Fetch site settings for additional context
+    
     let siteSettings: SiteSettings | null = null;
     try {
       const allSettings = await getCollection("settings");
@@ -47,10 +46,9 @@ export async function generateAuthorSchemaData(
         };
       }
     } catch (error) {
-      console.warn("AuthorSchema: Failed to fetch site settings:", error);
     }
 
-    // Convert author data to AuthorData interface
+    
     const authorData: AuthorData = {
       id: author.id,
       name: author.data.name,
@@ -62,14 +60,14 @@ export async function generateAuthorSchemaData(
       website: author.data.website,
     };
 
-    // Generate Person schema
+    
     const personSchema = generatePersonSchema(authorData);
 
-    // Convert to plain object and enhance with additional properties for author pages
+    
     return Object.assign({}, personSchema, {
       "@id": url,
       url: url,
-      // Add job title/role if we have site settings
+      
       ...(siteSettings && {
         jobTitle: `Author at ${siteSettings.siteName}`,
         worksFor: {
@@ -78,11 +76,11 @@ export async function generateAuthorSchemaData(
           url: siteSettings.siteUrl,
         },
       }),
-      // Add additional properties if available
+      
       ...(postCount > 0 && {
         knowsAbout: `Content creation and writing - ${postCount} published articles`,
       }),
-      // Add mainEntityOfPage for the author profile page
+      
       mainEntityOfPage: {
         "@type": "ProfilePage",
         "@id": url,
@@ -90,9 +88,8 @@ export async function generateAuthorSchemaData(
       },
     });
   } catch (error) {
-    console.error("AuthorSchema: Failed to generate author schema:", error);
 
-    // Create minimal fallback schema
+    
     return {
       "@context": "https://schema.org",
       "@type": "Person",

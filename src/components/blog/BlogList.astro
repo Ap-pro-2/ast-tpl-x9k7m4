@@ -1,8 +1,5 @@
 ---
-/**
- * Professional Blog List Component - Matches Hero Section Style
- * Clean, modern design with consistent theme system
- */
+
 
 import BlogPostCard from './BlogPostCard.astro';
 
@@ -17,19 +14,16 @@ const { posts, pagination } = Astro.props;
 <section class="py-8 lg:py-12" style="background: var(--bg-primary)">
   <div class="container max-w-7xl">
     
-    <!-- Posts Grid - Professional Layout -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
       {posts.map((post) => (
         <BlogPostCard post={post} />
       ))}
     </div>
     
-    <!-- Professional Pagination -->
     {pagination && pagination.lastPage > 1 && (
       <div class="mt-8 lg:mt-12">
         <div class="flex items-center justify-center gap-3">
           
-          <!-- Previous Page -->
           {pagination.currentPage > 1 && (
             <a 
               href={pagination.currentPage === 2 ? '/blog' : `/${pagination.currentPage - 1}`}
@@ -45,7 +39,6 @@ const { posts, pagination } = Astro.props;
             </a>
           )}
           
-          <!-- Page Numbers -->
           <div class="flex gap-2">
             {Array.from({ length: pagination.lastPage }, (_, i) => i + 1).map((pageNum) => (
               <a 
@@ -67,7 +60,6 @@ const { posts, pagination } = Astro.props;
             ))}
           </div>
           
-          <!-- Next Page -->
           {pagination.currentPage < pagination.lastPage && (
             <a 
               href={`/${pagination.currentPage + 1}`}

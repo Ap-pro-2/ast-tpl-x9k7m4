@@ -1,8 +1,5 @@
 ---
-/**
- * Clean Blog Post Card - Simple and Functional
- * Matches the established theme system
- */
+
 
 import { getEntry, getCollection } from 'astro:content';
 import { formatDate } from '../../core/blogLogic';
@@ -22,7 +19,7 @@ interface Props {
 
 const { title, url, description, image, tags = [], authorId, categoryId, post } = Astro.props;
 
-// If post is provided, use its data
+
 const postData = post || {
   data: {
     title,
@@ -35,7 +32,7 @@ const postData = post || {
   id: url.replace('/blog/', '')
 };
 
-// Get category data safely
+
 let category = null;
 try {
   if (postData.data.category) {
@@ -43,10 +40,9 @@ try {
     category = await getEntry('categories', categoryId);
   }
 } catch (error) {
-  console.warn('Could not load category:', error);
 }
 
-// Handle tags properly
+
 const postTags = postData.data.tags || [];
 const tagNames = postTags.map((tag: any) => {
   if (typeof tag === 'string') return tag;
@@ -55,14 +51,13 @@ const tagNames = postTags.map((tag: any) => {
   return null;
 }).filter(Boolean);
 
-// Get tag data for colors
+
 const allTags = await getCollection('tags');
 const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
 ---
 
 <article class="theme-card overflow-hidden group">
   
-  <!-- Post Image -->
   {postData.data.image?.url && (
     <div class="relative aspect-video overflow-hidden">
       <OptimizedImage 
@@ -74,7 +69,6 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
       
-      <!-- Category Badge -->
       {category && (
         <div class="absolute top-3 left-3">
           <span class="px-2 py-1 text-xs font-medium rounded-md" style={getBadgeStyleString(category.data.color)}>
@@ -85,10 +79,8 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
     </div>
   )}
   
-  <!-- Post Content -->
   <div class="p-6">
     
-    <!-- Meta Information -->
     {postData.data.pubDate && (
       <div class="flex items-center gap-2 text-sm mb-3" style="color: var(--text-muted)">
         <time datetime={postData.data.pubDate.toISOString()}>
@@ -99,7 +91,6 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
       </div>
     )}
     
-    <!-- Title -->
     <h2 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text-primary); font-family: var(--font-heading)">
       <a href={url || `/${postData.id}`} 
          style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
@@ -109,14 +100,12 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
       </a>
     </h2>
     
-    <!-- Description -->
     {postData.data.description && (
       <p class="mb-4 leading-relaxed" style="color: var(--text-secondary); font-family: var(--font-body)">
         {postData.data.description}
       </p>
     )}
     
-    <!-- Tags -->
     {tagNames.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-4">
         {tagNames.slice(0, 3).map((tag: string) => {
@@ -137,7 +126,6 @@ const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
       </div>
     )}
     
-    <!-- Read More Button -->
     <div class="mt-auto">
       <a 
         href={url || `/${postData.id}`}

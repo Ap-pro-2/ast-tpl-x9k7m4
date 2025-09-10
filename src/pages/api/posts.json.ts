@@ -220,7 +220,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
           const authorEntry = await getEntry('authors', post.data.author.id);
           authorData = authorEntry?.data;
         } catch (error) {
-          console.warn(`Author not found: ${post.data.author.id}`);
         }
         
         // ✅ Properly resolve category reference  
@@ -229,7 +228,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
           const categoryEntry = await getEntry('categories', post.data.category.id);
           categoryData = categoryEntry?.data;
         } catch (error) {
-          console.warn(`Category not found: ${post.data.category.id}`);
         }
         
         // ✅ Properly resolve tags references
@@ -246,7 +244,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
                 slug: tagData?.slug || tagRef.id,
               };
             } catch (error) {
-              console.warn(`Tag not found: ${tagRef.id}`);
               return {
                 id: tagRef.id,
                 name: tagRef.id,
@@ -329,7 +326,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
     
   } catch (error: unknown) {
-    console.error('Error fetching posts:', error);
     
     return new Response(JSON.stringify({
       success: false,

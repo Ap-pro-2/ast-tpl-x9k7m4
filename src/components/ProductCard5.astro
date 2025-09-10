@@ -1,8 +1,5 @@
 ---
-/**
- * ProductCard5 - "Editor's Pick" Conversion Beast
- * Big image, urgent CTA, social proof focused
- */
+
 
 import OptimizedImage from './ui/OptimizedImage.astro';
 
@@ -53,9 +50,7 @@ const discountPercent =
     : null;
 ---
 
-<!-- Editor's Pick Conversion Beast -->
 <article class="theme-card relative mb-8 overflow-hidden" style="border: 2px solid var(--color-primary-accessible); border-radius: var(--radius-lg);">
-  <!-- Badge -->
   {badge && (
     <div class="absolute top-0 right-0 z-20">
       <div class="text-white text-xs font-bold px-4 py-2 transform rotate-12 translate-x-2 -translate-y-1" style="background: var(--color-accent); border-radius: var(--radius-md);">
@@ -64,7 +59,6 @@ const discountPercent =
     </div>
   )}
 
-  <!-- Hero Image Section -->
   <div class="relative">
     <OptimizedImage
       src={image}
@@ -75,10 +69,8 @@ const discountPercent =
       loading="lazy"
     />
     
-    <!-- Overlay Gradient -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
     
-    <!-- Price Overlay -->
     {price && (
       <div class="absolute bottom-4 left-4">
         <div class="text-white">
@@ -94,7 +86,6 @@ const discountPercent =
       </div>
     )}
 
-    <!-- Discount Badge -->
     {discountPercent && (
       <div class="absolute top-4 left-4">
         <span class="bg-red-500 text-white text-sm font-bold px-3 py-1" style="border-radius: var(--radius-full);">
@@ -105,12 +96,10 @@ const discountPercent =
   </div>
 
   <div style="padding: var(--card-padding);">
-    <!-- Title -->
     <h3 class="text-xl font-bold mb-3" style="color: var(--text-primary); font-family: var(--font-heading);">
       {title}
     </h3>
 
-    <!-- Social Proof -->
     {rating && reviewCount && (
       <div class="flex items-center gap-2 mb-4">
         <div class="flex">
@@ -133,12 +122,10 @@ const discountPercent =
       </div>
     )}
 
-    <!-- Description -->
     <p class="leading-relaxed mb-4" style="color: var(--text-secondary);">
       {description}
     </p>
 
-    <!-- Top Features -->
     {features && features.length > 0 && (
       <div class="mb-6">
         <div class="grid grid-cols-1 gap-2">
@@ -154,7 +141,6 @@ const discountPercent =
       </div>
     )}
 
-    <!-- CTA -->
     <div class="text-center">
       <a
         href={affiliateUrl}

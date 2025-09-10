@@ -1,7 +1,7 @@
-// src/components/navigation/breadcrumbUtils.ts
+
 import type { CollectionEntry } from 'astro:content';
 
-// Core interfaces for breadcrumb data structures
+
 export interface BreadcrumbItem {
   name: string;
   url?: string;
@@ -27,7 +27,7 @@ export interface PageData {
   };
 }
 
-// Configuration for breadcrumb labels
+
 export const breadcrumbConfig = {
   homeLabel: 'Home',
   blogLabel: 'Blog',
@@ -36,12 +36,7 @@ export const breadcrumbConfig = {
   authorsLabel: 'Authors',
 };
 
-/**
- * Generate breadcrumbs based on current page context
- * @param pathname - Current page pathname
- * @param pageData - Optional page data for context
- * @returns Array of breadcrumb items
- */
+
 export function generateBreadcrumbs(
   pathname: string,
   pageData?: PageData
@@ -49,7 +44,7 @@ export function generateBreadcrumbs(
   try {
     const breadcrumbs: BreadcrumbItem[] = [];
     
-    // Always start with Home (except for homepage)
+    
     if (pathname !== '/' && pathname !== '') {
       breadcrumbs.push({
         name: breadcrumbConfig.homeLabel,
@@ -58,15 +53,15 @@ export function generateBreadcrumbs(
       });
     }
 
-    // Parse pathname to determine page type
+    
     const pathSegments = pathname.split('/').filter(segment => segment !== '');
     
     if (pathSegments.length === 0) {
-      // Homepage - no breadcrumbs
+      
       return [];
     }
 
-    // Handle different page types based on URL structure
+    
     const firstSegment = pathSegments[0];
     
     switch (firstSegment) {
@@ -81,24 +76,21 @@ export function generateBreadcrumbs(
       case 'legal':
         return handleLegalPaths(pathSegments, breadcrumbs, pageData);
       default:
-        // Generic page
+        
         return handleGenericPaths(pathSegments, breadcrumbs, pageData);
     }
   } catch (error) {
-    console.warn('Error generating breadcrumbs:', error);
     return [];
   }
 }
 
-/**
- * Handle blog-related paths
- */
+
 function handleBlogPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
   pageData?: PageData
 ): BreadcrumbItem[] {
-  // Add Blog to breadcrumbs
+  
   breadcrumbs.push({
     name: breadcrumbConfig.blogLabel,
     url: '/blog',
@@ -106,11 +98,11 @@ function handleBlogPaths(
   });
 
   if (pathSegments.length === 1) {
-    // Blog index page
+    
     breadcrumbs[breadcrumbs.length - 1].isCurrentPage = true;
     delete breadcrumbs[breadcrumbs.length - 1].url;
   } else if (pathSegments.length > 1) {
-    // Individual blog post
+    
     if (pageData?.category) {
       breadcrumbs.push({
         name: pageData.category.name,
@@ -131,15 +123,13 @@ function handleBlogPaths(
   return breadcrumbs;
 }
 
-/**
- * Handle category-related paths
- */
+
 function handleCategoryPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
   pageData?: PageData
 ): BreadcrumbItem[] {
-  // Add Blog > Categories to breadcrumbs
+  
   breadcrumbs.push({
     name: breadcrumbConfig.blogLabel,
     url: '/blog',
@@ -153,11 +143,11 @@ function handleCategoryPaths(
   });
 
   if (pathSegments.length === 1) {
-    // Categories index page
+    
     breadcrumbs[breadcrumbs.length - 1].isCurrentPage = true;
     delete breadcrumbs[breadcrumbs.length - 1].url;
   } else if (pathSegments.length > 1) {
-    // Individual category page
+    
     const categoryName = pageData?.category?.name || decodeURIComponent(pathSegments[1]);
     breadcrumbs.push({
       name: categoryName,
@@ -169,15 +159,13 @@ function handleCategoryPaths(
   return breadcrumbs;
 }
 
-/**
- * Handle tag-related paths
- */
+
 function handleTagPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
   pageData?: PageData
 ): BreadcrumbItem[] {
-  // Add Blog > Tags to breadcrumbs
+  
   breadcrumbs.push({
     name: breadcrumbConfig.blogLabel,
     url: '/blog',
@@ -191,11 +179,11 @@ function handleTagPaths(
   });
 
   if (pathSegments.length === 1) {
-    // Tags index page
+    
     breadcrumbs[breadcrumbs.length - 1].isCurrentPage = true;
     delete breadcrumbs[breadcrumbs.length - 1].url;
   } else if (pathSegments.length > 1) {
-    // Individual tag page
+    
     const tagName = pageData?.tags?.[0]?.name || decodeURIComponent(pathSegments[1]);
     breadcrumbs.push({
       name: tagName,
@@ -207,9 +195,7 @@ function handleTagPaths(
   return breadcrumbs;
 }
 
-/**
- * Handle author-related paths
- */
+
 function handleAuthorPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
@@ -222,11 +208,11 @@ function handleAuthorPaths(
   });
 
   if (pathSegments.length === 1) {
-    // Authors index page
+    
     breadcrumbs[breadcrumbs.length - 1].isCurrentPage = true;
     delete breadcrumbs[breadcrumbs.length - 1].url;
   } else if (pathSegments.length > 1) {
-    // Individual author page
+    
     const authorName = pageData?.author?.name || safeDecodeURIComponent(pathSegments[1]);
     breadcrumbs.push({
       name: authorName,
@@ -238,9 +224,7 @@ function handleAuthorPaths(
   return breadcrumbs;
 }
 
-/**
- * Handle legal pages
- */
+
 function handleLegalPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
@@ -258,9 +242,7 @@ function handleLegalPaths(
   return breadcrumbs;
 }
 
-/**
- * Handle generic pages
- */
+
 function handleGenericPaths(
   pathSegments: string[],
   breadcrumbs: BreadcrumbItem[],
@@ -275,12 +257,7 @@ function handleGenericPaths(
 
   return breadcrumbs;
 }
-/**
 
- * Get breadcrumbs for blog posts
- * @param post - Blog post collection entry
- * @returns Array of breadcrumb items
- */
 export function getBlogPostBreadcrumbs(
   post: CollectionEntry<'blog'>
 ): BreadcrumbItem[] {
@@ -298,18 +275,18 @@ export function getBlogPostBreadcrumbs(
       }
     ];
 
-    // Add category if available
+    
     if (post.data.category) {
-      // Note: We'll need to resolve the category reference
-      // For now, we'll use the category ID as a fallback
+      
+      
       breadcrumbs.push({
-        name: post.data.category.id, // This will be resolved with actual category data
+        name: post.data.category.id, 
         url: `/categories/${post.data.category.id}`,
         position: 3
       });
     }
 
-    // Add post title as current page
+    
     breadcrumbs.push({
       name: post.data.title,
       isCurrentPage: true,
@@ -318,17 +295,11 @@ export function getBlogPostBreadcrumbs(
 
     return breadcrumbs;
   } catch (error) {
-    console.warn('Error generating blog post breadcrumbs:', error);
     return [];
   }
 }
 
-/**
- * Get breadcrumbs for category pages
- * @param categoryId - Category identifier
- * @param categoryData - Optional category collection entry
- * @returns Array of breadcrumb items
- */
+
 export function getCategoryBreadcrumbs(
   categoryId: string,
   categoryData?: CollectionEntry<'categories'>
@@ -356,7 +327,7 @@ export function getCategoryBreadcrumbs(
       }
     ];
 
-    // Add category name as current page
+    
     const categoryName = categoryData?.data.name || categoryId;
     breadcrumbs.push({
       name: categoryName,
@@ -366,17 +337,11 @@ export function getCategoryBreadcrumbs(
 
     return breadcrumbs;
   } catch (error) {
-    console.warn('Error generating category breadcrumbs:', error);
     return [];
   }
 }
 
-/**
- * Get breadcrumbs for tag pages
- * @param tagId - Tag identifier
- * @param tagData - Optional tag collection entry
- * @returns Array of breadcrumb items
- */
+
 export function getTagBreadcrumbs(
   tagSlug: string,
   tagData?: CollectionEntry<'tags'>
@@ -404,7 +369,7 @@ export function getTagBreadcrumbs(
       }
     ];
 
-    // Add tag name as current page
+    
     const tagName = tagData?.data.name || tagSlug;
     breadcrumbs.push({
       name: tagName,
@@ -414,17 +379,11 @@ export function getTagBreadcrumbs(
 
     return breadcrumbs;
   } catch (error) {
-    console.warn('Error generating tag breadcrumbs:', error);
     return [];
   }
 }
 
-/**
- * Get breadcrumbs for author pages
- * @param authorId - Author identifier
- * @param authorData - Optional author collection entry
- * @returns Array of breadcrumb items
- */
+
 export function getAuthorBreadcrumbs(
   authorId: string,
   authorData?: CollectionEntry<'authors'>
@@ -447,7 +406,7 @@ export function getAuthorBreadcrumbs(
       }
     ];
 
-    // Add author name as current page
+    
     const authorName = authorData?.data.name || authorId;
     breadcrumbs.push({
       name: authorName,
@@ -457,53 +416,40 @@ export function getAuthorBreadcrumbs(
 
     return breadcrumbs;
   } catch (error) {
-    console.warn('Error generating author breadcrumbs:', error);
     return [];
   }
 }
 
-/**
- * Utility function to safely decode URI components
- * @param str - String to decode
- * @returns Decoded string or original if decoding fails
- */
+
 export function safeDecodeURIComponent(str: string): string {
   try {
     return decodeURIComponent(str);
   } catch (error) {
-    console.warn('Failed to decode URI component:', str, error);
     return str;
   }
 }
 
-/**
- * Utility function to validate breadcrumb items
- * @param items - Array of breadcrumb items to validate
- * @returns Validated and cleaned breadcrumb items
- */
+
 export function validateBreadcrumbs(items: BreadcrumbItem[]): BreadcrumbItem[] {
   return items.filter(item => {
-    // Ensure item has a name
+    
     if (!item.name || typeof item.name !== 'string' || item.name.trim() === '') {
-      console.warn('Invalid breadcrumb item: missing or empty name', item);
       return false;
     }
 
-    // Validate URL if present
+    
     if (item.url !== undefined && typeof item.url !== 'string') {
-      console.warn('Invalid breadcrumb item: invalid URL type', item);
       return false;
     }
 
-    // Filter out items with null names
+    
     if (item.name === null) {
-      console.warn('Invalid breadcrumb item: null name', item);
       return false;
     }
 
     return true;
   }).map((item, index) => ({
     ...item,
-    position: index + 1 // Ensure positions are sequential
+    position: index + 1 
   }));
 }

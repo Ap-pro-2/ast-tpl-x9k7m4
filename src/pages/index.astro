@@ -37,17 +37,10 @@ const organizationSchema = generateOrganizationSchema(settings);
       <link rel="preconnect" href={settings.imageDomain} slot="head" />
     )
   }
-  
-  <!-- Organization Schema with Social Media Links -->
   <Schema item={organizationSchema} id="organization-schema" slot="head" />
 
-  <!-- Magazine Hero Section V1 (commented out) -->
-  <!-- <MagazineHero /> -->
-  
-  <!-- Magazine Hero Section V2 (new modern design) -->
   <MagazineHeroV2 />
 
-  <!-- Header Ad Section -->
   <section class="standalone-ad-section" style="background: var(--bg-primary)">
     <div class="container max-w-7xl">
       <div class="standalone-ad-banner">
@@ -59,15 +52,10 @@ const organizationSchema = generateOrganizationSchema(settings);
     </div>
   </section>
 
-
   <Section2 />
-
 
   <Section3Slider />
 
-  <!-- Section4 - Main Content with Sidebar -->
   <Section4 />
 
-  <!-- Section5 - Newsletter Section -->
-  <Section5 />
 </BaseLayout>

@@ -1,13 +1,13 @@
-// src/core/blogLogic.ts
-// ALL CORE BLOG LOGIC IN ONE FILE - UI INDEPENDENT
+
+
 
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { filterDrafts, filterPublishedOnly } from '../utils/draftFilter';
 
-// ==========================================
-// TYPES & INTERFACES
-// ==========================================
+
+
+
 
 export interface BlogPost extends CollectionEntry<'blog'> {}
 
@@ -76,13 +76,11 @@ export interface SiteSettings {
   };
 }
 
-// ==========================================
-// CORE CONTENT FUNCTIONS
-// ==========================================
 
-/**
- * Get all blog posts with draft filtering
- */
+
+
+
+
 export async function getAllPosts(): Promise<BlogPost[]> {
   const allPosts = await getCollection('blog', filterDrafts);
   return allPosts.sort((a, b) => 
@@ -90,9 +88,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   );
 }
 
-/**
- * Get only published posts (for RSS, sitemaps)
- */
+
 export async function getPublishedPosts(): Promise<BlogPost[]> {
   const publishedPosts = await getCollection('blog', filterPublishedOnly);
   return publishedPosts.sort((a, b) => 
@@ -100,9 +96,7 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
   );
 }
 
-/**
- * Get site settings
- */
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   const allSettings = await getCollection('settings');
   const settingsData = allSettings[0]?.data;
@@ -118,7 +112,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     };
   }
   
-  // Ensure required properties are present with fallbacks
+  
   return {
     siteName: settingsData.siteName || 'Blog',
     siteDescription: settingsData.siteDescription || 'A blog built with Astro',
@@ -126,7 +120,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     author: settingsData.author || 'Author',
     email: settingsData.email || 'author@example.com',
     defaultOgImage: settingsData.defaultOgImage || '/og-image.jpg',
-    // Optional properties can be passed through as-is
+    
     id: settingsData.id,
     siteTitle: settingsData.siteTitle,
     logo: settingsData.logo,
@@ -140,48 +134,39 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   };
 }
 
-/**
- * Get page data by ID
- */
+
 export async function getPageData(pageId: string) {
   try {
     const allPages = await getCollection('pages');
     const pageData = allPages.find(p => p.data.id === pageId)?.data;
-    return pageData; // Return undefined if not found
+    return pageData; 
   } catch (error) {
-    console.error(`Error getting page data for ${pageId}:`, error);
     throw error;
   }
 }
 
-/**
- * Get only published pages from the pages collection
- */
+
 export async function getPublishedPages() {
   return await getCollection('pages', (entry) => entry.data.published === true);
 }
 
-/**
- * Check if a page should be indexed based on pages.json settings
- */
+
 export async function shouldIndexPage(pageSlug: string): Promise<boolean> {
   const allPages = await getCollection('pages');
   const pageData = allPages.find(p => p.data.slug === pageSlug);
   
-  // If page not found in pages.json, default to index (true)
+  
   if (!pageData) return true;
   
-  // Return opposite of noindex (if noindex is true, should not index)
+  
   return !pageData.data.noindex;
 }
 
-// ==========================================
-// PAGINATION LOGIC
-// ==========================================
 
-/**
- * Create pagination data for blog posts
- */
+
+
+
+
 export function createPaginationData(
   posts: BlogPost[], 
   currentPage: number, 
@@ -194,7 +179,7 @@ export function createPaginationData(
   const end = Math.min(start + pageSize - 1, total - 1);
   const data = posts.slice(start, start + pageSize);
 
-  // Generate URLs
+  
   const firstUrl = basePath;
   const lastUrl = lastPage > 1 ? `${basePath}/${lastPage}` : basePath;
   const currentUrl = currentPage === 1 ? basePath : `${basePath}/${currentPage}`;
@@ -221,9 +206,7 @@ export function createPaginationData(
   };
 }
 
-/**
- * Generate static paths for paginated blog
- */
+
 export async function generateBlogPaginationPaths(pageSize: number = 5) {
   const posts = await getAllPosts();
   const totalPages = Math.ceil(posts.length / pageSize);
@@ -241,13 +224,11 @@ export async function generateBlogPaginationPaths(pageSize: number = 5) {
   return paths;
 }
 
-// ==========================================
-// CATEGORY LOGIC
-// ==========================================
 
-/**
- * Get posts by category
- */
+
+
+
+
 export async function getPostsByCategory(categoryId: string): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   return allPosts.filter(post => {
@@ -257,9 +238,7 @@ export async function getPostsByCategory(categoryId: string): Promise<BlogPost[]
   });
 }
 
-/**
- * Get all categories with post counts
- */
+
 export async function getCategoriesWithPostCounts() {
   const allPosts = await getAllPosts();
   const allCategories = await getCollection('categories');
@@ -279,13 +258,11 @@ export async function getCategoriesWithPostCounts() {
     .sort((a, b) => b.postCount - a.postCount);
 }
 
-/**
- * Generate static paths for category pages
- */
+
 export async function generateCategoryPaths() {
   const allPosts = await getAllPosts();
   
-  // Load all categories to ensure we create pages for empty ones too
+  
   const allCategories = await getCollection('categories');
   
   return allCategories.map(category => {
@@ -305,13 +282,11 @@ export async function generateCategoryPaths() {
   });
 }
 
-// ==========================================
-// TAG LOGIC
-// ==========================================
 
-/**
- * Get posts by tag
- */
+
+
+
+
 export async function getPostsByTag(tagId: string): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   return allPosts.filter(post =>
@@ -322,9 +297,7 @@ export async function getPostsByTag(tagId: string): Promise<BlogPost[]> {
   );
 }
 
-/**
- * Get all tags with post counts
- */
+
 export async function getTagsWithPostCounts() {
   const allPosts = await getAllPosts();
   const allTags = await getCollection('tags');
@@ -344,13 +317,11 @@ export async function getTagsWithPostCounts() {
   }).sort((a, b) => b.postCount - a.postCount);
 }
 
-/**
- * Generate static paths for tag pages
- */
+
 export async function generateTagPaths() {
   const allPosts = await getAllPosts();
   
-  // Load all tags to ensure we create pages for empty ones too
+  
   const allTags = await getCollection('tags');
   
   return allTags.map(tag => {
@@ -371,13 +342,11 @@ export async function generateTagPaths() {
   });
 }
 
-// ==========================================
-// AUTHOR LOGIC
-// ==========================================
 
-/**
- * Get posts by author ID (for backward compatibility)
- */
+
+
+
+
 export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   return allPosts.filter(post => {
@@ -387,18 +356,16 @@ export async function getPostsByAuthor(authorId: string): Promise<BlogPost[]> {
   });
 }
 
-/**
- * Get posts by author slug
- */
+
 export async function getPostsByAuthorSlug(authorSlug: string): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   const allAuthors = await getCollection('authors');
   
-  // Find the author by slug
+  
   const author = allAuthors.find(a => a.data.slug === authorSlug);
   if (!author) return [];
   
-  // Get posts by author ID
+  
   return allPosts.filter(post => {
     const postAuthorId = typeof post.data.author === 'string' ? 
       post.data.author : post.data.author?.id;
@@ -406,9 +373,7 @@ export async function getPostsByAuthorSlug(authorSlug: string): Promise<BlogPost
   });
 }
 
-/**
- * Get all authors with post counts
- */
+
 export async function getAuthorsWithPostCounts() {
   const allPosts = await getAllPosts();
   const allAuthors = await getCollection('authors');
@@ -427,9 +392,7 @@ export async function getAuthorsWithPostCounts() {
   }).sort((a, b) => b.postCount - a.postCount);
 }
 
-/**
- * Generate static paths for author pages
- */
+
 export async function generateAuthorPaths() {
   const authors = await getCollection('authors');
   
@@ -439,9 +402,7 @@ export async function generateAuthorPaths() {
   }));
 }
 
-/**
- * Get unique tags from author's posts (by author ID)
- */
+
 export async function getAuthorTags(authorId: string): Promise<string[]> {
   const authorPosts = await getPostsByAuthor(authorId);
   const tagIds = authorPosts.flatMap(post => 
@@ -453,9 +414,7 @@ export async function getAuthorTags(authorId: string): Promise<string[]> {
   return Array.from(new Set(tagIds));
 }
 
-/**
- * Get unique tags from author's posts (by author slug)
- */
+
 export async function getAuthorTagsBySlug(authorSlug: string): Promise<string[]> {
   const authorPosts = await getPostsByAuthorSlug(authorSlug);
   const tagIds = authorPosts.flatMap(post => 
@@ -467,13 +426,11 @@ export async function getAuthorTagsBySlug(authorSlug: string): Promise<string[]>
   return Array.from(new Set(tagIds));
 }
 
-// ==========================================
-// SEO GENERATION
-// ==========================================
 
-/**
- * Generate SEO data for blog listing page
- */
+
+
+
+
 export async function generateBlogListingSEO(
   currentPage: number = 1,
   totalPages: number = 1
@@ -514,9 +471,7 @@ export async function generateBlogListingSEO(
   };
 }
 
-/**
- * Generate SEO data for category page
- */
+
 export async function generateCategorySEO(categorySlug: string): Promise<SEOData> {
   try {
     const settings = await getSiteSettings();
@@ -526,7 +481,7 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
     const categoryName = categoryData ? categoryData.data.name : categorySlug;
     const categoryDescription = categoryData ? categoryData.data.description : null;
 
-    // Use custom SEO if available, otherwise fallback to generated SEO
+    
     if (categoryData?.data.seo) {
       const customSEO = categoryData.data.seo;
       return {
@@ -544,7 +499,7 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
       };
     }
 
-    // Fallback to default SEO generation
+    
     const pageTitle = `${categoryName} Posts - ${settings.siteName}`;
     const description = categoryDescription || 
       `Browse all posts in the ${categoryName} category from ${settings.siteName}.`;
@@ -563,9 +518,8 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
       canonicalUrl,
     };
   } catch (error) {
-    console.error(`Error generating category SEO for ${categorySlug}:`, error);
     
-    // Return minimal fallback SEO
+    
     return {
       pageTitle: `${categorySlug} Posts - Website`,
       description: `Browse all posts in the ${categorySlug} category.`,
@@ -578,9 +532,7 @@ export async function generateCategorySEO(categorySlug: string): Promise<SEOData
   }
 }
 
-/**
- * Generate SEO data for tag page
- */
+
 export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
   try {
     const settings = await getSiteSettings();
@@ -590,7 +542,7 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
     const tagName = tagData ? tagData.data.name : tagSlug;
     const tagDescription = tagData ? tagData.data.description : null;
 
-    // Use custom SEO if available, otherwise fallback to generated SEO
+    
     if (tagData?.data.seo) {
       const customSEO = tagData.data.seo;
       return {
@@ -608,7 +560,7 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
       };
     }
 
-    // Fallback to default SEO generation
+    
     const pageTitle = `Posts tagged with: ${tagName} - ${settings.siteName}`;
     const description = tagDescription || 
       `Browse all posts tagged with ${tagName} from ${settings.siteName}.`;
@@ -627,9 +579,8 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
       canonicalUrl,
     };
   } catch (error) {
-    console.error(`Error generating tag SEO for ${tagSlug}:`, error);
     
-    // Return minimal fallback SEO
+    
     return {
       pageTitle: `${tagSlug} Posts - Website`,
       description: `Browse all posts tagged with ${tagSlug}.`,
@@ -644,9 +595,7 @@ export async function generateTagSEO(tagSlug: string): Promise<SEOData> {
   }
 }
 
-/**
- * Generate SEO data for author page
- */
+
 export async function generateAuthorSEO(author: any): Promise<SEOData> {
   const settings = await getSiteSettings();
   
@@ -669,13 +618,11 @@ export async function generateAuthorSEO(author: any): Promise<SEOData> {
   };
 }
 
-/**
- * Generate homepage SEO
- */
+
 export async function generateHomepageSEO(): Promise<SEOData> {
   const settings = await getSiteSettings();
   
-  // Use siteTitle if available, otherwise combine siteName with description
+  
   const pageTitle = settings.siteTitle || `${settings.siteName} - ${settings.siteDescription}`;
   const description = settings.siteDescription;
 
@@ -694,13 +641,11 @@ export async function generateHomepageSEO(): Promise<SEOData> {
   };
 }
 
-// ==========================================
-// SCHEMA GENERATION FOR PAGES
-// ==========================================
 
-/**
- * Generate structured data for blog listing
- */
+
+
+
+
 export async function generateBlogListingSchema(posts: BlogPost[], currentPage: number = 1) {
   const settings = await getSiteSettings();
   
@@ -722,7 +667,7 @@ export async function generateBlogListingSchema(posts: BlogPost[], currentPage: 
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": posts.length,
-      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "itemListOrder": "https://schema.org/Descending",
       "itemListElement": posts.map((post, index) => ({
         "@type": "ListItem",
         "position": ((currentPage - 1) * 5) + index + 1,
@@ -746,27 +691,21 @@ export async function generateBlogListingSchema(posts: BlogPost[], currentPage: 
   };
 }
 
-/**
- * Generate URL for sharing
- */
+
 export function generateShareURL(title: string, author: string, siteName: string): string {
   return encodeURIComponent(`"${title}" - by ${author} | ${siteName}`);
 }
 
-// ==========================================
-// UTILITY FUNCTIONS
-// ==========================================
 
-/**
- * Get current URL
- */
+
+
+
+
 export function getCurrentURL(siteUrl: string, pathname: string): string {
   return `${siteUrl}${pathname}`;
 }
 
-/**
- * Format date for display
- */
+
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -775,18 +714,14 @@ export function formatDate(date: Date): string {
   }).format(date);
 }
 
-/**
- * Calculate reading time
- */
+
 export function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;
   return Math.ceil(words / wordsPerMinute);
 }
 
-/**
- * Extract frontmatter for compatibility
- */
+
 export function extractFrontmatter(post: BlogPost) {
   const authorId = typeof post.data.author === 'string' ? 
     post.data.author : post.data.author?.id;
@@ -810,30 +745,24 @@ export function extractFrontmatter(post: BlogPost) {
   };
 }
 
-// ==========================================
-// ENHANCED UTILITY FUNCTIONS
-// ==========================================
 
-/**
- * Get featured posts
- */
+
+
+
+
 export async function getFeaturedPosts(limit?: number): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   const featuredPosts = allPosts.filter(post => post.data.featured === true);
   return limit ? featuredPosts.slice(0, limit) : featuredPosts;
 }
 
-/**
- * Get recent posts
- */
+
 export async function getRecentPosts(limit: number = 5): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   return allPosts.slice(0, limit);
 }
 
-/**
- * Get related posts based on tags and category
- */
+
 export async function getRelatedPosts(currentPost: BlogPost, limit: number = 3): Promise<BlogPost[]> {
   const allPosts = await getAllPosts();
   const currentPostTags = currentPost.data.tags.map(tag => 
@@ -842,20 +771,20 @@ export async function getRelatedPosts(currentPost: BlogPost, limit: number = 3):
   const currentPostCategory = typeof currentPost.data.category === 'string' ? 
     currentPost.data.category : currentPost.data.category?.id;
 
-  // Filter out current post and calculate relevance scores
+  
   const relatedPosts = allPosts
     .filter(post => post.id !== currentPost.id)
     .map(post => {
       let score = 0;
       
-      // Same category gets higher score
+      
       const postCategory = typeof post.data.category === 'string' ? 
         post.data.category : post.data.category?.id;
       if (postCategory === currentPostCategory) {
         score += 3;
       }
       
-      // Shared tags get points
+      
       const postTags = post.data.tags.map(tag => 
         typeof tag === 'string' ? tag : tag.id
       );
@@ -872,9 +801,7 @@ export async function getRelatedPosts(currentPost: BlogPost, limit: number = 3):
   return relatedPosts;
 }
 
-/**
- * Search posts by title and content
- */
+
 export async function searchPosts(query: string, limit?: number): Promise<BlogPost[]> {
   if (!query.trim()) return [];
   
@@ -891,9 +818,7 @@ export async function searchPosts(query: string, limit?: number): Promise<BlogPo
   return limit ? matchingPosts.slice(0, limit) : matchingPosts;
 }
 
-/**
- * Get post statistics
- */
+
 export async function getBlogStats() {
   const allPosts = await getAllPosts();
   const allCategories = await getCollection('categories');
@@ -916,16 +841,14 @@ export async function getBlogStats() {
     totalAuthors: allAuthors.length,
     featuredPosts,
     publishedThisMonth,
-    averagePostsPerMonth: Math.round(totalPosts / 12) // Rough estimate
+    averagePostsPerMonth: Math.round(totalPosts / 12) 
   };
 }
 
-/**
- * Get top categories for footer display (excluding uncategorized)
- */
+
 export async function getTopCategories(limit: number = 4): Promise<Array<{id: string, data: any, postCount: number}>> {
   const categoriesWithCounts = await getCategoriesWithPostCounts();
-  // Filter out uncategorized categories
+  
   const filteredCategories = categoriesWithCounts.filter(category => 
     category.data.slug !== 'uncategorized' && 
     category.data.name.toLowerCase() !== 'uncategorized' &&
@@ -934,22 +857,20 @@ export async function getTopCategories(limit: number = 4): Promise<Array<{id: st
   return filteredCategories.slice(0, limit);
 }
 
-/**
- * Generate excerpt from content
- */
+
 export function generateExcerpt(content: string, maxLength: number = 160): string {
-  // Remove HTML tags and markdown
+  
   const cleanContent = content
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/[#*`_~]/g, '') // Remove markdown formatting
-    .replace(/\n+/g, ' ') // Replace newlines with spaces
+    .replace(/<[^>]*>/g, '') 
+    .replace(/[#*`_~]/g, '') 
+    .replace(/\n+/g, ' ') 
     .trim();
   
   if (cleanContent.length <= maxLength) {
     return cleanContent;
   }
   
-  // Find the last complete word within the limit
+  
   const truncated = cleanContent.substring(0, maxLength);
   const lastSpaceIndex = truncated.lastIndexOf(' ');
   

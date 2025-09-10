@@ -2,38 +2,44 @@
 export const prerender = true;
 
 import { getCollection } from 'astro:content';
+import { getSiteSettings } from '../core/blogLogic';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import UniversalForm from '../components/forms/UniversalForm.astro';
+
+const settings = await getSiteSettings();
 
 // Get page data from pages collection
 const pagesCollection = await getCollection('pages');
 const contactPage = pagesCollection.find(page => page.data.slug === 'contact');
 
-// Fallback data if page not found in collection
-const pageData = contactPage?.data || {
-  title: 'Contact Us',
-  description: 'Get in touch with our coffee experts. We\'d love to hear from you.',
-  seo: {
-    title: 'Contact Us | AstroPress Coffee',
-    description: 'Get in touch with our coffee experts. We\'d love to hear from you.',
-    keywords: ['contact us', 'coffee questions', 'get in touch']
-  }
+// Use the existing pattern from about.astro for proper SEO handling
+const pageData = contactPage?.data;
+
+// Enhanced SEO data handling
+const seoData = {
+  pageTitle: pageData?.seo?.title || `Contact Us | ${settings.siteName}`,
+  description: pageData?.seo?.description || pageData?.description || `Get in touch with ${settings.siteName} experts`,
+  keywords: pageData?.seo?.keywords || ['contact us', 'coffee questions', 'get in touch'],
+  ogImage: pageData?.seo?.ogImage || settings.defaultOgImage,
+  ogImageAlt: `Contact Us - ${settings.siteName}`,
+  canonicalUrl: pageData?.seo?.canonical || `${settings.siteUrl}/contact`
 };
 ---
 
 <BaseLayout 
-  pageTitle={pageData.seo?.title || pageData.title} 
-  description={pageData.seo?.description || pageData.description}
-  keywords={pageData.seo?.keywords}
-  canonicalUrl={pageData.seo?.canonical || '/contact'}
-  ogImage={pageData.seo?.ogImage}
+  pageTitle={seoData.pageTitle} 
+  description={seoData.description}
+  keywords={seoData.keywords}
+  ogImage={seoData.ogImage}
+  ogImageAlt={seoData.ogImageAlt}
+  canonicalUrl={seoData.canonicalUrl}
 >
   <!-- Contact Us Page -->
   <section class="contact-hero">
     <div class="container max-w-4xl">
       <div class="contact-hero-content">
-        <h1 class="contact-hero-title">{pageData.title}</h1>
-        <p class="contact-hero-description">{pageData.description}</p>
+        <h1 class="contact-hero-title">{pageData?.title || 'Contact Us'}</h1>
+        <p class="contact-hero-description">{pageData?.description || `Get in touch with our ${settings.siteName} experts. We'd love to hear from you.`}</p>
       </div>
     </div>
   </section>

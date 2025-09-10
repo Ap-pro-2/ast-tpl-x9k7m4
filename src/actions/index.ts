@@ -1,10 +1,8 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
-import { BLOG_API_KEY, TURNSTILE_ENABLED, TURNSTILE_SECRET_KEY } from 'astro:env/server';
-import { validateTurnstileToken, isTurnstileEnabled } from '../core/turnstileLogic';
+import { BLOG_API_KEY } from 'astro:env/server';
 
 export const server = {
-  // Main lead capture action that calls the AstroPress API
   leads: defineAction({
     accept: 'form',
     input: z.object({
@@ -12,64 +10,9 @@ export const server = {
       name: z.string().min(2, 'Please enter at least 2 characters').optional(),
       message: z.string().min(10, 'Please enter at least 10 characters').optional(),
       source: z.string().default('website'),
-      'cf-turnstile-response': z.string().optional(), // Turnstile token
     }),
     handler: async (input, context) => {
       try {
-        // Turnstile validation if enabled and token provided
-        console.log('🔍 SERVER ACTION DEBUG:');
-        console.log(`- Environment TURNSTILE_ENABLED: ${TURNSTILE_ENABLED} (type: ${typeof TURNSTILE_ENABLED})`);
-        console.log(`- Environment TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY ? TURNSTILE_SECRET_KEY.substring(0, 10) + '...' : 'NOT SET'}`);
-        console.log(`- Environment BLOG_API_KEY: ${BLOG_API_KEY ? BLOG_API_KEY.substring(0, 10) + '...' : 'NOT SET'}`);
-        
-        const turnstileEnabled = await isTurnstileEnabled();
-        console.log(`Form Submission Details:`);
-        console.log(`- Turnstile enabled result: ${turnstileEnabled}`);
-        console.log(`- Token provided: ${!!input['cf-turnstile-response']}`);
-        console.log(`- Token length: ${input['cf-turnstile-response']?.length || 0}`);
-        if (input['cf-turnstile-response']) {
-          console.log(`- Token preview: ${input['cf-turnstile-response'].substring(0, 20)}...`);
-        }
-        
-        if (turnstileEnabled && input['cf-turnstile-response']) {
-          console.log('Validating Turnstile token...');
-          
-          // Get client IP address
-          const clientIP = context.request.headers.get('CF-Connecting-IP') ||
-                           context.request.headers.get('X-Forwarded-For') ||
-                           context.request.headers.get('X-Real-IP') ||
-                           'unknown';
-          
-          console.log(`🔍 VALIDATION ATTEMPT:`);
-          console.log(`- Token: ${input['cf-turnstile-response'].substring(0, 20)}...`);
-          console.log(`- Client IP: ${clientIP}`);
-          
-          const validation = await validateTurnstileToken(
-            input['cf-turnstile-response'],
-            clientIP
-          );
-          
-          console.log(`🔍 VALIDATION RESULT:`, validation);
-          
-          if (!validation.valid) {
-            console.error('❌ Turnstile validation failed:', validation.error);
-            console.error('❌ Full validation data:', validation.data);
-            throw new ActionError({
-              code: 'BAD_REQUEST',
-              message: 'Security verification failed. Please try again.'
-            });
-          }
-          
-          console.log('Turnstile validation successful');
-        } else if (turnstileEnabled && !input['cf-turnstile-response']) {
-          // Turnstile is enabled but no token provided
-          throw new ActionError({
-            code: 'BAD_REQUEST',
-            message: 'Security verification is required.'
-          });
-        }
-
-        // Call the AstroPress API
         const response = await fetch('https://astropress-apis.mcpsplayground.workers.dev/api/leads', {
           method: 'POST',
           headers: {
@@ -97,10 +40,8 @@ export const server = {
         return {
           success: true,
           message: 'Thank you! Your information has been saved.'
-          // Don't return the full API response to avoid exposing sensitive data
         };
       } catch (error) {
-        console.error('Lead capture error:', error);
         
         if (error instanceof ActionError) {
           throw error;

@@ -10,9 +10,9 @@ export async function generateBlogPostSchemaData(
     title: string;
     description: string;
     pubDate: Date;
-    author: string; // Reference to author ID
-    category: string; // Reference to category ID
-    tags: string[]; // Array of tag IDs
+    author: string; 
+    category: string; 
+    tags: string[]; 
     image?: {
       url: string;
       alt: string;
@@ -22,20 +22,18 @@ export async function generateBlogPostSchemaData(
   },
   url: string,
   schemaType: 'Article' | 'BlogPosting' = 'Article',
-  content?: string // Optional content for FAQ parsing
+  content?: string 
 ) {
-  // Early validation for required data
+  
   if (!frontmatter) {
-    console.error('BlogPostSchema: No frontmatter provided');
     return null;
   }
 
   if (!frontmatter?.title || !frontmatter?.description) {
-    console.warn('BlogPostSchema: Missing required frontmatter fields (title, description)');
     return null;
   }
 
-  // Only proceed if we have valid frontmatter and the post is published
+  
   const shouldRender = frontmatter && 
                       frontmatter.title && 
                       frontmatter.description && 
@@ -46,7 +44,7 @@ export async function generateBlogPostSchemaData(
   }
 
   try {
-    // Fetch author data from content collection
+    
     let authorData: AuthorData | null = null;
     if (frontmatter.author) {
       try {
@@ -64,11 +62,10 @@ export async function generateBlogPostSchemaData(
           };
         }
       } catch (error) {
-        console.warn(`BlogPostSchema: Failed to fetch author data for "${frontmatter.author}":`, error);
       }
     }
 
-    // Fetch category data from content collection
+    
     let categoryData: { id: string; name: string; description?: string; color?: string; slug?: string; } | null = null;
     if (frontmatter.category) {
       try {
@@ -83,11 +80,10 @@ export async function generateBlogPostSchemaData(
           };
         }
       } catch (error) {
-        console.warn(`BlogPostSchema: Failed to fetch category data for "${frontmatter.category}":`, error);
       }
     }
 
-    // Fetch tags data from content collection
+    
     let tagsData: Array<{ id: string; name: string; description?: string; color?: string; slug?: string; }> = [];
     if (frontmatter.tags && Array.isArray(frontmatter.tags)) {
       try {
@@ -107,7 +103,6 @@ export async function generateBlogPostSchemaData(
             }
             return null;
           } catch (error) {
-            console.warn(`BlogPostSchema: Failed to fetch tag data for "${tagId}":`, error);
             return null;
           }
         });
@@ -115,11 +110,10 @@ export async function generateBlogPostSchemaData(
         const resolvedTags = await Promise.all(tagPromises);
         tagsData = resolvedTags.filter((tag): tag is NonNullable<typeof tag> => tag !== null);
       } catch (error) {
-        console.warn('BlogPostSchema: Failed to fetch tags data:', error);
       }
     }
 
-    // Fetch site settings
+    
     let siteSettings: SiteSettings | null = null;
     try {
       const settingsEntry = await getEntry('settings', 'site-config');
@@ -139,10 +133,9 @@ export async function generateBlogPostSchemaData(
         };
       }
     } catch (error) {
-      console.warn('BlogPostSchema: Failed to fetch site settings:', error);
     }
 
-    // Create fallback data for missing information
+    
     const safeAuthorData: AuthorData = authorData || {
       id: frontmatter.author || 'anonymous',
       name: frontmatter.author || 'Anonymous Author',
@@ -169,7 +162,7 @@ export async function generateBlogPostSchemaData(
       defaultOgImage: '/og-image.jpg',
     };
 
-    // Build the enhanced frontmatter with resolved data
+    
     const enhancedFrontmatter: BlogFrontmatter = {
       title: frontmatter.title,
       description: frontmatter.description,
@@ -182,7 +175,7 @@ export async function generateBlogPostSchemaData(
       status: frontmatter.status || 'published',
     };
 
-    // Parse FAQ content if provided
+    
     let faqSchema = null;
     if (content) {
       try {
@@ -191,11 +184,10 @@ export async function generateBlogPostSchemaData(
           faqSchema = generateFAQSchema(faqData);
         }
       } catch (error) {
-        console.warn('BlogPostSchema: Failed to parse FAQ content:', error);
       }
     }
 
-    // Generate the appropriate schema based on type
+    
     try {
       let mainSchema;
       if (schemaType === 'BlogPosting') {
@@ -212,16 +204,15 @@ export async function generateBlogPostSchemaData(
         });
       }
 
-      // Return array of schemas if FAQ is present, otherwise just the main schema
+      
       if (faqSchema) {
         return [mainSchema, faqSchema];
       }
       
       return mainSchema;
     } catch (error) {
-      console.error(`BlogPostSchema: Failed to generate ${schemaType} schema:`, error);
       
-      // Create minimal fallback schema
+      
       const fallbackSchema = {
         "@context": "https://schema.org",
         "@type": schemaType,
@@ -241,7 +232,7 @@ export async function generateBlogPostSchemaData(
         "url": url
       };
 
-      // Include FAQ schema even with fallback if available
+      
       if (faqSchema) {
         return [fallbackSchema, faqSchema];
       }
@@ -250,7 +241,6 @@ export async function generateBlogPostSchemaData(
     }
 
   } catch (error) {
-    console.error('BlogPostSchema: Unexpected error during schema generation:', error);
     return null;
   }
 }

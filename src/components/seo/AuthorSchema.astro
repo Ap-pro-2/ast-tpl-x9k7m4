@@ -1,14 +1,11 @@
 ---
-/**
- * AuthorSchema Component - Thin Wrapper
- * Now just calls core logic and renders schema
- */
+
 
  import Schema from '../../core/seo/Schema.astro';
 import { generateAuthorSchemaData } from '../../core/seo/generateAuthorSchema';
 
 export interface Props {
-  /** Author data from content collection */
+  
   author: {
     id: string;
     data: {
@@ -21,15 +18,15 @@ export interface Props {
       website?: string;
     };
   };
-  /** Full URL of the author page */
+  
   url: string;
-  /** Number of published posts by this author */
+  
   postCount?: number;
 }
 
 const { author, url, postCount = 0 } = Astro.props;
 
-// ✅ Just call core logic - no complex logic here
+
 const schemaData = await generateAuthorSchemaData(author, url, postCount);
 const shouldRender = schemaData && author?.data?.name;
 ---

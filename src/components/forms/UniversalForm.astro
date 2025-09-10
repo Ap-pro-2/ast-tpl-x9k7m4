@@ -1,95 +1,58 @@
 ---
-/**
- * Universal Form Component - Supports all form types and placements
- * Displays forms by placement or ID with full customization support.
- * Features:
- * - Vertical and horizontal form types
- * - Customizable styling and colors
- * - Field configuration (name, email)
- * - Placement-based rendering
- * - Graceful fallbacks and helpful development placeholders
- */
 
-import { 
-  getFormsByPlacement, 
-  getFormById, 
-  areFormsEnabled, 
-  getFormsConfig,
+import { areFormsEnabled, getFormsConfig, getFormById, getFormsByPlacement, type FormConfig } from '../../core/formsLogic';
+
+
+import {
   getFormFields,
   getFormElementIds,
   getFormSource
 } from '../../core/formsLogic';
-import { 
-  isTurnstileEnabled,
-  getTurnstileSiteKey,
-  generateTurnstileWidgetConfig
-} from '../../core/turnstileLogic';
 
-// --- Component Props ---
+
 export interface Props {
-  // The placement string that corresponds to a form placement in forms.json
+  
   placement?: string;
-  // The specific ID of a form to render
+  
   formId?: string;
-  // Optional CSS classes to apply to the form container for styling
+  
   className?: string;
 }
 
 const { placement, formId, className = '' } = Astro.props;
 
-// --- Form Fetching Logic ---
 
-// 1. First, check if forms are globally enabled in the configuration.
+
+
 const formsEnabled = await areFormsEnabled();
 const formsConfig = await getFormsConfig();
 
-// 2. If forms are enabled, fetch the form data.
-let forms = [];
+
+let forms: FormConfig[] = [];
 if (formsEnabled) {
-  // If a specific formId is provided, fetch that form.
+  
   if (formId) {
     const form = await getFormById(formId);
-    if (form) forms = [form];
-  // Otherwise, if a placement is provided, fetch all forms for that placement.
-  } else if (placement) {
+    forms = form ? [form] : [];
+  } 
+  
+  else if (placement) {
     forms = await getFormsByPlacement(placement);
   }
-}
-
-// No filtering needed - keep it simple
-const filteredForms = forms;
-
-// --- Turnstile Integration ---
-const turnstileEnabled = await isTurnstileEnabled();
-const turnstileSiteKey = await getTurnstileSiteKey();
-
-console.log('🔐 Turnstile Debug:');
-console.log('- Enabled:', turnstileEnabled);
-console.log('- Site Key:', turnstileSiteKey ? 'Present' : 'Missing');
-console.log('- Forms:', filteredForms.length);
-console.log('- Forms with Turnstile:', filteredForms.filter(form => form.turnstile?.enabled).length);
-
-// Generate Turnstile configurations for each form
-const formTurnstileConfigs = new Map();
-if (turnstileEnabled && turnstileSiteKey) {
-  for (const form of filteredForms) {
-    if (form.turnstile?.enabled) {
-      console.log(`- Configuring Turnstile for form: ${form.id}`);
-      const config = await generateTurnstileWidgetConfig(form.id, form.turnstile);
-      formTurnstileConfigs.set(form.id, config);
-    }
+  
+  else {
+    forms = [];
   }
 }
+
+
+const filteredForms = forms;
+
 ---
 
-{/* Note: Turnstile CDN script is now loaded globally in BaseLayout */}
+{}
 
-{/* --- Enhanced Rendering Logic for Multiple Form Types --- */}
-
-{/* 
-  If forms are enabled and we found at least one form (after security filtering), render the form(s).
-  This ensures that nothing is rendered on the live site if a form is not configured or blocked by security.
-*/}
+{}
 {formsEnabled && filteredForms.length > 0 ? (
   <div class={`universal-forms ${className}`}>
     {filteredForms.map((form) => {
@@ -102,151 +65,56 @@ if (turnstileEnabled && turnstileSiteKey) {
           class={`universal-form ${className || ''}`} 
           data-form-type={form.type}
           data-placement={form.placement}
-          key={form.id}
         >
           
-          {/* Error Message - use appropriate theme class based on form type */}
+          {}
           <div id={elementIds.errorMessage} class={form.type === 'horizontal' ? 'theme-horizontal-form-error' : 'theme-form-error'} style="display: none;">
-            <p>Unable to save your information. Please try again.</p>
+            Something went wrong. Please try again.
           </div>
-
-          {/* Success Message - use appropriate theme class based on form type */}
-          <div id={elementIds.successMessage} class={form.type === 'horizontal' ? 'theme-horizontal-form-success' : 'theme-form-success'} style="display: none;">
-            <p>Thank you! Your information has been saved.</p>
-          </div>
-
-          {/* Newsletter Header - Image Left, Content + Form Right */}
-          {form.placement === 'section5-newsletter' ? (
-            <div class="section5-newsletter-header">
-              {/* Form Image */}
-              {form.image && (
-                <div class="universal-form-image">
-                  <img src={form.image} alt={form.imageAlt || ''} />
-                </div>
-              )}
-              
-              {/* Form Content + Fields */}
-              <div class="section5-newsletter-content">
-                {/* Form Title */}
-                {form.title && (
-                  <h3 class="universal-form-title">{form.title}</h3>
-                )}
-
-                {/* Form Description */}
-                {form.description && (
-                  <p class="universal-form-description">{form.description}</p>
-                )}
-
-                {/* Form Fields Inline */}
-                {form.type === 'horizontal' && (
-                  <div class={`theme-horizontal-form-container ${className || ''}`}>
-                    <form id={elementIds.form} class="theme-horizontal-form">
-                      <div class="theme-horizontal-form-fields">
-                        {formFields.map((fieldConfig) => (
-                          <div class="theme-horizontal-form-group" key={fieldConfig.field}>
-                            <input
-                              type={fieldConfig.type}
-                              id={fieldConfig.field === 'name' ? elementIds.nameField : elementIds.emailField}
-                              name={fieldConfig.field}
-                              required={fieldConfig.required}
-                              placeholder={fieldConfig.placeholder}
-                              class="theme-horizontal-form-input"
-                            />
-                            <p 
-                              id={fieldConfig.field === 'name' ? elementIds.nameError : elementIds.emailError}
-                              class="theme-horizontal-form-field-error" 
-                              style="display: none;"
-                            ></p>
-                          </div>
-                        ))}
-                        
-                        {/* Turnstile Widget - Horizontal Form */}
-                        {formTurnstileConfigs.has(form.id) && (
-                          <div class="turnstile-container">
-                            <div 
-                              class="cf-turnstile"
-                              data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                              data-theme="auto"
-                              data-size="flexible"
-                              data-callback="onTurnstileSuccess"
-                              data-error-callback="onTurnstileError"
-                              data-expired-callback="onTurnstileExpired"
-                            ></div>
-                          </div>
-                        )}
-                        
-                        <button type="submit" class="theme-horizontal-form-submit" id={elementIds.submitBtn}>
-                          {form.buttonText}
-                        </button>
-                      </div>
-                      
-                      {/* Hidden input for source tracking */}
-                      <input type="hidden" name="source" value={formSource} />
-                    </form>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* Standard Form Layout */}
-              {/* Form Title */}
-              {form.title && (
-                <h3 class="universal-form-title">{form.title}</h3>
-              )}
-
-              {/* Form Description */}
-              {form.description && (
-                <p class="universal-form-description">{form.description}</p>
-              )}
-
-              {/* Form Image */}
-              {form.image && (
-                <div class="universal-form-image">
-                  <img src={form.image} alt={form.imageAlt || ''} />
-                </div>
-              )}
-            </>
-          )}
           
-          {/* VERTICAL FORM LAYOUT */}
+          {}
+          <div id={elementIds.successMessage} class={form.type === 'horizontal' ? 'theme-horizontal-form-success' : 'theme-form-success'} style="display: none;">
+            Thank you! Your message has been sent successfully.
+          </div>
+
+          {}
           {form.type === 'vertical' && (
             <div class={`theme-form-container ${className || ''}`}>
-              <form id={elementIds.form}>
+              <form id={elementIds.form} class="theme-form">
                 {formFields.map((fieldConfig) => (
-                  <div class="theme-form-group" key={fieldConfig.field}>
-                    <input
-                      type={fieldConfig.type}
-                      id={fieldConfig.field === 'name' ? elementIds.nameField : elementIds.emailField}
-                      name={fieldConfig.field}
-                      required={fieldConfig.required}
-                      placeholder={fieldConfig.placeholder}
-                      class="theme-form-input"
-                    />
+                  <div class="theme-form-field">
+                    <label for={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : elementIds.messageField}>
+                      {fieldConfig.label}
+                    </label>
+                    
+                    {fieldConfig.type === 'textarea' ? (
+                      <textarea
+                        id={fieldConfig.field === 'message' ? elementIds.messageField : ''}
+                        name={fieldConfig.field}
+                        placeholder={fieldConfig.placeholder}
+                        required={fieldConfig.required}
+                        class="theme-form-input"
+                      ></textarea>
+                    ) : (
+                      <input
+                        type={fieldConfig.type}
+                        id={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : ''}
+                        name={fieldConfig.field}
+                        placeholder={fieldConfig.placeholder}
+                        required={fieldConfig.required}
+                        class="theme-form-input"
+                      />
+                    )}
+                    
                     <p 
-                      id={fieldConfig.field === 'name' ? elementIds.nameError : elementIds.emailError}
+                      id={fieldConfig.field === 'name' ? elementIds.nameError : fieldConfig.field === 'email' ? elementIds.emailError : elementIds.messageError}
                       class="theme-form-field-error" 
                       style="display: none;"
                     ></p>
                   </div>
                 ))}
                 
-                {/* Turnstile Widget - Vertical Form */}
-                {formTurnstileConfigs.has(form.id) && (
-                  <div class="turnstile-container">
-                    <div 
-                      class="cf-turnstile" 
-                      data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                      data-theme="auto"
-                      data-size="flexible"
-                      data-callback="onTurnstileSuccess"
-                      data-error-callback="onTurnstileError"
-                      data-expired-callback="onTurnstileExpired"
-                    ></div>
-                  </div>
-                )}
-                
-                {/* Hidden input for source tracking */}
+                {}
                 <input type="hidden" name="source" value={formSource} />
                 
                 <button type="submit" class="theme-form-submit" id={elementIds.submitBtn}>
@@ -256,32 +124,39 @@ if (turnstileEnabled && turnstileSiteKey) {
             </div>
           )}
 
-          {/* CONTACT FORM LAYOUT */}
+          {}
           {form.type === 'contact' && (
             <div class={`theme-contact-form-container ${className || ''}`}>
               <form id={elementIds.form} class="theme-contact-form">
-                <div class="theme-contact-form-fields">
+                <div class="form-fields">
                   {formFields.map((fieldConfig) => (
-                    <div class="theme-contact-form-group" key={fieldConfig.field}>
+                    <div class="theme-contact-form-field">
+                      <label 
+                        class="theme-contact-form-label"
+                        for={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : elementIds.messageField}
+                      >
+                        {fieldConfig.label}
+                      </label>
+                      
                       {fieldConfig.type === 'textarea' ? (
                         <textarea
-                          id={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : elementIds.messageField}
+                          id={fieldConfig.field === 'message' ? elementIds.messageField : ''}
                           name={fieldConfig.field}
-                          required={fieldConfig.required}
                           placeholder={fieldConfig.placeholder}
-                          class="theme-contact-form-textarea"
-                          rows="6"
+                          required={fieldConfig.required}
+                          class="theme-contact-form-input"
                         ></textarea>
                       ) : (
                         <input
                           type={fieldConfig.type}
-                          id={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : elementIds.messageField}
+                          id={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : ''}
                           name={fieldConfig.field}
-                          required={fieldConfig.required}
                           placeholder={fieldConfig.placeholder}
+                          required={fieldConfig.required}
                           class="theme-contact-form-input"
                         />
                       )}
+                      
                       <p 
                         id={fieldConfig.field === 'name' ? elementIds.nameError : fieldConfig.field === 'email' ? elementIds.emailError : elementIds.messageError}
                         class="theme-contact-form-field-error" 
@@ -290,76 +165,57 @@ if (turnstileEnabled && turnstileSiteKey) {
                     </div>
                   ))}
                   
-                  {/* Turnstile Widget - Contact Form */}
-                  {formTurnstileConfigs.has(form.id) && (
-                    <div class="turnstile-container">
-                      <div 
-                        class="cf-turnstile" 
-                        data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                        data-theme="auto"
-                        data-size="flexible"
-                        data-callback="onTurnstileSuccess"
-                        data-error-callback="onTurnstileError"
-                        data-expired-callback="onTurnstileExpired"
-                      ></div>
-                    </div>
-                  )}
-                  
                   <button type="submit" class="theme-contact-form-submit" id={elementIds.submitBtn}>
                     {form.buttonText}
                   </button>
                 </div>
                 
-                {/* Hidden input for source tracking */}
+                {}
                 <input type="hidden" name="source" value={formSource} />
               </form>
             </div>
           )}
 
-          {/* HORIZONTAL FORM LAYOUT - Skip for section5-newsletter as it's rendered inline above */}
+          {}
           {form.type === 'horizontal' && form.placement !== 'section5-newsletter' && (
             <div class={`theme-horizontal-form-container ${className || ''}`}>
               <form id={elementIds.form} class="theme-horizontal-form">
-                <div class="theme-horizontal-form-fields">
+                <div class="form-fields">
                   {formFields.map((fieldConfig) => (
-                    <div class="theme-horizontal-form-group" key={fieldConfig.field}>
-                      <input
-                        type={fieldConfig.type}
-                        id={fieldConfig.field === 'name' ? elementIds.nameField : elementIds.emailField}
-                        name={fieldConfig.field}
-                        required={fieldConfig.required}
-                        placeholder={fieldConfig.placeholder}
-                        class="theme-horizontal-form-input"
-                      />
+                    <div class="theme-horizontal-form-field">
+                      {fieldConfig.type === 'textarea' ? (
+                        <textarea
+                          id={fieldConfig.field === 'message' ? elementIds.messageField : ''}
+                          name={fieldConfig.field}
+                          placeholder={fieldConfig.placeholder}
+                          required={fieldConfig.required}
+                          class="theme-horizontal-form-input"
+                        ></textarea>
+                      ) : (
+                        <input
+                          type={fieldConfig.type}
+                          id={fieldConfig.field === 'name' ? elementIds.nameField : fieldConfig.field === 'email' ? elementIds.emailField : ''}
+                          name={fieldConfig.field}
+                          placeholder={fieldConfig.placeholder}
+                          required={fieldConfig.required}
+                          class="theme-horizontal-form-input"
+                        />
+                      )}
+                      
                       <p 
-                        id={fieldConfig.field === 'name' ? elementIds.nameError : elementIds.emailError}
+                        id={fieldConfig.field === 'name' ? elementIds.nameError : fieldConfig.field === 'email' ? elementIds.emailError : elementIds.messageError}
                         class="theme-horizontal-form-field-error" 
                         style="display: none;"
                       ></p>
                     </div>
                   ))}
                   
-                  {/* Turnstile Widget - General Horizontal Form */}
-                  {formTurnstileConfigs.has(form.id) && (
-                    <div class="turnstile-container">
-                      <div 
-                        class="cf-turnstile" 
-                        data-sitekey={formTurnstileConfigs.get(form.id).sitekey}
-                        data-theme="auto"
-                        data-size="flexible"
-                        data-callback="onTurnstileSuccess"
-                        data-error-callback="onTurnstileError"
-                        data-expired-callback="onTurnstileExpired"
-                      ></div>
-                    </div>
-                  )}
-                  
                   <button type="submit" class="theme-horizontal-form-submit" id={elementIds.submitBtn}>
                     {form.buttonText}
                   </button>
                 </div>
                 
-                {/* Hidden input for source tracking */}
+                {}
                 <input type="hidden" name="source" value={formSource} />
               </form>
             </div>
@@ -370,109 +226,17 @@ if (turnstileEnabled && turnstileSiteKey) {
     })}
   </div>
 ) : (
-  /* 
-    Enhanced placeholder showing why forms aren't rendered:
-    1. Forms are globally disabled
-    2. No forms configured for this placement
-    3. Forms blocked by security settings
-  */
-  import.meta.env.DEV && (
-    <div class={`universal-form-placeholder ${className}`}>
-      <div style="
-        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-        border: 2px dashed #2196f3;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        color: #1565c0;
-        font-family: monospace;
-        font-size: 0.875rem;
-        margin: 1rem 0;
-      ">
-        <div>📝 Universal Form Placeholder</div>
-        <div style="margin-top: 0.5rem; font-size: 0.75rem;">
-          {placement ? `Placement: ${placement}` : formId ? `Form ID: ${formId}` : 'No placement specified'}
-        </div>
-        <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #666;">
-          {!formsEnabled 
-            ? 'Forms globally disabled' 
-            : forms.length === 0 
-            ? 'No forms configured for this placement'
-            : filteredForms.length === 0
-            ? 'Forms blocked by security settings'
-            : 'Unknown issue'
-          }
-        </div>
-        {forms.length > filteredForms.length && (
-          <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #f57c00;">
-            {forms.length - filteredForms.length} form(s) blocked by security policy
-          </div>
-        )}
-      </div>
-    </div>
-  )
+  <div class="universal-form-placeholder">
+    {}
+  </div>
 )}
 
 <style>
-  /* Base universal forms container */
-  .universal-forms {
-    margin: 1rem 0;
-  }
-  
-  /* Individual universal form styling */
-  .universal-form {
-    margin-bottom: 1rem;
-  }
-  
-  .universal-form:last-child {
-    margin-bottom: 0;
-  }
-  
-  /* Development placeholder */
   .universal-form-placeholder {
     margin: 1rem 0;
   }
 
-  /* Turnstile Widget Styling */
-  .turnstile-container {
-    margin: 1.5rem 0;
-    display: flex;
-    justify-content: center;
-  }
-
-  /* Placement-specific turnstile styling */
-  .universal-form[data-placement="section5-newsletter"] .turnstile-container {
-    justify-content: flex-start;
-    margin: 1rem 0;
-  }
-
-  .universal-form[data-placement="section4-sidebar"] .turnstile-container {
-    margin: 1rem 0;
-  }
-
-  .universal-form[data-placement="contact-page"] .turnstile-container {
-    margin: 1.5rem 0;
-  }
-
-  /* Turnstile error state styling */
-  .turnstile-error {
-    background: var(--bg-error-light, #fee);
-    color: var(--text-error, #dc2626);
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-md, 8px);
-    margin: 0.5rem 0;
-    font-size: 0.875rem;
-    text-align: center;
-    border: 1px solid var(--border-error, #fca5a5);
-  }
-
-  /* Button state when Turnstile is pending */
-  button[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  /* Responsive adjustments */
+  
   @media (max-width: 768px) {
     .universal-forms {
       margin: 1rem -1rem;
@@ -488,27 +252,19 @@ if (turnstileEnabled && turnstileSiteKey) {
 <script>
   import { actions } from 'astro:actions';
 
-  // Simplified form handling - Turnstile state is managed by global turnstile.ts script
-  // This script only handles form submission logic
-
-  // Function to initialize a single form
+  
   function initializeForm(formElement: HTMLFormElement) {
     const formId = formElement.id;
     const submitBtn = formElement.querySelector('button[type="submit"]') as HTMLButtonElement;
-    const turnstileWidget = formElement.querySelector('.cf-turnstile') as HTMLElement;
     
-    // Check if this form uses Turnstile
-    const hasTurnstile = turnstileWidget !== null;
-    const baseFormId = formId.replace('-form', '');
     
-    // Get error elements - support vertical, horizontal, and contact form structures
     const nameError = document.getElementById(formId.replace('-form', '-name-error')) as HTMLElement;
     const emailError = document.getElementById(formId.replace('-form', '-email-error')) as HTMLElement;
     const messageError = document.getElementById(formId.replace('-form', '-message-error')) as HTMLElement;
     const errorMessage = document.getElementById(formId.replace('-form', '-error-message')) as HTMLElement;
     const successMessage = document.getElementById(formId.replace('-form', '-success-message')) as HTMLElement;
 
-    // Hide all messages initially
+    
     function hideMessages() {
       if (errorMessage) errorMessage.style.display = 'none';
       if (successMessage) successMessage.style.display = 'none';
@@ -517,7 +273,7 @@ if (turnstileEnabled && turnstileSiteKey) {
       if (messageError) messageError.style.display = 'none';
     }
 
-    // Show loading state
+    
     function setLoading(loading: boolean) {
       if (submitBtn) {
         const originalText = submitBtn.dataset.originalText || submitBtn.textContent;
@@ -532,152 +288,70 @@ if (turnstileEnabled && turnstileSiteKey) {
     formElement.addEventListener('submit', async (event) => {
       event.preventDefault();
       hideMessages();
-      
-      // Check Turnstile verification if enabled
-      if (hasTurnstile && typeof window !== 'undefined') {
-        const token = (window as any).turnstileTokens?.[baseFormId];
-        
-        if (!token) {
-          if (errorMessage) {
-            errorMessage.textContent = 'Please complete the security verification.';
-            errorMessage.style.display = 'block';
-          }
-          return;
-        }
-      }
-      
       setLoading(true);
 
       try {
         const formData = new FormData(formElement);
-        
-        // With implicit rendering, Turnstile automatically adds cf-turnstile-response
-        // Check if token is present in the form data
-        if (hasTurnstile) {
-          const token = formData.get('cf-turnstile-response');
-          if (token) {
-            console.log('✅ Turnstile token found in form data');
-          } else {
-            console.warn('⚠️ No Turnstile token found - widget may not have completed');
-          }
-        }
         const { data, error } = await actions.leads(formData);
-
         setLoading(false);
 
         if (error) {
-          console.error('Action error:', error);
           
-          // Check for validation errors first
-          if (error.code === 'BAD_REQUEST' && error.fields) {
-            if (error.fields.name && nameError) {
-              nameError.textContent = error.fields.name.join(', ');
+          
+          if (error.code === 'BAD_REQUEST' && (error as any).fields) {
+            const fields = (error as any).fields;
+            if (fields.name && nameError) {
+              nameError.textContent = fields.name.join(', ');
               nameError.style.display = 'block';
             }
-            if (error.fields.email && emailError) {
-              emailError.textContent = error.fields.email.join(', ');
+            if (fields.email && emailError) {
+              emailError.textContent = fields.email.join(', ');
               emailError.style.display = 'block';
             }
-            if (error.fields.message && messageError) {
-              messageError.textContent = error.fields.message.join(', ');
+            if (fields.message && messageError) {
+              messageError.textContent = fields.message.join(', ');
               messageError.style.display = 'block';
             }
           } else {
-            // Show general error message
+            
             if (errorMessage) errorMessage.style.display = 'block';
           }
         } else {
-          console.log('Success:', data);
-          // Show success message and reset form
+          
           if (successMessage) {
             successMessage.style.display = 'block';
             successMessage.style.visibility = 'visible';
-          }
-          formElement.reset();
-          
-          // Reset Turnstile widget if present
-          if (hasTurnstile && typeof window !== 'undefined' && (window as any).turnstile) {
-            const widget = formElement.querySelector('.cf-turnstile');
-            if (widget) {
-              try {
-                (window as any).turnstile.reset(widget);
-                // Reset our state
-                if ((window as any).turnstileTokens) {
-                  delete (window as any).turnstileTokens[baseFormId];
-                }
-              } catch (e) {
-                console.warn('Failed to reset Turnstile widget:', e);
-              }
-            }
+            formElement.reset();
           }
           
-          // Hide success message after 5 seconds
+          
           setTimeout(() => {
             if (successMessage) successMessage.style.display = 'none';
           }, 5000);
         }
       } catch (err) {
-        console.error('Network error:', err);
         setLoading(false);
         if (errorMessage) errorMessage.style.display = 'block';
       }
     });
   }
 
-  // Turnstile callback functions - exactly as per CF docs
-  (window as any).onTurnstileSuccess = function(token: string) {
-    console.log("Turnstile success:", token);
-    // Enable all submit buttons with Turnstile
-    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
-      (btn as HTMLButtonElement).disabled = false;
-    });
-  };
   
-  (window as any).onTurnstileError = function(errorCode: string) {
-    console.error("Turnstile error:", errorCode);
-    // Keep all submit buttons disabled
-    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
-      (btn as HTMLButtonElement).disabled = true;
-    });
-  };
-  
-  (window as any).onTurnstileExpired = function() {
-    console.warn("Turnstile token expired");
-    // Disable all submit buttons
-    document.querySelectorAll('.universal-form button[type="submit"]').forEach((btn) => {
-      (btn as HTMLButtonElement).disabled = true;
-    });
-  };
-
-  // Initialize forms with proper deduplication
   function initializeForms() {
-    
     const forms = document.querySelectorAll('.universal-form form:not([data-initialized])') as NodeListOf<HTMLFormElement>;
-    console.log(`📋 UniversalForm: Found ${forms.length} forms to initialize`);
     forms.forEach((form) => {
       form.setAttribute('data-initialized', 'true');
-      
-      // Disable submit button if Turnstile is present
-      const hasTurnstile = form.querySelector('.cf-turnstile');
-      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-      if (hasTurnstile && submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.5';
-        console.log('🔒 Submit button disabled - waiting for Turnstile');
-      }
-      
       initializeForm(form);
     });
   }
 
-  // Handle dynamic content and page transitions (Astro view transitions)
+  
   document.addEventListener('astro:page-load', initializeForms);
   
-  // Initialize on first load
+  
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeForms);
   } else {
     initializeForms();
   }
 </script>
-

@@ -1,8 +1,5 @@
 ---
-/**
- * Pure Sidebar Categories Component - No Styling
- * Multi-purpose foundation ready for any theme
- */
+
 
 import { getCategoriesWithPostCounts } from '../../core/blogLogic';
 
@@ -12,7 +9,7 @@ interface Props {
 
 const { limit = 5 } = Astro.props;
 
-// Get categories using core logic
+
 const categories = await getCategoriesWithPostCounts();
 const topCategories = categories.slice(0, limit);
 ---

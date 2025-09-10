@@ -1,8 +1,5 @@
 ---
-/**
- * Horizontal Product Box for Affiliate Marketing
- * Image LEFT, Content RIGHT - side by side layout
- */
+
 
 import OptimizedImage from './ui/OptimizedImage.astro';
 
@@ -53,10 +50,8 @@ const discountPercent =
     : null;
 ---
 
-<!-- Horizontal Product Box - Image LEFT, Content RIGHT -->
 <article class="theme-card overflow-hidden mb-8">
   <div class="flex flex-col md:flex-row md:items-center">
-    <!-- LEFT: Clean Product Image (Centered) -->
     <div class="md:w-1/3 flex-shrink-0 flex items-center">
       <OptimizedImage
         src={image}
@@ -69,12 +64,10 @@ const discountPercent =
       />
     </div>
 
-    <!-- RIGHT: All Content (Centered) -->
     <div
       class="flex-1 flex flex-col justify-center"
       style="padding: var(--card-padding);"
     >
-      <!-- Badges in content area -->
       <div class="flex gap-2 mb-3">
         {badge && <span class="theme-badge">{badge}</span>}
         {
@@ -89,7 +82,6 @@ const discountPercent =
         }
       </div>
 
-      <!-- Brand -->
       {
         brand && (
           <p
@@ -101,7 +93,6 @@ const discountPercent =
         )
       }
 
-      <!-- Title -->
       <h3
         class="text-xl font-bold mb-3"
         style="color: var(--text-primary); font-family: var(--font-heading);"
@@ -109,12 +100,10 @@ const discountPercent =
         {title}
       </h3>
 
-      <!-- Description -->
       <p class="mb-4" style="color: var(--text-secondary);">
         {description}
       </p>
 
-      <!-- Rating -->
       {
         rating && (
           <div class="flex items-center gap-2 mb-4">
@@ -141,7 +130,6 @@ const discountPercent =
         )
       }
 
-      <!-- Features -->
       {
         features && features.length > 0 && (
           <ul class="mb-4 space-y-1">
@@ -169,7 +157,6 @@ const discountPercent =
         )
       }
 
-      <!-- Price and Button -->
       <div class="flex items-center justify-between">
         <div>
           <span
@@ -203,7 +190,6 @@ const discountPercent =
     </div>
   </div>
 
-  <!-- Pros/Cons (Always visible) -->
   {
     (pros && pros.length > 0) || (cons && cons.length > 0) ? (
       <div style="border-top: 1px solid var(--border-light);">

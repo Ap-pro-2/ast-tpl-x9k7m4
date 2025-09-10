@@ -218,7 +218,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
 
   } catch (error: unknown) {
-    console.error('Error fetching pages:', error);
     
     return new Response(JSON.stringify({
       success: false,

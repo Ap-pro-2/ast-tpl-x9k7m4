@@ -1,33 +1,30 @@
 ---
-/**
- * Magazine-Style Hero Section
- * Layout: Left sidebar (2 posts) + Center (featured post) + Right sidebar (2 posts)
- */
+
 
 import { getAllPosts, getSiteSettings, getFeaturedPosts, formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 
-// Get dynamic data using core logic
+
 const posts = await getAllPosts();
 const settings = await getSiteSettings();
 const allCategories = await getCollection('categories');
 
-// Get featured posts and recent posts
+
 let featuredPosts = await getFeaturedPosts(1);
 if (featuredPosts.length === 0) {
   featuredPosts = posts.slice(0, 1);
 }
 
-// Get additional posts for sidebars
+
 const sidebarPosts = posts.filter(post => 
   !featuredPosts.some(fp => fp.id === post.id)
 ).slice(0, 4);
 
-// Get all authors for author lookup
+
 const allAuthors = await getCollection('authors');
 
-// Helper function to get category name from ID
+
 function getCategoryName(categoryRef: string | { id: string } | undefined): string | null {
   if (!categoryRef) return null;
   
@@ -36,7 +33,7 @@ function getCategoryName(categoryRef: string | { id: string } | undefined): stri
   return category?.data.name || null;
 }
 
-// Helper to get category color
+
 function getCategoryColor(categoryRef: string | { id: string } | undefined): string {
   if (!categoryRef) return 'var(--color-primary)';
   
@@ -45,7 +42,7 @@ function getCategoryColor(categoryRef: string | { id: string } | undefined): str
   return category?.data.color || 'var(--color-primary)';
 }
 
-// Helper function to get author name from post data
+
 function getAuthorName(authorRef: string | { id: string } | undefined): string {
   if (!authorRef) return 'Author';
   
@@ -59,27 +56,22 @@ const leftPosts = sidebarPosts.slice(0, 2);
 const rightPosts = sidebarPosts.slice(2, 4);
 ---
 
-<!-- Magazine Style Hero Section -->
 <section class="magazine-hero py-8 lg:py-12" style="background: var(--bg-primary)">
   <div class="container max-w-7xl">
     
-    <!-- Top Stories Header -->
     <div class="magazine-stories-header mb-10">
       <div class="magazine-header-line"></div>
       <h2 class="magazine-header-title">Top Stories</h2>
     </div>
 
-    <!-- Magazine Grid Layout -->
     <div class="magazine-grid">
       
-      <!-- Left Sidebar - Top Stories -->
       <aside class="magazine-sidebar-left">
         <div class="magazine-sidebar-cards">
           {leftPosts.map((post) => (
             <article class="magazine-sidebar-card">
               <a href={`/${post.id}`} class="magazine-sidebar-link">
                 
-                <!-- Image -->
                 {post.data.image?.url && (
                   <div class="magazine-sidebar-image">
                     <OptimizedImage 
@@ -89,7 +81,6 @@ const rightPosts = sidebarPosts.slice(2, 4);
                       height={160}
                       class="w-full h-full object-cover"
                     />
-                    <!-- Category Badge Overlay -->
                     {getCategoryName(post.data.category) && (
                       <div class="magazine-sidebar-category-overlay">
                         <span class="magazine-sidebar-category-tag" 
@@ -101,14 +92,11 @@ const rightPosts = sidebarPosts.slice(2, 4);
                   </div>
                 )}
                 
-                <!-- Content -->
                 <div class="magazine-sidebar-content">
-                  <!-- Title -->
                   <h3 class="magazine-sidebar-title">
                     {post.data.title}
                   </h3>
                   
-                  <!-- Meta -->
                   <div class="magazine-sidebar-meta">
                     <span class="magazine-sidebar-author">By {getAuthorName(post.data.author)}</span>
                     <span class="magazine-meta-separator">•</span>
@@ -123,12 +111,10 @@ const rightPosts = sidebarPosts.slice(2, 4);
         </div>
       </aside>
 
-      <!-- Center - Featured Post -->
       <main class="magazine-main-content">
         <article class="magazine-featured-card">
           <a href={`/${mainPost.id}`} class="magazine-featured-link">
             
-            <!-- Featured Image -->
             {mainPost.data.image?.url && (
               <div class="magazine-featured-image">
                 <OptimizedImage 
@@ -140,7 +126,6 @@ const rightPosts = sidebarPosts.slice(2, 4);
                   class="w-full h-full object-cover"
                 />
                 
-                <!-- Category Badge -->
                 <div class="magazine-category-overlay">
                   {getCategoryName(mainPost.data.category) && (
                     <span class="magazine-category-tag" 
@@ -152,21 +137,17 @@ const rightPosts = sidebarPosts.slice(2, 4);
               </div>
             )}
             
-            <!-- Content Overlay -->
             <div class="magazine-featured-content">
-              <!-- Title -->
               <h1 class="magazine-featured-title">
                 {mainPost.data.title}
               </h1>
               
-              <!-- Description -->
               {mainPost.data.description && (
                 <p class="magazine-featured-description">
                   {mainPost.data.description}
                 </p>
               )}
               
-              <!-- Meta -->
               <div class="magazine-featured-meta">
                 <span class="magazine-featured-author">By {getAuthorName(mainPost.data.author)}</span>
                 <span class="magazine-meta-separator">•</span>
@@ -181,14 +162,12 @@ const rightPosts = sidebarPosts.slice(2, 4);
         </article>
       </main>
 
-      <!-- Right Sidebar - More Stories -->
       <aside class="magazine-sidebar-right">
         <div class="magazine-sidebar-cards">
           {rightPosts.map((post, index) => (
             <article class="magazine-sidebar-card">
               <a href={`/${post.id}`} class="magazine-sidebar-link">
                 
-                <!-- Image -->
                 {post.data.image?.url && (
                   <div class="magazine-sidebar-image">
                     <OptimizedImage 
@@ -198,7 +177,6 @@ const rightPosts = sidebarPosts.slice(2, 4);
                       height={160}
                       class="w-full h-full object-cover"
                     />
-                    <!-- Category Badge Overlay -->
                     {getCategoryName(post.data.category) && (
                       <div class="magazine-sidebar-category-overlay">
                         <span class="magazine-sidebar-category-tag" 
@@ -210,14 +188,11 @@ const rightPosts = sidebarPosts.slice(2, 4);
                   </div>
                 )}
                 
-                <!-- Content -->
                 <div class="magazine-sidebar-content">
-                  <!-- Title -->
                   <h3 class="magazine-sidebar-title">
                     {post.data.title}
                   </h3>
                   
-                  <!-- Meta -->
                   <div class="magazine-sidebar-meta">
                     <span class="magazine-sidebar-author">By {getAuthorName(post.data.author)}</span>
                     <span class="magazine-meta-separator">•</span>

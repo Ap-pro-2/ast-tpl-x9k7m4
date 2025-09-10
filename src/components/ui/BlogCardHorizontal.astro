@@ -1,8 +1,5 @@
 ---
-/**
- * Clean Horizontal Blog Card - Theme System Integrated
- * Professional UI/UX using only your theme system
- */
+
 
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
@@ -14,7 +11,7 @@ interface Props {
 
 const { post } = Astro.props;
 
-// Get category data safely
+
 let category = null;
 
 try {
@@ -23,10 +20,9 @@ try {
     category = await getEntry('categories', categoryId);
   }
 } catch (error) {
-  console.warn('Could not load category:', error);
 }
 
-// Handle tags properly - they can be strings or objects
+
 const tags = post.data.tags || [];
 const tagNames = tags.map((tag: any) => {
   if (typeof tag === 'string') return tag;
@@ -36,12 +32,10 @@ const tagNames = tags.map((tag: any) => {
 }).filter(Boolean);
 ---
 
-<!-- Clean Horizontal Blog Card - Theme System -->
 <article class="horizontal-blog-card theme-card overflow-hidden group">
   
   <div class="flex flex-col md:flex-row">
     
-    <!-- Post Image -->
     {post.data.image?.url && (
       <div class="relative md:w-2/5 flex-shrink-0">
         <div class="w-full h-48 md:h-full overflow-hidden rounded-l-lg md:rounded-l-lg md:rounded-r-none">
@@ -57,10 +51,8 @@ const tagNames = tags.map((tag: any) => {
       </div>
     )}
     
-    <!-- Post Content -->
     <div class="flex-1 p-4 pb-6 flex flex-col">
       
-      <!-- Category (if no image) & Meta Info -->
       <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
         {!post.data.image?.url && category && (
           <>
@@ -79,7 +71,6 @@ const tagNames = tags.map((tag: any) => {
         <span class="theme-reading-time">5 min read</span>
       </div>
       
-      <!-- Title -->
       <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-2" 
           style="color: var(--text-primary); font-family: var(--font-heading);">
         <a href={`/${post.id}`} 
@@ -90,7 +81,6 @@ const tagNames = tags.map((tag: any) => {
         </a>
       </h2>
       
-      <!-- Description -->
       {post.data.description && (
         <p class="text-sm leading-relaxed mb-4 line-clamp-2 flex-grow" 
            style="color: var(--text-secondary);">
@@ -98,7 +88,6 @@ const tagNames = tags.map((tag: any) => {
         </p>
       )}
       
-      <!-- CTA Button - Theme System -->
       <div class="mt-auto pt-4">
         <a href={`/${post.id}`} 
            class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
@@ -113,7 +102,7 @@ const tagNames = tags.map((tag: any) => {
 </article>
 
 <style>
-  /* Line clamping */
+  
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -128,7 +117,7 @@ const tagNames = tags.map((tag: any) => {
     overflow: hidden;
   }
   
-  /* Horizontal blog card styling */
+  
   .horizontal-blog-card {
     transition: all var(--animation-duration) var(--animation-easing);
     height: 280px;
@@ -139,7 +128,7 @@ const tagNames = tags.map((tag: any) => {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   }
   
-  /* Ensure proper flex layout */
+  
   .horizontal-blog-card .flex-col {
     height: 100%;
   }
@@ -155,12 +144,12 @@ const tagNames = tags.map((tag: any) => {
     vertical-align: top;
   }
   
-  /* Ensure card content fits properly */
+  
   .horizontal-blog-card .flex-1 {
     min-height: 0;
   }
   
-  /* Mobile optimizations */
+  
   @media (max-width: 768px) {
     .horizontal-blog-card .flex-col {
       gap: 1rem;

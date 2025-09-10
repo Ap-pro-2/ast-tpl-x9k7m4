@@ -4,12 +4,12 @@ import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 import { getBadgeStyleString } from '../../core/utils/colorUtils';
 
-// Get dynamic data using core logic
+
 const posts = await getAllPosts();
 const settings = await getSiteSettings();
 const allCategories = await getCollection('categories');
 
-// Helper function to get category data
+
 function getCategoryData(categoryRef: string | { id: string } | undefined) {
   if (!categoryRef) return { name: null, color: 'var(--color-primary)' };
   
@@ -21,22 +21,19 @@ function getCategoryData(categoryRef: string | { id: string } | undefined) {
   };
 }
 
-// Get all posts for the slider - we'll show 8-10 posts
+
 const sliderPosts = posts.slice(0, 10);
 ---
 
-<!-- Section3 Slider -->
 <section class="section3-slider py-12 lg:py-16" style="background: var(--bg-primary)">
   <div class="container max-w-7xl">
     
-    <!-- Header with Navigation -->
     <div class="slider-header">
       <div class="slider-header-content">
         <div class="slider-section-line"></div>
         <h2 class="slider-section-title">Editors' Picks</h2>
       </div>
       
-      <!-- Navigation Arrows -->
       <div class="slider-navigation">
         <button class="slider-nav-btn slider-prev" aria-label="Previous articles">
           <svg class="slider-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,14 +48,12 @@ const sliderPosts = posts.slice(0, 10);
       </div>
     </div>
 
-    <!-- Slider Container -->
     <div class="slider-container">
       <div class="slider-track" id="editorsPicksTrack">
         {sliderPosts.map((post) => (
           <article class="slider-card">
             <a href={`/${post.id}`} class="slider-card-link">
               
-              <!-- Card Image -->
               {post.data.image?.url && (
                 <div class="slider-card-image">
                   <OptimizedImage 
@@ -69,7 +64,6 @@ const sliderPosts = posts.slice(0, 10);
                     class="w-full h-full object-cover"
                   />
                   
-                  <!-- Category Badge -->
                   <div class="slider-category-overlay">
                     <span class="slider-category-badge" 
                           style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
@@ -80,14 +74,11 @@ const sliderPosts = posts.slice(0, 10);
                 </div>
               )}
               
-              <!-- Card Content -->
               <div class="slider-card-content">
-                <!-- Title -->
                 <h3 class="slider-card-title">
                   {post.data.title}
                 </h3>
                 
-                <!-- Meta Information -->
                 <div class="slider-card-meta">
                   <time datetime={post.data.pubDate.toISOString()}>
                     {formatDate(post.data.pubDate)}
@@ -102,7 +93,6 @@ const sliderPosts = posts.slice(0, 10);
       </div>
     </div>
 
-    <!-- Mobile Navigation Dots -->
     <div class="slider-dots" id="sliderDots">
       {Array.from({ length: Math.ceil(sliderPosts.length / 4) }, (_, i) => (
         <button class="slider-dot" data-slide={i} aria-label={`Go to slide ${i + 1}`}></button>
@@ -111,5 +101,4 @@ const sliderPosts = posts.slice(0, 10);
   </div>
 </section>
 
-<!-- External Slider Script -->
 <script src="../../scripts/section3-slider.ts"></script>

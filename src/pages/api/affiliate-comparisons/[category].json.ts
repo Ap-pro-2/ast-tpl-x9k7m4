@@ -145,7 +145,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
   const active: string | null = searchParams.get('active');
   const featured: string | null = searchParams.get('featured');
   try {
-    console.log(`🔍 Fetching comparisons for category "${categoryId}"...`);
     
     // ✨ Verify category exists
     const categoryData = await getEntry('affiliateCategories', categoryId);
@@ -172,7 +171,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
       return false;
     });
     
-    console.log(`🔍 Found ${allComparisons.length} comparisons in category "${categoryId}"`);
 
     // 🔍 Server-side search
     let filteredComparisons: AffiliateComparison[] = allComparisons;
@@ -185,7 +183,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
         
         return titleMatch || descMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredComparisons.length} comparisons`);
     }
 
     // 📊 Transform comparisons with metadata and resolve product references
@@ -197,7 +194,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
             try {
               const product = await getEntry('affiliateProducts', productRef.id);
               if (!product) {
-                console.warn(`⚠️ Product "${productRef.id}" not found for comparison "${comparison.id}"`);
                 return null;
               }
 
@@ -230,7 +226,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
                 discountPercent,
               };
             } catch (error) {
-              console.error(`❌ Error resolving product "${productRef.id}":`, error);
               return null;
             }
           })
@@ -263,7 +258,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
     if (active !== null) {
       const isActive = active === 'true';
       finalComparisons = finalComparisons.filter(comparison => comparison.active === isActive);
-      console.log(`✨ Filtered to ${finalComparisons.length} ${isActive ? 'active' : 'inactive'} comparisons`);
     }
 
     // Filter by featured - since we removed the featured field, treat all comparisons as non-featured
@@ -273,7 +267,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
         // If filtering for featured comparisons, return empty array since none are featured now
         finalComparisons = [];
       }
-      console.log(`⭐ Filtered to ${finalComparisons.length} ${isFeatured ? 'featured' : 'non-featured'} comparisons`);
     }
 
     // 📐 Sort comparisons
@@ -329,7 +322,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedComparisons.length} comparisons for category "${categoryId}" (page ${page} of ${Math.ceil(finalComparisons.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -337,7 +329,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
     });
 
   } catch (error: unknown) {
-    console.error(`❌ Error fetching comparisons for category "${categoryId}":`, error);
     
     return new Response(JSON.stringify({
       success: false,

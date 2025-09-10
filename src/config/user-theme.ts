@@ -1,25 +1,13 @@
-/**
- * USER THEME CONFIGURATION
- * 
- * This file now reads theme settings from the merged settings JSON file.
- * Your dashboard can easily update src/content/data/settings.json
- * without worrying about TypeScript syntax or breaking the build.
- * 
- * DASHBOARD INTEGRATION:
- * - Update: src/content/data/settings.json (themeSettings section)
- * - This file automatically reads and applies those settings
- * - No TypeScript parsing required - just pure JSON updates!
- */
 
 import { defaultTheme, type ThemeConfig } from './theme';
 import settingsData from '../content/data/settings.json';
 
-// Extract theme settings from merged settings JSON
+
 const jsonThemeSettings = settingsData?.[0]?.themeSettings || null;
 
-// ========================================
-// THEME CONFIGURATION FROM JSON DATA
-// ========================================
+
+
+
 export const userTheme: ThemeConfig = jsonThemeSettings ? {
   colors: {
     primary: jsonThemeSettings.colors.primary,
@@ -28,9 +16,9 @@ export const userTheme: ThemeConfig = jsonThemeSettings ? {
     secondary: jsonThemeSettings.colors.secondary,
     accent: jsonThemeSettings.colors.accent,
     
-    // WCAG-compliant accessible variants for better contrast
-    primaryAccessible: jsonThemeSettings.colors.primary,      // Use the updated primary color (Emerald 700)
-    primaryAccessibleDark: jsonThemeSettings.colors.primaryDark, // Use primaryDark (Emerald 800)
+    
+    primaryAccessible: jsonThemeSettings.colors.primary,      
+    primaryAccessibleDark: jsonThemeSettings.colors.primaryDark, 
     
     textPrimary: jsonThemeSettings.colors.textPrimary,
     textSecondary: jsonThemeSettings.colors.textSecondary,
@@ -91,42 +79,42 @@ export const userTheme: ThemeConfig = jsonThemeSettings ? {
     loadingStyle: jsonThemeSettings.transitions.loadingStyle,
     reducedMotion: jsonThemeSettings.transitions.reducedMotion,
   },
-} : defaultTheme; // Fallback to default theme if JSON fails to load
+} : defaultTheme; 
 
-// ========================================
-// LUXURY THEME VARIANTS
-// ========================================
 
-// Luxury Gold Theme
+
+
+
+
 export const luxuryGold: ThemeConfig = {
   ...defaultTheme,
   colors: {
-    primary: '#D4AF37',        // Rich gold
-    primaryLight: '#F4E4BC',   // Light champagne
-    primaryDark: '#B8860B',    // Dark goldenrod
-    secondary: '#8B7355',      // Warm taupe
-    accent: '#CD853F',         // Peru gold
+    primary: '#D4AF37',        
+    primaryLight: '#F4E4BC',   
+    primaryDark: '#B8860B',    
+    secondary: '#8B7355',      
+    accent: '#CD853F',         
     
-    // Simple accessible variants
-    primaryAccessible: '#B8860B',      // Use primaryDark for better contrast
-    primaryAccessibleDark: '#996F0A',  // Even darker
     
-    textPrimary: '#1A0F0A',    // Darker deep brown for better contrast
-    textSecondary: '#2C1810',  // Dark coffee for better contrast
-    textMuted: '#5D4037',      // Darker warm taupe for better contrast
-    textMutedAccessible: '#4A2C17',    // Even darker muted text
-    textAccent: '#B8860B',     // Darker gold accent for better contrast
+    primaryAccessible: '#B8860B',      
+    primaryAccessibleDark: '#996F0A',  
     
-    bgPrimary: '#FFFEF7',      // Cream white
-    bgSecondary: '#FAF7F0',    // Warm ivory
-    bgTertiary: '#F5F0E8',     // Light champagne
-    bgContrastSafe: '#F2EDE3', // Slightly darker for better contrast
+    textPrimary: '#1A0F0A',    
+    textSecondary: '#2C1810',  
+    textMuted: '#5D4037',      
+    textMutedAccessible: '#4A2C17',    
+    textAccent: '#B8860B',     
     
-    surfaceCard: '#FEFDFB',    // Pure cream
-    surfaceOverlay: '#F9F6F0', // Soft ivory
-    borderDefault: '#E8DCC6',  // Champagne border
-    borderLight: '#F0E6D2',    // Light champagne
-    borderAccent: '#D4C4A8',   // Gold-toned border
+    bgPrimary: '#FFFEF7',      
+    bgSecondary: '#FAF7F0',    
+    bgTertiary: '#F5F0E8',     
+    bgContrastSafe: '#F2EDE3', 
+    
+    surfaceCard: '#FEFDFB',    
+    surfaceOverlay: '#F9F6F0', 
+    borderDefault: '#E8DCC6',  
+    borderLight: '#F0E6D2',    
+    borderAccent: '#D4C4A8',   
   },
   typography: {
     ...defaultTheme.typography,
@@ -141,36 +129,36 @@ export const luxuryGold: ThemeConfig = {
   },
 };
 
-// Luxury Midnight Theme
+
 export const luxuryMidnight: ThemeConfig = {
   ...defaultTheme,
   colors: {
-    primary: '#6366F1',        // Indigo
-    primaryLight: '#818CF8',   // Light indigo
-    primaryDark: '#4F46E5',    // Dark indigo
-    secondary: '#64748B',      // Slate
-    accent: '#F59E0B',         // Amber
+    primary: '#6366F1',        
+    primaryLight: '#818CF8',   
+    primaryDark: '#4F46E5',    
+    secondary: '#64748B',      
+    accent: '#F59E0B',         
     
-    // Simple accessible variants for dark theme
-    primaryAccessible: '#818CF8',      // Lighter indigo for dark backgrounds
-    primaryAccessibleDark: '#93C5FD',  // Even lighter for small text
     
-    textPrimary: '#F8FAFC',    // Almost white
-    textSecondary: '#CBD5E1',  // Light slate
-    textMuted: '#94A3B8',      // Slate gray
-    textMutedAccessible: '#CBD5E1',    // Lighter muted text for dark backgrounds
-    textAccent: '#6366F1',     // Indigo
+    primaryAccessible: '#818CF8',      
+    primaryAccessibleDark: '#93C5FD',  
     
-    bgPrimary: '#0F172A',      // Slate 900
-    bgSecondary: '#1E293B',    // Slate 800
-    bgTertiary: '#334155',     // Slate 700
-    bgContrastSafe: '#1E293B', // Same as secondary for dark theme
+    textPrimary: '#F8FAFC',    
+    textSecondary: '#CBD5E1',  
+    textMuted: '#94A3B8',      
+    textMutedAccessible: '#CBD5E1',    
+    textAccent: '#6366F1',     
     
-    surfaceCard: '#1E293B',    // Slate 800
-    surfaceOverlay: '#334155', // Slate 700
-    borderDefault: '#475569',  // Slate 600
-    borderLight: '#64748B',    // Slate 500
-    borderAccent: '#6366F1',   // Indigo
+    bgPrimary: '#0F172A',      
+    bgSecondary: '#1E293B',    
+    bgTertiary: '#334155',     
+    bgContrastSafe: '#1E293B', 
+    
+    surfaceCard: '#1E293B',    
+    surfaceOverlay: '#334155', 
+    borderDefault: '#475569',  
+    borderLight: '#64748B',    
+    borderAccent: '#6366F1',   
   },
   typography: {
     ...defaultTheme.typography,
@@ -179,90 +167,89 @@ export const luxuryMidnight: ThemeConfig = {
   },
 };
 
-// ========================================
-// QUICK COLOR PRESETS
-// ========================================
 
-// Uncomment and modify these for quick color changes:
 
-// Blue Theme (Default)
-// export const userTheme = {
-//   ...themePresets.professional,
-//   colors: {
-//     ...themePresets.professional.colors,
-//     primary: '#3B82F6',
-//   }
-// };
 
-// Green Theme
-// export const userTheme = {
-//   ...themePresets.professional,
-//   colors: {
-//     ...themePresets.professional.colors,
-//     primary: '#10B981',
-//     primaryLight: '#34D399',
-//     primaryDark: '#059669',
-//     textAccent: '#10B981',
-//   }
-// };
 
-// Purple Theme
-// export const userTheme = {
-//   ...themePresets.professional,
-//   colors: {
-//     ...themePresets.professional.colors,
-//     primary: '#8B5CF6',
-//     primaryLight: '#A78BFA',
-//     primaryDark: '#7C3AED',
-//     textAccent: '#8B5CF6',
-//   }
-// };
 
-// Red Theme
-// export const userTheme = {
-//   ...themePresets.professional,
-//   colors: {
-//     ...themePresets.professional.colors,
-//     primary: '#EF4444',
-//     primaryLight: '#F87171',
-//     primaryDark: '#DC2626',
-//     textAccent: '#EF4444',
-//   }
-// };
 
-// ========================================
-// ADVANCED CUSTOMIZATION EXAMPLES
-// ========================================
 
-// Custom font example (using Google Fonts):
-// export const userTheme = {
-//   ...themePresets.professional,
-//   typography: {
-//     ...themePresets.professional.typography,
-//     fontHeading: '"Inter", system-ui, sans-serif',
-//     fontBody: '"Inter", system-ui, sans-serif',
-//   }
-// };
 
-// Rounded theme example:
-// export const userTheme = {
-//   ...themePresets.professional,
-//   borderRadius: {
-//     sm: '0.5rem',
-//     md: '0.75rem',
-//     lg: '1rem',
-//     xl: '1.5rem',
-//     full: '9999px',
-//   }
-// };
 
-// Minimal theme example:
-// export const userTheme = {
-//   ...themePresets.professional,
-//   shadows: {
-//     sm: 'none',
-//     md: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-//     lg: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-//     xl: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-//   }
-// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

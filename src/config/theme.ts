@@ -1,11 +1,4 @@
-/**
- * Multi-Purpose Theme Configuration
- * Like WordPress themes - users can customize colors, fonts, and styling
- * Enhanced with accessibility-first color system
- */
-
 export interface ThemeConfig {
-  // Color Palette
   colors: {
     primary: string;
     primaryLight: string;
@@ -13,40 +6,37 @@ export interface ThemeConfig {
     secondary: string;
     accent: string;
     
-    // Accessible Color Variants
-    primaryAccessible: string;      // WCAG AA compliant on light backgrounds
-    primaryAccessibleDark: string;  // WCAG AA compliant for small text
+    primaryAccessible: string;
+    primaryAccessibleDark: string;
     
-    // Text Colors
     textPrimary: string;
     textSecondary: string;
     textMuted: string;
-    textMutedAccessible: string;    // WCAG AA compliant muted text
+    textMutedAccessible: string;
     textAccent: string;
     
-    // Background Colors
     bgPrimary: string;
     bgSecondary: string;
     bgTertiary: string;
-    bgContrastSafe: string;         // Slightly adjusted for better contrast
+    bgContrastSafe: string;         
     
-    // Surface Colors
+    
     surfaceCard: string;
     surfaceOverlay: string;
     
-    // Border Colors
+    
     borderDefault: string;
     borderLight: string;
     borderAccent: string;
   };
   
-  // Typography
+  
   typography: {
     fontHeading: string;
     fontBody: string;
     fontMono: string;
     
-    // Font Sizes
+    
     textXs: string;
     textSm: string;
     textBase: string;
@@ -57,7 +47,7 @@ export interface ThemeConfig {
     text4xl: string;
   };
   
-  // Spacing & Layout
+  
   spacing: {
     containerMaxWidth: string;
     sectionPadding: string;
@@ -65,7 +55,7 @@ export interface ThemeConfig {
     buttonPadding: string;
   };
   
-  // Border Radius
+  
   borderRadius: {
     sm: string;
     md: string;
@@ -74,7 +64,7 @@ export interface ThemeConfig {
     full: string;
   };
   
-  // Shadows
+  
   shadows: {
     sm: string;
     md: string;
@@ -82,13 +72,13 @@ export interface ThemeConfig {
     xl: string;
   };
   
-  // Animation
+  
   animation: {
     duration: string;
     easing: string;
   };
   
-  // Transitions
+  
   transitions: {
     pageStyle: string;
     speed: string;
@@ -97,36 +87,36 @@ export interface ThemeConfig {
   };
 }
 
-// Default Theme Configuration (Neutral - gets overridden by user theme)
+
 export const defaultTheme: ThemeConfig = {
   colors: {
-    primary: '#6B7280',        // Neutral Gray-500
-    primaryLight: '#9CA3AF',   // Gray-400
-    primaryDark: '#4B5563',    // Gray-600
-    secondary: '#6B7280',      // Gray-500
-    accent: '#10B981',         // Emerald-500
+    primary: '#6B7280',        
+    primaryLight: '#9CA3AF',   
+    primaryDark: '#4B5563',    
+    secondary: '#6B7280',      
+    accent: '#10B981',         
     
-    // Accessible variants
-    primaryAccessible: '#4B5563',      // Darker gray for better contrast
-    primaryAccessibleDark: '#374151',  // Even darker for small text
     
-    textPrimary: '#111827',    // Gray-900
-    textSecondary: '#374151',  // Gray-700
-    textMuted: '#6B7280',      // Gray-500
-    textMutedAccessible: '#4B5563',    // Darker gray for better contrast
-    textAccent: '#6B7280',     // Neutral gray
+    primaryAccessible: '#4B5563',      
+    primaryAccessibleDark: '#374151',  
     
-    bgPrimary: '#FFFFFF',      // White
-    bgSecondary: '#F9FAFB',    // Gray-50
-    bgTertiary: '#F3F4F6',     // Gray-100
-    bgContrastSafe: '#F8F9FA', // Slightly darker for better contrast
+    textPrimary: '#111827',    
+    textSecondary: '#374151',  
+    textMuted: '#6B7280',      
+    textMutedAccessible: '#4B5563',    
+    textAccent: '#6B7280',     
     
-    surfaceCard: '#FFFFFF',    // White
-    surfaceOverlay: '#F9FAFB', // Gray-50
+    bgPrimary: '#FFFFFF',      
+    bgSecondary: '#F9FAFB',    
+    bgTertiary: '#F3F4F6',     
+    bgContrastSafe: '#F8F9FA', 
     
-    borderDefault: '#E5E7EB',  // Gray-200
-    borderLight: '#F3F4F6',    // Gray-100
-    borderAccent: '#D1D5DB',   // Gray-300
+    surfaceCard: '#FFFFFF',    
+    surfaceOverlay: '#F9FAFB', 
+    
+    borderDefault: '#E5E7EB',  
+    borderLight: '#F3F4F6',    
+    borderAccent: '#D1D5DB',   
   },
   
   typography: {
@@ -134,14 +124,14 @@ export const defaultTheme: ThemeConfig = {
     fontBody: 'system-ui, -apple-system, sans-serif',
     fontMono: 'ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace',
     
-    textXs: '0.75rem',    // 12px
-    textSm: '0.875rem',   // 14px
-    textBase: '1rem',     // 16px
-    textLg: '1.125rem',   // 18px
-    textXl: '1.25rem',    // 20px
-    text2xl: '1.5rem',    // 24px
-    text3xl: '1.875rem',  // 30px
-    text4xl: '2.25rem',   // 36px
+    textXs: '0.75rem',    
+    textSm: '0.875rem',   
+    textBase: '1rem',     
+    textLg: '1.125rem',   
+    textXl: '1.25rem',    
+    text2xl: '1.5rem',    
+    text3xl: '1.875rem',  
+    text4xl: '2.25rem',   
   },
   
   spacing: {
@@ -152,10 +142,10 @@ export const defaultTheme: ThemeConfig = {
   },
   
   borderRadius: {
-    sm: '0.25rem',   // 4px
-    md: '0.375rem',  // 6px
-    lg: '0.5rem',    // 8px
-    xl: '0.75rem',   // 12px
+    sm: '0.25rem',   
+    md: '0.375rem',  
+    lg: '0.5rem',    
+    xl: '0.75rem',   
     full: '9999px',
   },
   
@@ -179,12 +169,12 @@ export const defaultTheme: ThemeConfig = {
   },
 };
 
-// Alternative Theme Presets
+
 export const themePresets = {
-  // Professional Blue (Default)
+  
   professional: defaultTheme,
   
-  // Dark Theme
+  
   dark: {
     ...defaultTheme,
     colors: {
@@ -211,7 +201,7 @@ export const themePresets = {
     },
   },
   
-  // Green Nature Theme
+  
   nature: {
     ...defaultTheme,
     colors: {
@@ -224,7 +214,7 @@ export const themePresets = {
     },
   },
   
-  // Purple Creative Theme
+  
   creative: {
     ...defaultTheme,
     colors: {
@@ -237,7 +227,7 @@ export const themePresets = {
     },
   },
   
-  // Orange Warm Theme
+  
   warm: {
     ...defaultTheme,
     colors: {
@@ -251,7 +241,7 @@ export const themePresets = {
   },
 } as const;
 
-// Function to generate CSS custom properties
+
 export function generateThemeCSS(theme: ThemeConfig): string {
   return `
     :root {

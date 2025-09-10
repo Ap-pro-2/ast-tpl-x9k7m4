@@ -1,28 +1,5 @@
 ---
-/**
- * ShareArticle Component
- * 
- * A comprehensive social sharing and utility component for blog articles.
- * Features:
- * - Social media sharing (Facebook, Twitter, LinkedIn, WhatsApp, Telegram)
- * - Copy link to clipboard with user feedback
- * - Print article functionality for PDF generation
- * - Fully accessible with ARIA labels and keyboard navigation
- * - Responsive design with mobile-first approach
- * - TypeScript support with proper type annotations
- * - Works with Astro view transitions
- * 
- * @component
- * @example
- * ```astro
- * <ShareArticle 
- *   title="My Blog Post Title"
- *   url="/my-blog-post"
- *   description="Optional description for sharing"
- *   className="custom-share-styling"
- * />
- * ```
- */
+
 
 export interface Props {
   title: string;
@@ -34,25 +11,25 @@ export interface Props {
 
 const { title, url, description = "", className = "", isVertical = false } = Astro.props;
 
-// Get site settings for domain - read directly from settings.json file
+
 import settingsData from '../../content/data/settings.json';
 const siteSettings = settingsData?.[0] || {};
-const siteUrl = siteSettings.siteUrl?.replace(/\/$/, '') || 'https://yourdomain.com';
+const siteUrl = siteSettings.siteUrl?.replace(/\/$/, '') || 'https://example.com';
 
-// Construct full URL if only relative path provided
+
 const fullUrl = url?.startsWith('http') ? url : `${siteUrl}${url || Astro.url.pathname}`;
 
-// Encode for URL sharing
+
 const encodedTitle = encodeURIComponent(title);
 const encodedUrl = encodeURIComponent(fullUrl);
 const encodedDescription = encodeURIComponent(description);
 
-// Social sharing URLs
+
 const shareUrls = {
-  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  facebook: `https://facebook.com/sharer/sharer.php?u=${encodedUrl}`,
   twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
-  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-  whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+  linkedin: `https://linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+  whatsapp: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
   telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`
 };
 ---
@@ -68,7 +45,6 @@ const shareUrls = {
   )}
   
   <div class={isVertical ? "share-buttons-vertical" : "share-buttons-row"}>
-    <!-- Facebook -->
     <button 
       class="share-btn share-facebook" 
       data-platform="facebook"
@@ -81,7 +57,6 @@ const shareUrls = {
       </svg>
     </button>
 
-    <!-- Twitter -->
     <button 
       class="share-btn share-twitter" 
       data-platform="twitter"
@@ -94,7 +69,6 @@ const shareUrls = {
       </svg>
     </button>
 
-    <!-- LinkedIn -->
     <button 
       class="share-btn share-linkedin" 
       data-platform="linkedin"
@@ -107,7 +81,6 @@ const shareUrls = {
       </svg>
     </button>
 
-    <!-- WhatsApp -->
     <button 
       class="share-btn share-whatsapp" 
       data-platform="whatsapp"
@@ -120,7 +93,6 @@ const shareUrls = {
       </svg>
     </button>
 
-    <!-- Telegram -->
     <button 
       class="share-btn share-telegram" 
       data-platform="telegram"
@@ -133,7 +105,6 @@ const shareUrls = {
       </svg>
     </button>
 
-    <!-- Copy Link -->
     <button 
       class="share-btn share-copy" 
       data-platform="copy"
@@ -155,7 +126,7 @@ const shareUrls = {
     text-align: center;
   }
 
-  /* Vertical Layout Styles */
+  
   .share-article-vertical {
     background: transparent;
     padding: 0;
@@ -168,7 +139,7 @@ const shareUrls = {
     align-items: center;
   }
 
-  /* Vertical share buttons styling */
+  
   .share-article-vertical .share-btn {
     width: 2.75rem;
     height: 2.75rem;
@@ -229,7 +200,7 @@ const shareUrls = {
     transition: all var(--animation-duration) var(--animation-easing);
     position: relative;
     overflow: hidden;
-    /* Accessibility improvements */
+    
     min-width: 44px;
     min-height: 44px;
   }
@@ -244,7 +215,7 @@ const shareUrls = {
   }
 
   .share-btn:hover {
-    /* Base hover removed - specific platform hovers will handle this */
+    
   }
 
   .share-btn svg {
@@ -253,7 +224,7 @@ const shareUrls = {
     transition: all var(--animation-duration) var(--animation-easing);
   }
 
-  /* Platform-specific hover colors using theme system */
+  
   .share-article-vertical .share-facebook:hover {
     background: var(--color-primary) !important;
     color: var(--bg-primary) !important;
@@ -302,7 +273,7 @@ const shareUrls = {
     box-shadow: var(--shadow-lg);
   }
 
-  /* Horizontal layout hover (keep original colors) */
+  
   .share-article-compact .share-facebook:hover {
     background: #1877f2;
     color: white;
@@ -352,14 +323,14 @@ const shareUrls = {
   }
 
 
-  /* Copy success state */
+  
   .share-copy.copied {
     background: #10b981;
     color: white;
     border-color: #10b981;
   }
 
-  /* Ripple effect */
+  
   .share-btn::before {
     content: '';
     position: absolute;
@@ -378,7 +349,7 @@ const shareUrls = {
     height: 120%;
   }
 
-  /* Responsive adjustments */
+  
   @media (max-width: 768px) {
     .share-article-compact {
       padding: 1rem;
@@ -420,7 +391,7 @@ const shareUrls = {
     }
   }
 
-  /* Loading state */
+  
   .share-btn.loading {
     pointer-events: none;
     opacity: 0.7;
@@ -440,5 +411,4 @@ const shareUrls = {
   }
 </style>
 
-<!-- Load external ShareArticle script following Astro best practices -->
 <script src="../../scripts/share-article.ts"></script>

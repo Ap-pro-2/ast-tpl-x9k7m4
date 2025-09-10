@@ -1,21 +1,9 @@
 ---
-/**
- * DEMO THEME SWITCHER COMPONENT - MODAL VERSION
- *
- * This component is for demonstration purposes only.
- * It shows as an icon that opens a modal for theme selection.
- *
- * TO REMOVE THIS DEMO:
- * 1. Delete this file: src/components/demo/ThemeSwitcher.astro
- * 2. Remove the import and component usage from BaseLayout.astro
- *
- * The theme system will continue to work with your configured theme
- * in src/config/user-theme.ts
- */
+
 
 import { themePresets } from "../../config/theme";
 
-// Available theme presets for demo
+
 const availableThemes = [
   {
     key: "professional",
@@ -70,7 +58,6 @@ const availableThemes = [
 ] as const;
 ---
 
-<!-- Theme Switcher Icon Button -->
 <button
   class="theme-switcher-icon"
   id="theme-switcher-btn"
@@ -92,7 +79,6 @@ const availableThemes = [
   </svg>
 </button>
 
-<!-- Theme Switcher Modal -->
 <div class="theme-modal-overlay" id="theme-modal-overlay">
   <div class="theme-modal" id="theme-modal">
     <div class="theme-modal-header">
@@ -143,7 +129,7 @@ const availableThemes = [
 </div>
 
 <style>
-  /* Theme Switcher Icon Button */
+  
   .theme-switcher-icon {
     position: fixed;
     top: 20px;
@@ -174,7 +160,7 @@ const availableThemes = [
     transform: translateY(0);
   }
 
-  /* Mobile positioning adjustments */
+  
   @media (max-width: 768px) {
     .theme-switcher-icon {
       top: 80px;
@@ -185,7 +171,7 @@ const availableThemes = [
     }
   }
 
-  /* Small mobile screens */
+  
   @media (max-width: 480px) {
     .theme-switcher-icon {
       top: 70px;
@@ -200,7 +186,7 @@ const availableThemes = [
     }
   }
 
-  /* Modal Overlay */
+  
   .theme-modal-overlay {
     position: fixed;
     top: 0;
@@ -223,7 +209,7 @@ const availableThemes = [
     visibility: visible;
   }
 
-  /* Modal */
+  
   .theme-modal {
     background: var(--surface-card);
     border: 1px solid var(--border-default);
@@ -242,7 +228,7 @@ const availableThemes = [
     transform: scale(1) translateY(0);
   }
 
-  /* Modal Header */
+  
   .theme-modal-header {
     display: flex;
     align-items: center;
@@ -278,7 +264,7 @@ const availableThemes = [
     color: var(--text-primary);
   }
 
-  /* Theme Grid */
+  
   .theme-grid {
     display: grid;
     gap: 0.75rem;
@@ -322,7 +308,7 @@ const availableThemes = [
     overflow: hidden;
   }
 
-  /* Theme preview colors */
+  
   .theme-preview[data-theme-preview="professional"] {
     background: linear-gradient(45deg, #3b82f6, #60a5fa);
   }
@@ -476,7 +462,7 @@ const availableThemes = [
     line-height: 1.4;
   }
 
-  /* Mobile responsiveness */
+  
   @media (max-width: 768px) {
     .demo-theme-switcher {
       position: relative;
@@ -488,7 +474,7 @@ const availableThemes = [
     }
   }
 
-  /* Hide on very small screens */
+  
   @media (max-width: 480px) {
     .demo-theme-switcher {
       display: none;
@@ -496,5 +482,4 @@ const availableThemes = [
   }
 </style>
 
-<!-- External Theme Switcher Script -->
 <script src="../../scripts/theme-switcher.ts"></script>

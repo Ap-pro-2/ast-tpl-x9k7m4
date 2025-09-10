@@ -1,8 +1,5 @@
 ---
-/**
- * Pure Sidebar Latest Articles Component - No Styling
- * Multi-purpose foundation ready for any theme
- */
+
 
 import { getAllPosts, formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
@@ -15,10 +12,10 @@ interface Props {
 
 const { currentPostId, limit = 4 } = Astro.props;
 
-// Get latest posts using core logic
+
 const allPosts = await getAllPosts();
 const latestPosts = allPosts
-  .filter(post => post.id !== currentPostId) // Exclude current post
+  .filter(post => post.id !== currentPostId) 
   .slice(0, limit);
 ---
 
@@ -27,7 +24,7 @@ const latestPosts = allPosts
     <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary)">Latest Articles</h3>
     <div class="space-y-4">
       {latestPosts.map(async (post) => {
-        // Get category data safely
+        
         let category = null;
         try {
           if (post.data.category) {
@@ -35,7 +32,6 @@ const latestPosts = allPosts
             category = await getEntry('categories', categoryId);
           }
         } catch (error) {
-          console.warn('Could not load category:', error);
         }
         
         return (

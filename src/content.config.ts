@@ -1,4 +1,4 @@
-// src/content.config.ts
+
 import { defineCollection, reference, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
@@ -213,10 +213,10 @@ const pages = defineCollection({
     title: z.string(),
     slug: z.string(),
     description: z.string().optional(),
-    content: z.string().optional(), // Made optional since listing pages don't need content
+    content: z.string().optional(), 
     published: z.boolean().default(true),
     noindex: z.boolean().default(false),
-    // ✅ ENHANCED SEO SCHEMA
+    
     seo: z.object({
       title: z.string(),
       description: z.string(),
@@ -227,7 +227,7 @@ const pages = defineCollection({
   }),
 });
 
-// Affiliate Categories collection (dashboard manages this file)
+
 const affiliateCategories = defineCollection({
   loader: file("src/content/data/affiliate-categories.json"),
   schema: z.object({
@@ -238,7 +238,7 @@ const affiliateCategories = defineCollection({
   }),
 });
 
-// Single dynamic products collection that loads ALL category files automatically
+
 const affiliateProducts = defineCollection({
   loader: glob({
     pattern: "**/*.json",
@@ -265,7 +265,7 @@ const affiliateProducts = defineCollection({
   }),
 });
 
-// Comparisons collection (dashboard manages this file)
+
 const affiliateComparisons = defineCollection({
   loader: file("src/content/data/affiliate-comparisons.json"),
   schema: z.object({
@@ -278,7 +278,7 @@ const affiliateComparisons = defineCollection({
   }),
 });
 
-// Ads collection - comprehensive schema for advertisement management (supports image/html/iframe)
+
 const ads = defineCollection({
   loader: file("src/content/data/ads.json"),
   schema: z.object({
@@ -286,7 +286,7 @@ const ads = defineCollection({
     global: z.object({
       enabled: z.boolean(),
       testMode: z.boolean().default(false),
-      // Security settings for HTML ads
+      
       security: z.object({
         allowHtmlAds: z.boolean().default(false),
       }).optional(),
@@ -295,19 +295,19 @@ const ads = defineCollection({
       id: z.string(),
       name: z.string(),
       enabled: z.boolean().default(true),
-      // Ad type - determines which content fields are used
+      
       type: z.enum(['image', 'html']).default('image'),
       
-      // Image ad properties (existing - backwards compatible)
+      
       image: z.string().optional(),
       link: z.string().url().optional(),
       alt: z.string().optional(),
       
-      // HTML ad properties (pure HTML only, no iframes)
+      
       htmlContent: z.string().optional().refine((content) => {
-        if (!content) return true; // Allow empty/undefined
+        if (!content) return true; 
         
-        // Check for iframe tags (case insensitive)
+        
         const hasIframe = /<iframe[\s\S]*?<\/iframe>/gi.test(content) || /<iframe[^>]*\/?>/gi.test(content);
         
         return !hasIframe;
@@ -315,7 +315,7 @@ const ads = defineCollection({
         message: "HTML content cannot contain iframe tags. Use only pure HTML elements like <a>, <img>, <div>, etc."
       }),
       
-      // Common properties
+      
       placement: z.enum([
         'between-hero-and-content',
         'ad-section-2-sidebar', 
@@ -326,9 +326,9 @@ const ads = defineCollection({
         'categories-sidebar',
         'tags-sidebar'
       ]),
-      priority: z.number().default(1), // For ad ordering
+      priority: z.number().default(1), 
     })).refine((banners) => {
-      // Custom validation: ensure each ad has the required content for its type
+      
       return banners.every(banner => {
         switch (banner.type) {
           case 'image':
@@ -345,7 +345,7 @@ const ads = defineCollection({
   })
 });
 
-// Forms collection - comprehensive schema for form management with Turnstile support
+
 const forms = defineCollection({
   loader: file("src/content/data/forms.json"),
   schema: z.object({
@@ -370,13 +370,13 @@ const forms = defineCollection({
         'contact-page'
       ]),
       fields: z.array(z.enum(['name', 'email', 'message'])).optional(),
-      // Turnstile configuration for spam protection
+      
       turnstile: z.object({
         enabled: z.boolean().default(false),
         theme: z.enum(['auto', 'light', 'dark']).default('auto'),
         size: z.enum(['normal', 'flexible', 'compact']).default('flexible'),
         appearance: z.enum(['always', 'execute', 'interaction-only']).default('always'),
-        action: z.string().optional() // Custom action identifier for analytics
+        action: z.string().optional() 
       }).optional(),
     }))
   })

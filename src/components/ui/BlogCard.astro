@@ -1,8 +1,5 @@
 ---
-/**
- * Clean Blog Card Component - Theme System Integrated
- * Professional UI/UX using only your theme system
- */
+
 
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
@@ -14,7 +11,7 @@ interface Props {
 
 const { post } = Astro.props;
 
-// Get author and category data safely
+
 let author = null;
 let category = null;
 
@@ -28,10 +25,9 @@ try {
     category = await getEntry('categories', categoryId);
   }
 } catch (error) {
-  console.warn('Could not load author/category:', error);
 }
 
-// Handle tags properly - they can be strings or objects
+
 const tags = post.data.tags || [];
 const tagNames = tags.map((tag: any) => {
   if (typeof tag === 'string') return tag;
@@ -43,7 +39,6 @@ const tagNames = tags.map((tag: any) => {
 
 <article class="blog-card theme-card overflow-hidden group">
   
-  <!-- Post Image -->
   {post.data.image?.url && (
     <div class="relative aspect-[16/9] overflow-hidden">
       <OptimizedImage 
@@ -55,7 +50,6 @@ const tagNames = tags.map((tag: any) => {
         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
       
-      <!-- Category Badge -->
       {category && (
         <div class="absolute top-4 left-4">
           <a href={`/categories/${category.data.slug}`}
@@ -68,10 +62,8 @@ const tagNames = tags.map((tag: any) => {
     </div>
   )}
   
-  <!-- Post Content -->
   <div class="p-6 flex flex-col h-full">
     
-    <!-- Category (if no image) -->
     {!post.data.image?.url && category && (
       <div class="mb-3">
         <a href={`/categories/${category.data.slug}`}
@@ -82,7 +74,6 @@ const tagNames = tags.map((tag: any) => {
       </div>
     )}
     
-    <!-- Title -->
     <h3 class="text-xl font-bold mb-3 leading-tight line-clamp-2" 
         style="color: var(--text-primary); font-family: var(--font-heading);">
       <a href={`/${post.id}`} 
@@ -93,7 +84,6 @@ const tagNames = tags.map((tag: any) => {
       </a>
     </h3>
     
-    <!-- Description -->
     {post.data.description && (
       <p class="mb-4 leading-relaxed line-clamp-3 flex-grow" 
          style="color: var(--text-secondary);">
@@ -101,7 +91,6 @@ const tagNames = tags.map((tag: any) => {
       </p>
     )}
     
-    <!-- Tags -->
     {tagNames.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-4">
         {tagNames.slice(0, 2).map((tag: string) => (
@@ -123,11 +112,9 @@ const tagNames = tags.map((tag: any) => {
       </div>
     )}
     
-    <!-- Meta Info & Button -->
     <div class="flex items-center justify-between mt-auto pt-4" 
          style="border-top: 1px solid var(--border-light);">
       
-      <!-- Author Info -->
       <div class="flex items-center gap-3">
         {author && (
           <>
@@ -147,7 +134,6 @@ const tagNames = tags.map((tag: any) => {
         )}
       </div>
       
-      <!-- Theme Button -->
       <a href={`/${post.id}`} 
          class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
          aria-label={`Read the full article: ${post.data.title}`}>
@@ -161,7 +147,7 @@ const tagNames = tags.map((tag: any) => {
 </article>
 
 <style>
-  /* Line clamping */
+  
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -176,7 +162,7 @@ const tagNames = tags.map((tag: any) => {
     overflow: hidden;
   }
   
-  /* Blog card styling */
+  
   .blog-card {
     transition: all var(--animation-duration) var(--animation-easing);
     display: flex;
@@ -188,14 +174,14 @@ const tagNames = tags.map((tag: any) => {
     box-shadow: var(--shadow-xl);
   }
   
-  /* Ensure equal height cards */
+  
   .blog-card .p-6 {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
   
-  /* Mobile optimizations */
+  
   @media (max-width: 640px) {
     .blog-card .flex-col {
       gap: 1rem;

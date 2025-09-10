@@ -1,8 +1,5 @@
 ---
-/**
- * Section4 - Main Content with Sidebar
- * Layout: Left column (latest articles) + Right sidebar (author card + tags)
- */
+
 
 import { 
   getAllPosts, 
@@ -14,22 +11,20 @@ import UniversalForm from '../forms/UniversalForm.astro';
 import BlogCardHorizontal from '../ui/BlogCardHorizontal.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
 
-// Get dynamic data using core logic
+
 const posts = await getAllPosts();
 const settings = await getSiteSettings();
 const tags = await getTagsWithPostCounts();
 
-// Create pagination data for homepage
+
 const paginationData = createPaginationData(posts, 1, 6);
 const page = paginationData;
 ---
 
-<!-- Section4 - Main Content with Sidebar -->
 <section class="section4-main-content py-12 lg:py-16" style="background: var(--bg-primary)">
   <div class="container max-w-7xl">
     <div class="section4-grid">
       
-      <!-- Main Content Area -->
       <main class="section4-content">
         <div class="section4-content-inner">
           <div class="section4-header">
@@ -37,12 +32,11 @@ const page = paginationData;
             <h2 class="section4-title">Latest Articles</h2>
           </div>
 
-          <!-- Blog Cards -->
           <div class="section4-articles">
             {page.data.map((post, index) => (
               <div class="section4-article-wrapper">
                 <BlogCardHorizontal post={post} />
-                {/* Add banner ad after 2nd post */}
+                {}
                 {index === 1 && (
                   <div class="section4-ad-wrapper">
                     <SimpleBannerAd 
@@ -55,7 +49,6 @@ const page = paginationData;
             ))}
           </div>
 
-          <!-- Load More Button -->
           {page.lastPage > 1 && (
             <div class="section4-load-more">
               <a href="/blog" class="section4-load-more-btn">
@@ -69,16 +62,12 @@ const page = paginationData;
         </div>
       </main>
 
-      <!-- Sticky Sidebar -->
       <aside class="section4-sidebar">
         
-        <!-- Newsletter Signup -->
         <div class="section4-widget section4-newsletter-widget">
-          <!-- Universal Form handles its own title -->
           <UniversalForm placement="section4-sidebar" />
         </div>
         
-        <!-- Tags Section -->
         {tags.length > 0 && (
           <div class="section4-widget section4-tags-widget">
             <div class="section4-widget-header">
@@ -95,7 +84,6 @@ const page = paginationData;
               ))}
             </div>
             
-            <!-- View All Tags -->
             <div class="section4-tags-footer">
               <a href="/tags" class="section4-tags-all">
                 <span>Browse All Tags</span>
@@ -112,7 +100,7 @@ const page = paginationData;
 </section>
 
 <style>
-/* Section4 Styles - Main Content with Sidebar */
+
 .section4-main-content {
   background: var(--bg-primary);
   padding: 3rem 0 4rem 0;
@@ -137,7 +125,7 @@ const page = paginationData;
   }
 }
 
-/* Main Content Area */
+
 .section4-content-inner {
   display: flex;
   flex-direction: column;
@@ -214,7 +202,7 @@ const page = paginationData;
   transform: translateX(4px);
 }
 
-/* Sidebar Styles */
+
 .section4-sidebar {
   position: sticky;
   top: 6rem;
@@ -226,7 +214,7 @@ const page = paginationData;
 }
 
 .section4-widget {
-  /* Widgets inherit their own styling */
+  
 }
 
 .section4-tags-widget,
@@ -343,7 +331,7 @@ const page = paginationData;
   transform: translateX(2px);
 }
 
-/* Mobile Responsiveness */
+
 @media (max-width: 768px) {
   .section4-main-content {
     padding: 2rem 0 3rem 0;

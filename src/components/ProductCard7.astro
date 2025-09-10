@@ -1,8 +1,5 @@
 ---
-/**
- * ProductCard7 - "Minimal Conversion Machine"
- * Clean, focused, irresistible CTA
- */
+
 
 import OptimizedImage from './ui/OptimizedImage.astro';
 
@@ -53,9 +50,7 @@ const discountPercent =
     : null;
 ---
 
-<!-- Minimal Conversion Machine -->
 <article class="theme-card mb-8 text-center relative" style="border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);">
-  <!-- Floating Badge -->
   {badge && (
     <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
       <span class="text-white text-sm font-bold px-6 py-2" style="background: linear-gradient(135deg, var(--color-primary-accessible), var(--color-accent)); border-radius: var(--radius-full); box-shadow: var(--shadow-md);">
@@ -65,7 +60,6 @@ const discountPercent =
   )}
 
   <div style="padding: calc(var(--card-padding) * 1.5);">
-    <!-- Hero Image -->
     <div class="mb-6">
       <OptimizedImage
         src={image}
@@ -78,19 +72,16 @@ const discountPercent =
       />
     </div>
 
-    <!-- Title -->
     <h3 class="text-2xl font-bold mb-4" style="color: var(--text-primary); font-family: var(--font-heading);">
       {title}
     </h3>
 
-    <!-- Brand -->
     {brand && (
       <p class="text-lg font-medium mb-4" style="color: var(--color-primary-accessible);">
         {brand}
       </p>
     )}
 
-    <!-- Rating Stars -->
     {rating && (
       <div class="flex justify-center items-center gap-2 mb-4">
         <div class="flex">
@@ -110,19 +101,16 @@ const discountPercent =
       </div>
     )}
 
-    <!-- Social Proof -->
     {reviewCount && (
       <p class="text-lg font-medium mb-6" style="color: var(--text-secondary);">
         {reviewCount}+ reviews
       </p>
     )}
 
-    <!-- Description -->
     <p class="text-lg leading-relaxed mb-6 max-w-md mx-auto" style="color: var(--text-secondary);">
       {description}
     </p>
 
-    <!-- Price Section -->
     <div class="mb-8">
       {price && (
         <div class="flex items-center justify-center gap-3 mb-2">
@@ -143,7 +131,6 @@ const discountPercent =
       )}
     </div>
 
-    <!-- Top Benefits -->
     {pros && pros.length > 0 && (
       <div class="mb-8">
         <div class="max-w-sm mx-auto">
@@ -161,7 +148,6 @@ const discountPercent =
       </div>
     )}
 
-    <!-- Irresistible CTA -->
     <div class="space-y-4">
       <a
         href={affiliateUrl}

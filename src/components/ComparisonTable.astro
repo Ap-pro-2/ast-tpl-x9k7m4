@@ -1,8 +1,5 @@
 ---
-/**
- * Product Comparison Table Component
- * Perfect for comparing 2-3 products side by side with aligned buttons
- */
+
 
 export interface ComparisonProduct {
   title: string;
@@ -27,31 +24,26 @@ export interface Props {
 
 const { title = "Product Comparison", products } = Astro.props;
 
-// Ensure we only show 2-3 products max
+
 const displayProducts = products.slice(0, 3);
 ---
 
-<!-- Comparison Table -->
 <div class="comparison-table theme-card overflow-hidden mb-8">
   
-  <!-- Header -->
   <div class="p-6 border-b" style="border-color: var(--border-light); background: var(--bg-tertiary);">
     <h3 class="text-2xl font-bold text-center" style="color: var(--text-primary); font-family: var(--font-heading);">
       {title}
     </h3>
   </div>
   
-  <!-- Comparison Grid -->
   <div class={`grid ${displayProducts.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-0 min-h-0`}>
     
     {displayProducts.map((product, index) => (
       <div class={`flex flex-col p-6 ${index < displayProducts.length - 1 ? 'border-r md:border-r' : ''} ${index < displayProducts.length - 1 ? 'border-b md:border-b-0' : ''}`} 
            style="border-color: var(--border-light);">
         
-        <!-- Product Header -->
         <div class="text-center mb-6">
           
-          <!-- Badge -->
           {product.badge && (
             <div class="mb-3">
               <span class="theme-badge font-semibold text-xs px-3 py-1">
@@ -60,7 +52,6 @@ const displayProducts = products.slice(0, 3);
             </div>
           )}
           
-          <!-- Product Image -->
           <div class="w-24 h-24 mx-auto mb-4 overflow-hidden" style="border-radius: var(--radius-lg);">
             <img 
               src={product.image} 
@@ -70,13 +61,11 @@ const displayProducts = products.slice(0, 3);
             />
           </div>
           
-          <!-- Product Title -->
           <h4 class="text-lg font-bold mb-2 line-clamp-2" 
               style="color: var(--text-primary); font-family: var(--font-heading);">
             {product.title}
           </h4>
           
-          <!-- Rating -->
           {product.rating && (
             <div class="flex items-center justify-center gap-2 mb-3">
               <div class="flex items-center">
@@ -98,7 +87,6 @@ const displayProducts = products.slice(0, 3);
             </div>
           )}
           
-          <!-- Price -->
           <div class="mb-6">
             <div class="text-2xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading);">
               {product.price}
@@ -111,10 +99,8 @@ const displayProducts = products.slice(0, 3);
           </div>
         </div>
         
-        <!-- Content Section - Flexible -->
         <div class="flex-grow">
           
-          <!-- Features -->
           <div class="mb-6">
             <h5 class="text-sm font-semibold mb-3" style="color: var(--text-primary); font-family: var(--font-heading);">
               Key Features
@@ -131,7 +117,6 @@ const displayProducts = products.slice(0, 3);
             </ul>
           </div>
           
-          <!-- Pros -->
           <div class="mb-4">
             <h5 class="text-sm font-semibold mb-2 text-green-600" style="font-family: var(--font-heading);">
               ✓ Pros
@@ -145,7 +130,6 @@ const displayProducts = products.slice(0, 3);
             </ul>
           </div>
           
-          <!-- Cons -->
           <div class="mb-6">
             <h5 class="text-sm font-semibold mb-2 text-red-600" style="font-family: var(--font-heading);">
               ✗ Cons
@@ -160,7 +144,6 @@ const displayProducts = products.slice(0, 3);
           </div>
         </div>
         
-        <!-- CTA Button - Always at bottom -->
         <div class="mt-auto">
           <a 
             href={product.affiliateUrl}
@@ -200,7 +183,7 @@ const displayProducts = products.slice(0, 3);
     box-shadow: var(--shadow-lg);
   }
   
-  /* Ensure equal height columns */
+  
   .comparison-table .grid {
     align-items: stretch;
   }
@@ -211,7 +194,7 @@ const displayProducts = products.slice(0, 3);
     min-height: 100%;
   }
   
-  /* Mobile responsive */
+  
   @media (max-width: 768px) {
     .comparison-table .grid > div {
       border-right: none !important;

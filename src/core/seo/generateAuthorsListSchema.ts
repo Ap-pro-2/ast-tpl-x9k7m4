@@ -18,14 +18,13 @@ export async function generateAuthorsListSchemaData(
   }>,
   url: string
 ) {
-  // Early validation
+  
   if (!authors || !Array.isArray(authors) || authors.length === 0) {
-    console.warn('AuthorsListSchema: No authors provided or empty array');
     return null;
   }
 
   try {
-    // Fetch site settings
+    
     let siteSettings: SiteSettings | null = null;
     try {
       const allSettings = await getCollection('settings');
@@ -47,10 +46,9 @@ export async function generateAuthorsListSchemaData(
         };
       }
     } catch (error) {
-      console.warn('AuthorsListSchema: Failed to fetch site settings:', error);
     }
 
-    // Generate Person schemas for each author
+    
     const authorSchemas = authors.map(author => {
       try {
         const authorData: AuthorData = {
@@ -66,7 +64,7 @@ export async function generateAuthorsListSchemaData(
 
         const personSchema = generatePersonSchema(authorData);
 
-        // Enhance with additional properties using Object.assign to avoid spread type issues
+        
         const enhancedSchema = Object.assign({}, personSchema, {
           "@id": `${siteSettings?.siteUrl || ''}/authors/${author.id}`,
           "url": `${siteSettings?.siteUrl || ''}/authors/${author.id}`,
@@ -91,8 +89,7 @@ export async function generateAuthorsListSchemaData(
 
         return enhancedSchema;
       } catch (error) {
-        console.warn(`AuthorsListSchema: Failed to generate schema for author ${author.id}:`, error);
-        // Return minimal schema as fallback
+        
         return {
           "@type": "Person",
           "@id": `${siteSettings?.siteUrl || ''}/authors/${author.id}`,
@@ -102,7 +99,7 @@ export async function generateAuthorsListSchemaData(
       }
     });
 
-    // Create the main CollectionPage schema
+    
     return {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -146,9 +143,8 @@ export async function generateAuthorsListSchemaData(
     };
 
   } catch (error) {
-    console.error('AuthorsListSchema: Failed to generate authors list schema:', error);
 
-    // Create minimal fallback schema
+    
     return {
       "@context": "https://schema.org",
       "@type": "CollectionPage",

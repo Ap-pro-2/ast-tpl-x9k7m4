@@ -1,5 +1,5 @@
 ---
-// Table of Contents Component - Responsive & Theme-Aware
+
 export interface Props {
   headings: Array<{
     depth: number;
@@ -18,12 +18,12 @@ const {
   maxDepth = 3 
 } = Astro.props;
 
-// Filter headings based on depth preferences
+
 const filteredHeadings = headings.filter(
   heading => heading.depth >= minDepth && heading.depth <= maxDepth
 );
 
-// Don't render if no valid headings
+
 if (filteredHeadings.length === 0) return null;
 ---
 
@@ -31,7 +31,6 @@ if (filteredHeadings.length === 0) return null;
   class="table-of-contents theme-card mb-8 lg:mb-12"
   style="border: 1px solid var(--border-light); background: var(--surface-card);"
 >
-  <!-- TOC Header -->
   <button 
     class="toc-header toc-toggle w-full px-4 sm:px-6 py-4 border-b text-left"
     style="border-color: var(--border-light); background: var(--bg-secondary);"
@@ -40,7 +39,6 @@ if (filteredHeadings.length === 0) return null;
   >
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <!-- List Icon -->
         <div 
           class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
           style="background: var(--color-primary); color: white;"
@@ -61,7 +59,6 @@ if (filteredHeadings.length === 0) return null;
           </svg>
         </div>
         
-        <!-- Title -->
         <h2 
           class="text-lg sm:text-xl font-bold m-0"
           style="color: var(--text-primary); font-family: var(--font-heading);"
@@ -70,7 +67,6 @@ if (filteredHeadings.length === 0) return null;
         </h2>
       </div>
       
-      <!-- Chevron Icon -->
       <svg 
         class="toc-chevron w-5 h-5 transition-transform duration-200"
         style="color: var(--text-secondary);"
@@ -89,7 +85,6 @@ if (filteredHeadings.length === 0) return null;
     </div>
   </button>
 
-  <!-- TOC Navigation -->
   <nav 
     id="toc-content" 
     class="toc-nav px-4 sm:px-6 py-4 hidden" 
@@ -98,7 +93,7 @@ if (filteredHeadings.length === 0) return null;
     <ol class="toc-list space-y-2 list-none m-0 p-0">
       {filteredHeadings.map((heading) => {
         const indentLevel = heading.depth - minDepth;
-        const paddingLeft = indentLevel * 1.25; // 1.25rem per level
+        const paddingLeft = indentLevel * 1.25; 
         
         return (
           <li 
@@ -112,13 +107,11 @@ if (filteredHeadings.length === 0) return null;
               data-toc-link
               data-target={heading.slug}
             >
-              <!-- Bullet Point -->
               <span 
                 class="toc-bullet flex-shrink-0 w-1.5 h-1.5 rounded-full mt-2 transition-all duration-200"
                 style="background: var(--text-muted);"
               />
               
-              <!-- Heading Text -->
               <span class="toc-text leading-relaxed transition-colors duration-200">
                 {heading.text}
               </span>
@@ -130,7 +123,6 @@ if (filteredHeadings.length === 0) return null;
   </nav>
 </div>
 
-<!-- TOC Styles -->
 <style>
   .table-of-contents {
     border-radius: var(--radius-lg);
@@ -178,7 +170,7 @@ if (filteredHeadings.length === 0) return null;
     font-weight: 500;
   }
 
-  /* Active state for current section */
+  
   .toc-link.active {
     background: var(--bg-secondary);
     color: var(--color-primary);
@@ -194,7 +186,7 @@ if (filteredHeadings.length === 0) return null;
     color: var(--color-primary);
   }
 
-  /* Responsive adjustments */
+  
   @media (max-width: 640px) {
     .toc-header {
       padding: 1rem;
@@ -217,18 +209,17 @@ if (filteredHeadings.length === 0) return null;
     }
   }
 
-  /* Smooth scrolling for anchor links */
+  
   html {
     scroll-behavior: smooth;
   }
 
-  /* Ensure headings have proper spacing for anchor navigation */
+  
   :target {
     scroll-margin-top: 2rem;
   }
 </style>
 
-<!-- TOC Interactive Behavior -->
 <script>
   function initTableOfContents() {
     const tocToggle = document.querySelector('.toc-toggle');
@@ -237,12 +228,12 @@ if (filteredHeadings.length === 0) return null;
     const tocLinks = document.querySelectorAll('[data-toc-link]');
     const headings = document.querySelectorAll('h2[id], h3[id], h4[id], h5[id], h6[id]');
     
-    // Clean up any existing event listeners to prevent duplicates
+    
     if (tocToggle && tocToggle._tocInitialized) {
-      return; // Already initialized
+      return; 
     }
     
-    // Toggle functionality
+    
     if (tocToggle && tocContent) {
       const toggleHandler = function(e) {
         e.preventDefault();
@@ -250,12 +241,12 @@ if (filteredHeadings.length === 0) return null;
         const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
         
         if (isExpanded) {
-          // Collapse
+          
           tocContent.classList.add('hidden');
           tocToggle.setAttribute('aria-expanded', 'false');
           if (tocChevron) tocChevron.classList.remove('expanded');
         } else {
-          // Expand
+          
           tocContent.classList.remove('hidden');
           tocToggle.setAttribute('aria-expanded', 'true');
           if (tocChevron) tocChevron.classList.add('expanded');
@@ -263,12 +254,12 @@ if (filteredHeadings.length === 0) return null;
       };
       
       tocToggle.addEventListener('click', toggleHandler);
-      tocToggle._tocInitialized = true; // Mark as initialized
+      tocToggle._tocInitialized = true; 
     }
     
     if (tocLinks.length === 0 || headings.length === 0) return;
 
-    // Create intersection observer for active section highlighting
+    
     const observerOptions = {
       rootMargin: '-20% 0px -70% 0px',
       threshold: 0
@@ -283,21 +274,21 @@ if (filteredHeadings.length === 0) return null;
         
         if (tocLink) {
           if (entry.isIntersecting) {
-            // Remove active class from all links
+            
             tocLinks.forEach(link => link.classList.remove('active'));
-            // Add active class to current link
+            
             tocLink.classList.add('active');
           }
         }
       });
     }, observerOptions);
 
-    // Observe all headings
+    
     headings.forEach(heading => {
       observer.observe(heading);
     });
 
-    // Smooth scroll behavior for TOC links
+    
     tocLinks.forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -307,19 +298,19 @@ if (filteredHeadings.length === 0) return null;
         const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
-          const offsetTop = targetElement.offsetTop - 80; // Account for fixed header
+          const offsetTop = targetElement.offsetTop - 80; 
           window.scrollTo({
             top: offsetTop,
             behavior: 'smooth'
           });
           
-          // Update URL hash
+          
           history.pushState(null, '', `#${targetId}`);
         }
       });
     });
 
-    // Handle direct hash navigation on page load
+    
     if (window.location.hash) {
       setTimeout(() => {
         const targetElement = document.querySelector(window.location.hash);
@@ -334,10 +325,10 @@ if (filteredHeadings.length === 0) return null;
     }
   }
 
-  // Initialize on page load (works with view transitions)
+  
   document.addEventListener('astro:page-load', initTableOfContents);
   
-  // Also initialize immediately if DOM is already ready (for first page load)
+  
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTableOfContents);
   } else {

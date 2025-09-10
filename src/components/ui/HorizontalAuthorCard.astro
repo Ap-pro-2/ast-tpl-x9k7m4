@@ -1,8 +1,5 @@
 ---
-/**
- * Horizontal Author Card - Professional Post Layout
- * Clean horizontal design following our established UI design system
- */
+
 
 import { getEntry } from 'astro:content';
 
@@ -12,24 +9,21 @@ interface Props {
 
 const { authorId } = Astro.props;
 
-// Get author data
+
 let author = null;
 try {
   if (authorId) {
     author = await getEntry('authors', authorId);
   }
 } catch (error) {
-  console.warn('Could not load author:', error);
 }
 
-// Don't render if no author found
+
 if (!author) return null;
 ---
 
-<!-- Horizontal Author Card - Professional Design -->
 <div class="theme-card p-6 lg:p-8">
   
-  <!-- Header Section -->
   <div class="flex items-center gap-3 mb-6">
     <div class="w-1 h-6" style="background: var(--color-primary-accessible); border-radius: var(--radius-full)"></div>
     <h3 class="text-xl font-bold" style="color: var(--text-primary); font-family: var(--font-heading)">
@@ -37,10 +31,8 @@ if (!author) return null;
     </h3>
   </div>
   
-  <!-- Horizontal Author Layout -->
   <div class="flex flex-col sm:flex-row items-start gap-6">
     
-    <!-- Author Avatar -->
     <div class="flex-shrink-0">
       {author.data.avatar ? (
         <div class="relative group">
@@ -50,7 +42,6 @@ if (!author) return null;
             class="w-20 h-20 sm:w-24 sm:h-24 object-cover transition-all duration-500 group-hover:scale-105"
             style="border-radius: var(--radius-full); box-shadow: 0 4px 16px rgba(0,0,0,0.1)"
           />
-          <!-- Hover Ring Effect -->
           <div 
             class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style="border: 3px solid var(--color-primary-accessible); border-radius: var(--radius-full);"
@@ -66,23 +57,18 @@ if (!author) return null;
       )}
     </div>
     
-    <!-- Author Information -->
     <div class="flex-1 min-w-0">
       
-      <!-- Author Name -->
       <h4 class="text-xl lg:text-2xl font-bold mb-3" style="color: var(--text-primary); font-family: var(--font-heading)">
         {author.data.name}
       </h4>
       
-      <!-- Author Bio -->
       <p class="text-base leading-relaxed mb-6" style="color: var(--text-secondary); font-family: var(--font-body)">
         {author.data.bio || 'Author and blogger sharing stories and insights. Passionate about exploring topics and sharing knowledge with the community.'}
       </p>
       
-      <!-- Author Links & Actions -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         
-        <!-- View Profile Button -->
         <a 
           href={`/authors/${author.data.slug}`}
           class="btn-accessible-primary px-6 py-3"
@@ -94,11 +80,10 @@ if (!author) return null;
           </svg>
         </a>
         
-        <!-- Social Links (if available) -->
         <div class="flex items-center gap-3">
           {author.data.twitter && (
             <a 
-              href={author.data.twitter.startsWith('http') ? author.data.twitter : `https://twitter.com/${author.data.twitter}`}
+              href={author.data.twitter.startsWith('http') ? author.data.twitter : `https://twitter.com/${author.data.twitter.replace('@', '')}`}
               target="_blank"
               rel="noopener noreferrer"
               class="w-10 h-10 flex items-center justify-center transition-all duration-300 hover:shadow-md"

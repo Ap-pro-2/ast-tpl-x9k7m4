@@ -121,18 +121,15 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
   const minPosts: number = parseInt(searchParams.get('minPosts') || '0');
 
   try {
-    console.log('🏷️ Fetching tags from collection...');
     
     // ✨ Get ALL tags with proper typing
     const allTags: Tag[] = await getCollection('tags');
-    console.log(`🏷️ Found ${allTags.length} tags in collection`);
     
     // ✨ Get ALL blog posts to calculate post counts per tag
     const allPosts = await getCollection('blog', ({ data }) => {
       // Only count published posts for public API
       return data.status === 'published';
     });
-    console.log(`📝 Found ${allPosts.length} published posts`);
 
     // 🔍 Server-side search with proper typing
     let filteredTags: Tag[] = allTags;
@@ -146,7 +143,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
         
         return nameMatch || descMatch || idMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredTags.length} tags`);
     }
 
     // 📊 Transform tags with metadata and post counts - UPDATED WITH SEO
@@ -167,7 +163,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       });
       
       const postCount = tagPosts.length;
-      console.log(`🏷️ Tag "${tag.data.name}" has ${postCount} posts`);
       
       // Find the most recent post date for this tag
       const lastPostDate = tagPosts.length > 0 
@@ -232,14 +227,12 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     // Filter by minimum posts
     if (minPosts > 0) {
       finalTags = finalTags.filter(tag => tag.postCount >= minPosts);
-      console.log(`📊 Filtered to ${finalTags.length} tags with at least ${minPosts} posts`);
     }
 
     // Filter by trending
     if (trending !== null) {
       const isTrending = trending === 'true';
       finalTags = finalTags.filter(tag => tag.trending === isTrending);
-      console.log(`🔥 Filtered to ${finalTags.length} ${isTrending ? 'trending' : 'non-trending'} tags`);
     }
 
     // 📐 Sort tags
@@ -304,7 +297,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedTags.length} tags (page ${page} of ${Math.ceil(finalTags.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -312,7 +304,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
 
   } catch (error: unknown) {
-    console.error('❌ Error fetching tags:', error);
     
     return new Response(JSON.stringify({
       success: false,

@@ -1,8 +1,5 @@
 ---
-/**
- * Related Post Card Component - Enhanced Theme Integration
- * Polished card design using your blog's theme system
- */
+
 
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
@@ -15,7 +12,7 @@ interface Props {
 
 const { post } = Astro.props;
 
-// Get author and category data safely
+
 let author = null;
 let category = null;
 
@@ -29,17 +26,14 @@ try {
     category = await getEntry('categories', categoryId);
   }
 } catch (error) {
-  console.warn('Could not load author/category:', error);
 }
 ---
 
 <article class="related-post-card">
   <a href={`/${post.id}`} class="card-link">
     
-    <!-- Card Container -->
     <div class="card-container">
       
-      <!-- Post Image -->
       {post.data.image?.url && (
         <div class="image-container">
           <OptimizedImage 
@@ -51,7 +45,6 @@ try {
             class="post-image"
           />
           
-          <!-- Category Badge on Image -->
           {category && (
             <div class="category-badge-overlay">
               <span class="px-2 py-1 text-xs font-semibold rounded-md uppercase tracking-wide" style={getBadgeStyleString(category.data.color)}>
@@ -62,10 +55,8 @@ try {
         </div>
       )}
       
-      <!-- Post Content -->
       <div class="content-container">
         
-        <!-- Category (if no image) -->
         {!post.data.image?.url && category && (
           <div class="mb-3">
             <span class="px-2 py-1 text-xs font-semibold rounded-md uppercase tracking-wide" style={getBadgeStyleString(category.data.color)}>
@@ -74,19 +65,16 @@ try {
           </div>
         )}
         
-        <!-- Title -->
         <h3 class="post-title">
           {post.data.title}
         </h3>
         
-        <!-- Description -->
         {post.data.description && (
           <p class="post-description">
             {post.data.description}
           </p>
         )}
         
-        <!-- Meta Info -->
         <div class="meta-container">
           <div class="meta-info">
             {author && (
@@ -100,7 +88,6 @@ try {
             </time>
           </div>
           
-          <!-- Read More Arrow -->
           <div class="read-arrow">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -113,19 +100,19 @@ try {
 </article>
 
 <style>
-  /* Related Post Card */
+  
   .related-post-card {
     transition: all var(--animation-duration) var(--animation-easing);
   }
   
-  /* Card Link */
+  
   .card-link {
     display: block;
     text-decoration: none;
     color: inherit;
   }
   
-  /* Card Container */
+  
   .card-container {
     display: flex;
     flex-direction: column;
@@ -142,7 +129,7 @@ try {
     transform: translateY(-2px);
   }
   
-  /* Image Container */
+  
   .image-container {
     position: relative;
     width: 100%;
@@ -161,7 +148,7 @@ try {
     transform: scale(1.05);
   }
   
-  /* Category Badge */
+  
   .category-badge-overlay {
     position: absolute;
     top: 0.75rem;
@@ -169,7 +156,7 @@ try {
   }
   
   
-  /* Content Container */
+  
   .content-container {
     padding: 1.5rem;
     flex: 1;
@@ -177,7 +164,7 @@ try {
     flex-direction: column;
   }
   
-  /* Post Title */
+  
   .post-title {
     font-size: 1.125rem;
     font-weight: 700;
@@ -192,7 +179,7 @@ try {
     color: var(--color-primary-accessible);
   }
   
-  /* Post Description */
+  
   .post-description {
     font-size: 0.875rem;
     color: var(--text-secondary);
@@ -205,7 +192,7 @@ try {
     overflow: hidden;
   }
   
-  /* Meta Container */
+  
   .meta-container {
     display: flex;
     align-items: center;
@@ -213,7 +200,7 @@ try {
     margin-top: auto;
   }
   
-  /* Meta Info */
+  
   .meta-info {
     display: flex;
     align-items: center;
@@ -235,7 +222,7 @@ try {
     color: var(--text-muted);
   }
   
-  /* Read Arrow */
+  
   .read-arrow {
     display: flex;
     align-items: center;
@@ -254,7 +241,7 @@ try {
     transform: translateX(2px);
   }
   
-  /* Desktop Layout */
+  
   @media (min-width: 768px) {
     .card-container {
       flex-direction: row;
@@ -281,7 +268,7 @@ try {
     }
   }
   
-  /* Mobile Adjustments */
+  
   @media (max-width: 480px) {
     .content-container {
       padding: 1.25rem;

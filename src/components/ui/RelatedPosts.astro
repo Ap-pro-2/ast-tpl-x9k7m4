@@ -1,8 +1,5 @@
 ---
-/**
- * Related Articles Section Component - Enhanced UX with Theme System
- * Polished design using your blog's theme system
- */
+
 
 import { getAllPosts } from '../../core/blogLogic';
 import RelatedPostCard from './RelatedPostCard.astro';
@@ -16,18 +13,18 @@ interface Props {
 
 const { currentPostId, category, tags = [], limit = 3 } = Astro.props;
 
-// Get all posts
+
 const allPosts = await getAllPosts();
 
-// Filter out current post
+
 const otherPosts = allPosts.filter(post => post.id !== currentPostId);
 
-// Find related posts by category and tags
+
 const relatedPosts = otherPosts
   .map(post => {
     let score = 0;
     
-    // Higher score for same category
+    
     if (category && post.data.category) {
       const postCategoryId = typeof post.data.category === 'string' ? post.data.category : post.data.category.id;
       if (postCategoryId === category) {
@@ -35,7 +32,7 @@ const relatedPosts = otherPosts
       }
     }
     
-    // Score for matching tags
+    
     if (tags.length > 0 && post.data.tags) {
       const postTags = Array.isArray(post.data.tags) ? post.data.tags : [];
       const postTagIds = postTags.map(tag => typeof tag === 'string' ? tag : tag.id);
@@ -43,7 +40,7 @@ const relatedPosts = otherPosts
       score += matchingTags.length * 5;
     }
     
-    // Small bonus for recent posts
+    
     const daysSincePublished = (Date.now() - post.data.pubDate.getTime()) / (1000 * 60 * 60 * 24);
     if (daysSincePublished < 30) {
       score += 2;
@@ -51,12 +48,12 @@ const relatedPosts = otherPosts
     
     return { post, score };
   })
-  .filter(item => item.score > 0) // Only posts with some relation
-  .sort((a, b) => b.score - a.score) // Sort by relevance
-  .slice(0, limit) // Limit results
+  .filter(item => item.score > 0) 
+  .sort((a, b) => b.score - a.score) 
+  .slice(0, limit) 
   .map(item => item.post);
 
-// If we don't have enough related posts, fill with recent posts
+
 if (relatedPosts.length < limit) {
   const recentPosts = otherPosts
     .filter(post => !relatedPosts.includes(post))
@@ -70,10 +67,8 @@ if (relatedPosts.length < limit) {
 {relatedPosts.length > 0 && (
   <section class="related-articles-section">
     
-    <!-- Section Container with Theme Card Styling -->
     <div class="related-articles-container">
       
-      <!-- Header with Icon -->
       <div class="section-header">
         <div class="header-content">
           <div class="header-icon">
@@ -88,14 +83,12 @@ if (relatedPosts.length < limit) {
         </div>
       </div>
       
-      <!-- Articles Grid -->
       <div class="articles-grid">
         {relatedPosts.map((post) => (
           <RelatedPostCard post={post} />
         ))}
       </div>
       
-      <!-- View More Button -->
       <div class="section-footer">
         <a href="/blog" class="view-more-button" aria-label="Explore more blog articles">
           <span>Explore More Articles</span>
@@ -110,13 +103,13 @@ if (relatedPosts.length < limit) {
 )}
 
 <style>
-  /* Related Articles Section */
+  
   .related-articles-section {
     margin-top: 3rem;
     margin-bottom: 2rem;
   }
   
-  /* Main Container with Theme Card Styling */
+  
   .related-articles-container {
     background: var(--surface-card);
     border: 1px solid var(--border-default);
@@ -130,7 +123,7 @@ if (relatedPosts.length < limit) {
     box-shadow: var(--shadow-md);
   }
   
-  /* Section Header */
+  
   .section-header {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
@@ -171,14 +164,14 @@ if (relatedPosts.length < limit) {
     line-height: 1.4;
   }
   
-  /* Articles Grid */
+  
   .articles-grid {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
   
-  /* Section Footer */
+  
   .section-footer {
     margin-top: 2rem;
     padding-top: 1.5rem;
@@ -186,7 +179,7 @@ if (relatedPosts.length < limit) {
     text-align: center;
   }
   
-  /* View More Button */
+  
   .view-more-button {
     display: inline-flex;
     align-items: center;
@@ -218,7 +211,7 @@ if (relatedPosts.length < limit) {
     transform: translateX(2px);
   }
   
-  /* Responsive Design */
+  
   @media (max-width: 768px) {
     .related-articles-container {
       padding: 1.5rem;

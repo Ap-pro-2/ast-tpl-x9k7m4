@@ -112,18 +112,15 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
   const featured: string | null = searchParams.get('featured');
 
   try {
-    console.log('📂 Fetching categories from collection...');
     
     // ✨ Get ALL categories with proper typing
     const allCategories: Category[] = await getCollection('categories');
-    console.log(`📂 Found ${allCategories.length} categories in collection`);
     
     // ✨ Get ALL blog posts to calculate post counts per category
     const allPosts = await getCollection('blog', ({ data }) => {
       // Only count published posts for public API
       return data.status === 'published';
     });
-    console.log(`📝 Found ${allPosts.length} published posts`);
 
     // 🔍 Server-side search with proper typing
     let filteredCategories: Category[] = allCategories;
@@ -137,7 +134,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
         
         return nameMatch || descMatch || idMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredCategories.length} categories`);
     }
 
     // 📊 Transform categories with metadata and post counts - UPDATED WITH SEO
@@ -154,7 +150,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       });
       
       const postCount = categoryPosts.length;
-      console.log(`📊 Category "${category.data.name}" has ${postCount} posts`);
       
       // Find the most recent post date for this category
       const lastPostDate = categoryPosts.length > 0 
@@ -193,7 +188,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     if (featured !== null) {
       const isFeatured = featured === 'true';
       finalCategories = finalCategories.filter(category => category.featured === isFeatured);
-      console.log(`✨ Filtered to ${finalCategories.length} ${isFeatured ? 'featured' : 'non-featured'} categories`);
     }
 
     // 📐 Sort categories
@@ -242,7 +236,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedCategories.length} categories (page ${page} of ${Math.ceil(finalCategories.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -250,7 +243,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
 
   } catch (error: unknown) {
-    console.error('❌ Error fetching categories:', error);
     
     return new Response(JSON.stringify({
       success: false,

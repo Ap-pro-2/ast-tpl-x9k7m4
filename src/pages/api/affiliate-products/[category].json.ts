@@ -142,7 +142,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
   const brand: string | null = searchParams.get('brand');
 
   try {
-    console.log(`🛍️ Fetching products for category "${categoryId}"...`);
 
     // ✨ Verify category exists
     const categoryData = await getEntry('affiliateCategories', categoryId);
@@ -169,7 +168,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
       return false;
     });
 
-    console.log(`🛍️ Found ${allProducts.length} products in category "${categoryId}"`);
 
     // 🔍 Server-side search
     let filteredProducts: AffiliateProduct[] = allProducts;
@@ -183,7 +181,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
 
         return titleMatch || descMatch || brandMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredProducts.length} products`);
     }
 
     // 📊 Transform products with metadata
@@ -238,14 +235,12 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
         // If filtering for inactive products, return empty array since all are active now
         finalProducts = [];
       }
-      console.log(`✨ Filtered to ${finalProducts.length} ${isActive ? 'active' : 'inactive'} products`);
     }
 
     // Filter by featured
     if (featured !== null) {
       const isFeatured = featured === 'true';
       finalProducts = finalProducts.filter(product => product.featured === isFeatured);
-      console.log(`⭐ Filtered to ${finalProducts.length} ${isFeatured ? 'featured' : 'non-featured'} products`);
     }
 
     // Filter by brand
@@ -253,7 +248,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
       finalProducts = finalProducts.filter(product =>
         product.brand?.toLowerCase() === brand.toLowerCase()
       );
-      console.log(`🏷️ Filtered to ${finalProducts.length} products from brand "${brand}"`);
     }
 
     // 📐 Sort products
@@ -318,7 +312,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedProducts.length} products for category "${categoryId}" (page ${page} of ${Math.ceil(finalProducts.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -326,7 +319,6 @@ export const GET: APIRoute = async ({ request, url, params }): Promise<Response>
     });
 
   } catch (error: unknown) {
-    console.error(`❌ Error fetching products for category "${categoryId}":`, error);
 
     return new Response(JSON.stringify({
       success: false,

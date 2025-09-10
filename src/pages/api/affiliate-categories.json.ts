@@ -105,15 +105,12 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
   const featured: string | null = searchParams.get('featured');
 
   try {
-    console.log('📂 Fetching affiliate categories from collection...');
     
     // ✨ Get ALL affiliate categories with proper typing
     const allCategories: AffiliateCategory[] = await getCollection('affiliateCategories');
-    console.log(`📂 Found ${allCategories.length} affiliate categories in collection`);
     
     // ✨ Get ALL affiliate products to calculate product counts per category
     const allProducts = await getCollection('affiliateProducts');
-    console.log(`🛍️ Found ${allProducts.length} active affiliate products`);
 
     // 🔍 Server-side search with proper typing
     let filteredCategories: AffiliateCategory[] = allCategories;
@@ -127,7 +124,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
         
         return nameMatch || descMatch || idMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredCategories.length} categories`);
     }
 
     // 📊 Transform categories with metadata and product counts
@@ -144,7 +140,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       });
       
       const productCount = categoryProducts.length;
-      console.log(`📊 Category "${category.data.name}" has ${productCount} products`);
       
       // Since we removed dateAdded and lastUpdated fields, we'll use current time as fallback
       const lastUpdated = categoryProducts.length > 0 ? Date.now() : null;
@@ -173,14 +168,12 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
         // If filtering for inactive categories, return empty array since all are active now
         finalCategories = [];
       }
-      console.log(`✨ Filtered to ${finalCategories.length} ${isActive ? 'active' : 'inactive'} categories`);
     }
 
     // Filter by featured
     if (featured !== null) {
       const isFeatured = featured === 'true';
       finalCategories = finalCategories.filter(category => category.featured === isFeatured);
-      console.log(`✨ Filtered to ${finalCategories.length} ${isFeatured ? 'featured' : 'non-featured'} categories`);
     }
 
     // 📐 Sort categories
@@ -230,7 +223,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedCategories.length} affiliate categories (page ${page} of ${Math.ceil(finalCategories.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -238,7 +230,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
 
   } catch (error: unknown) {
-    console.error('❌ Error fetching affiliate categories:', error);
     
     return new Response(JSON.stringify({
       success: false,

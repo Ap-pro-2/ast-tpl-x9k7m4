@@ -1,8 +1,5 @@
 ---
-/**
- * Professional Review Card Design - Blue Border Style
- * Based on professional review sites like Ahrefs example
- */
+
 
 export interface Props {
   title: string;
@@ -51,12 +48,10 @@ const discountPercent =
     : null;
 ---
 
-<!-- Clean Professional Card with Image - Theme System -->
 <article
   class="theme-card relative mb-8"
   style="border: 3px solid var(--color-primary-accessible); border-radius: var(--radius-lg);"
 >
-  <!-- Badge in top-left corner -->
   {
     badge && (
       <div class="absolute -top-2 left-6 z-10">
@@ -70,7 +65,6 @@ const discountPercent =
     )
   }
 
-  <!-- Speech bubble pointer -->
   <div
     class="absolute -bottom-4 left-8 w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[16px]"
     style="border-top-color: var(--color-primary-accessible);"
@@ -78,7 +72,6 @@ const discountPercent =
   </div>
 
   <div style="padding: var(--card-padding);">
-    <!-- Product Image -->
     <div class="text-center mb-6">
       <img
         src={image}
@@ -91,7 +84,6 @@ const discountPercent =
       />
     </div>
 
-    <!-- Title -->
     <h3
       class="text-xl font-bold mb-4 text-center"
       style="color: var(--text-primary); font-family: var(--font-heading);"
@@ -99,7 +91,6 @@ const discountPercent =
       {title}
     </h3>
 
-    <!-- Description -->
     <p
       class="leading-relaxed mb-4 text-center"
       style="color: var(--text-secondary);"
@@ -107,7 +98,6 @@ const discountPercent =
       {description}
     </p>
 
-    <!-- Features List -->
     {
       features && features.length > 0 && (
         <div class="mb-6">
@@ -143,7 +133,6 @@ const discountPercent =
       )
     }
 
-    <!-- Price Section -->
     {
       price && (
         <div class="mb-6 text-center">
@@ -173,7 +162,6 @@ const discountPercent =
       )
     }
 
-    <!-- CTA Button -->
     <div class="text-center">
       <a
         href={affiliateUrl}

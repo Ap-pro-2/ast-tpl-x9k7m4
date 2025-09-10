@@ -129,7 +129,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     const allCategories = await getCollection('categories');
     const allTags = await getCollection('tags');
 
-    console.log(`👤 Processing ${allAuthors.length} authors and ${allPosts.length} published posts`);
 
     // 🔍 Server-side search with proper typing
     let filteredAuthors: Author[] = allAuthors;
@@ -144,7 +143,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
 
         return nameMatch || bioMatch || idMatch || emailMatch;
       });
-      console.log(`🔍 Search "${search}" filtered to ${filteredAuthors.length} authors`);
     }
 
     // 📊 Transform authors with metadata and post counts
@@ -229,14 +227,12 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     // Filter by minimum posts
     if (minPosts > 0) {
       finalAuthors = finalAuthors.filter(author => author.postCount >= minPosts);
-      console.log(`📊 Filtered to ${finalAuthors.length} authors with at least ${minPosts} posts`);
     }
 
     // Filter by featured
     if (featured !== null) {
       const isFeatured = featured === 'true';
       finalAuthors = finalAuthors.filter(author => author.featured === isFeatured);
-      console.log(`⭐ Filtered to ${finalAuthors.length} ${isFeatured ? 'featured' : 'non-featured'} authors`);
     }
 
     // 📐 Sort authors
@@ -301,7 +297,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       timestamp: Date.now(),
     };
 
-    console.log(`✅ Returning ${paginatedAuthors.length} authors (page ${page} of ${Math.ceil(finalAuthors.length / perPage)})`);
 
     return new Response(JSON.stringify(apiResponse), {
       status: 200,
@@ -309,7 +304,6 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
     });
 
   } catch (error: unknown) {
-    console.error('❌ Error fetching authors:', error);
 
     return new Response(JSON.stringify({
       success: false,

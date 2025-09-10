@@ -148,8 +148,8 @@ const preconnectUrls = getGoogleFontsPreconnects();
     />
 
     <!-- Critical Resource Preloading -->
-    <link rel="preconnect" href="https://supplementcrew.com" />
-    <link rel="preconnect" href="https://images.supplementcrew.com" />
+    <link rel="preconnect" href={userSettings.siteUrl} />
+    <link rel="preconnect" href={userSettings.imageDomain} />
     
     <!-- Optimized Google Fonts - Non-blocking -->
     {needsGoogleFonts && (

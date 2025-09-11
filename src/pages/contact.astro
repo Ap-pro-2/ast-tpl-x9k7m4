@@ -45,19 +45,89 @@ const seoData = {
   </section>
 
 
-  <!-- Contact Form and Image Section -->
+  <!-- Contact Form Section -->
   <section class="contact-form-section">
     <div class="container">
-      <div class="contact-layout">
+      <div class="contact-content">
         <div class="contact-form-wrapper">
           <ContactForm />
         </div>
-        <div class="contact-image-wrapper">
-          <img 
-            src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
-            alt="Professional team ready to help with your inquiries"
-            loading="lazy"
-          />
+        <div class="contact-sidebar">
+          <div class="contact-info-card">
+            {/* Social Media Links - Only show if there are actual social media links */}
+            {settings.social && Object.values(settings.social).some(link => link && link.trim() !== '') && (
+              <div class="contact-social">
+                <h4 class="contact-social-title">Follow Us</h4>
+                <div class="social-links">
+                  {settings.social.twitter && settings.social.twitter.trim() && (
+                    <a href={settings.social.twitter} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon twitter">𝕏</span>
+                      <span class="social-text">Twitter</span>
+                    </a>
+                  )}
+                  {settings.social.github && settings.social.github.trim() && (
+                    <a href={settings.social.github} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon github">⚡</span>
+                      <span class="social-text">GitHub</span>
+                    </a>
+                  )}
+                  {settings.social.linkedin && settings.social.linkedin.trim() && (
+                    <a href={settings.social.linkedin} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon linkedin">in</span>
+                      <span class="social-text">LinkedIn</span>
+                    </a>
+                  )}
+                  {settings.social.facebook && settings.social.facebook.trim() && (
+                    <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon facebook">f</span>
+                      <span class="social-text">Facebook</span>
+                    </a>
+                  )}
+                  {settings.social.instagram && settings.social.instagram.trim() && (
+                    <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon instagram">📷</span>
+                      <span class="social-text">Instagram</span>
+                    </a>
+                  )}
+                  {settings.social.youtube && settings.social.youtube.trim() && (
+                    <a href={settings.social.youtube} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon youtube">▶</span>
+                      <span class="social-text">YouTube</span>
+                    </a>
+                  )}
+                  {settings.social.tiktok && settings.social.tiktok.trim() && (
+                    <a href={settings.social.tiktok} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon tiktok">♪</span>
+                      <span class="social-text">TikTok</span>
+                    </a>
+                  )}
+                  {settings.social.discord && settings.social.discord.trim() && (
+                    <a href={settings.social.discord} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon discord">💬</span>
+                      <span class="social-text">Discord</span>
+                    </a>
+                  )}
+                  {settings.social.reddit && settings.social.reddit.trim() && (
+                    <a href={settings.social.reddit} target="_blank" rel="noopener noreferrer" class="social-link">
+                      <span class="social-icon reddit">r</span>
+                      <span class="social-text">Reddit</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Contact Email if available */}
+            {settings.contact?.email && settings.contact.email.trim() && (
+              <div class="contact-email">
+                <h4 class="contact-email-title">Direct Contact</h4>
+                <a href={`mailto:${settings.contact.email}`} class="email-link">
+                  <span class="email-icon">✉️</span>
+                  <span class="email-text">{settings.contact.email}</span>
+                </a>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -96,15 +166,15 @@ const seoData = {
 
 /* Contact Form Section */
 .contact-form-section {
-  padding: 6rem 0;
-  background: var(--bg-secondary);
+  padding: 4rem 0 6rem 0;
+  background: var(--bg-secondary, #f9fafb);
 }
 
-.contact-layout {
+.contact-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 400px;
   gap: 4rem;
-  align-items: center;
+  align-items: start;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -113,24 +183,220 @@ const seoData = {
   max-width: 100%;
 }
 
-.contact-image-wrapper {
+.contact-sidebar {
   max-width: 100%;
 }
 
-.contact-image-wrapper img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
-  aspect-ratio: 4/3;
+.contact-info-card {
+  background: var(--surface-card, #ffffff);
+  border-radius: var(--radius-xl, 16px);
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-light, #e5e7eb);
+  position: sticky;
+  top: 2rem;
+}
+
+
+.contact-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-accessible, #8b5a3c);
+  color: white;
+  border-radius: var(--radius-md, 8px);
+  flex-shrink: 0;
+}
+
+.feature-text h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0 0 0.25rem 0;
+  font-family: var(--font-heading, system-ui);
+}
+
+.feature-text p {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Social Media Section */
+.contact-social {
+  margin-bottom: 2rem;
+}
+
+.contact-social-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0 0 1rem 0;
+  font-family: var(--font-heading, system-ui);
+}
+
+.social-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem;
+  border-radius: var(--radius-md, 8px);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  color: var(--text-secondary, #6b7280);
+  border: 1px solid var(--border-light, #e5e7eb);
+  background: var(--bg-primary, #ffffff);
+}
+
+.social-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.social-icon {
+  font-size: 1rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: var(--radius-sm, 6px);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+/* Platform-specific colors */
+.social-icon.twitter {
+  background: #1da1f2;
+}
+
+.social-icon.github {
+  background: #333;
+}
+
+.social-icon.linkedin {
+  background: #0077b5;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.social-icon.facebook {
+  background: #1877f2;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.social-icon.instagram {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  font-size: 0.875rem;
+}
+
+.social-icon.youtube {
+  background: #ff0000;
+  font-size: 0.875rem;
+}
+
+.social-icon.tiktok {
+  background: #000;
+  font-size: 1rem;
+}
+
+.social-icon.discord {
+  background: #5865f2;
+  font-size: 0.875rem;
+}
+
+.social-icon.reddit {
+  background: #ff4500;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.social-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-body, system-ui);
+}
+
+/* Contact Email Section */
+.contact-email {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light, #e5e7eb);
+}
+
+.contact-email-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0 0 1rem 0;
+  font-family: var(--font-heading, system-ui);
+}
+
+.email-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary, #f9fafb);
+  border-radius: var(--radius-md, 8px);
+  text-decoration: none;
+  color: var(--text-primary, #111827);
+  transition: all 0.2s ease-in-out;
+  border: 1px solid var(--border-light, #e5e7eb);
+}
+
+.email-link:hover {
+  background: var(--color-primary-accessible, #8b5a3c);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 90, 60, 0.2);
+}
+
+.email-icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.email-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-mono, monospace);
 }
 
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
-  .contact-layout {
+  .contact-content {
+    grid-template-columns: 1fr 350px;
     gap: 3rem;
+  }
+  
+  .contact-info-card {
+    padding: 1.75rem;
   }
 }
 
@@ -148,16 +414,50 @@ const seoData = {
   }
   
   .contact-form-section {
-    padding: 4rem 0;
+    padding: 3rem 0 4rem 0;
   }
   
-  .contact-layout {
+  .contact-content {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
   }
   
-  .contact-image-wrapper {
+  .contact-sidebar {
     order: -1;
+  }
+  
+  .contact-info-card {
+    position: static;
+    padding: 1.5rem;
+  }
+  
+  .contact-features {
+    gap: 1.25rem;
+  }
+  
+  .feature-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.25rem;
+  }
+  
+  .social-links {
+    gap: 0.5rem;
+  }
+  
+  .social-link {
+    padding: 0.5rem;
+    gap: 0.375rem;
+  }
+  
+  .social-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .social-text {
+    font-size: 0.8125rem;
   }
 }
 
@@ -171,11 +471,60 @@ const seoData = {
   }
   
   .contact-form-section {
-    padding: 3rem 0;
+    padding: 2.5rem 0 3.5rem 0;
   }
   
-  .contact-layout {
+  .contact-content {
     gap: 2rem;
+  }
+  
+  .contact-info-card {
+    padding: 1.25rem;
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+  
+  
+  .contact-features {
+    gap: 1rem;
+  }
+  
+  .contact-feature {
+    gap: 0.75rem;
+  }
+  
+  .feature-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.125rem;
+  }
+  
+  .feature-text h4 {
+    font-size: 0.9375rem;
+  }
+  
+  .feature-text p {
+    font-size: 0.8125rem;
+  }
+  
+  .social-link {
+    padding: 0.375rem;
+    gap: 0.25rem;
+  }
+  
+  .social-icon {
+    width: 1.375rem;
+    height: 1.375rem;
+    font-size: 0.75rem;
+  }
+  
+  .social-icon.linkedin,
+  .social-icon.facebook {
+    font-size: 0.625rem;
+  }
+  
+  .social-text {
+    font-size: 0.75rem;
   }
 }
 </style>

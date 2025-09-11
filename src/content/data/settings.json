@@ -11,12 +11,12 @@
     "imageDomain": "https://images.yourdomain.com",
     "defaultOgImage": "",
     "social": {
-      "twitter": "",
-      "github": "",
-      "linkedin": "",
-      "facebook": "",
-      "instagram": "",
-      "youtube": "",
+      "twitter": "https://twitter.com/astropress",
+      "github": "https://github.com/astropress",
+      "linkedin": "https://linkedin.com/company/astropress",
+      "facebook": "https://facebook.com/astropress",
+      "instagram": "https://instagram.com/astropress",
+      "youtube": "https://youtube.com/@astropress",
       "tiktok": "",
       "discord": "",
       "reddit": ""

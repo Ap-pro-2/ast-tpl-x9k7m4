@@ -55,10 +55,27 @@ const { title, description, buttonText } = formData.data;
         <p id="sidebar-lead-form-email-error" class="theme-form-field-error" style="display: none;"></p>
       </div>
       
+      <!-- Terms & Conditions Checkbox -->
+      <div class="theme-form-field terms-field">
+        <label class="terms-checkbox-wrapper">
+          <input
+            type="checkbox"
+            id="sidebar-lead-form-terms"
+            name="terms"
+            required
+            class="terms-checkbox"
+          />
+          <span class="terms-text">
+            I agree to the <a href="/legal/privacy" target="_blank" class="terms-link">terms & conditions</a>
+          </span>
+        </label>
+        <p id="sidebar-lead-form-terms-error" class="theme-form-field-error" style="display: none;"></p>
+      </div>
+      
       <!-- Hidden field for source tracking -->
       <input type="hidden" name="source" value="section4-sidebar-sidebar-lead" />
       
-      <button type="submit" class="theme-form-submit" id="sidebar-lead-form-submit-btn">
+      <button type="submit" class="theme-form-submit" id="sidebar-lead-form-submit-btn" disabled>
         {buttonText}
       </button>
     </form>
@@ -76,6 +93,8 @@ const { title, description, buttonText } = formData.data;
     
     const submitBtn = document.getElementById('sidebar-lead-form-submit-btn') as HTMLButtonElement;
     const emailError = document.getElementById('sidebar-lead-form-email-error') as HTMLElement;
+    const termsError = document.getElementById('sidebar-lead-form-terms-error') as HTMLElement;
+    const termsCheckbox = document.getElementById('sidebar-lead-form-terms') as HTMLInputElement;
     const errorMessage = document.getElementById('sidebar-lead-form-error-message') as HTMLElement;
     const successMessage = document.getElementById('sidebar-lead-form-success-message') as HTMLElement;
 
@@ -83,6 +102,18 @@ const { title, description, buttonText } = formData.data;
       if (errorMessage) errorMessage.style.display = 'none';
       if (successMessage) successMessage.style.display = 'none';
       if (emailError) emailError.style.display = 'none';
+      if (termsError) termsError.style.display = 'none';
+    }
+
+    function toggleSubmitButton() {
+      if (submitBtn && termsCheckbox) {
+        submitBtn.disabled = !termsCheckbox.checked;
+      }
+    }
+
+    // Enable/disable submit button based on terms checkbox
+    if (termsCheckbox) {
+      termsCheckbox.addEventListener('change', toggleSubmitButton);
     }
 
     function setLoading(loading: boolean) {
@@ -180,6 +211,39 @@ const { title, description, buttonText } = formData.data;
   /* Ensure button has proper spacing */
   .sidebar-lead-form-wrapper .theme-form-submit {
     margin-top: 0.5rem;
+  }
+
+  /* Terms & Conditions styling for sidebar form */
+  .sidebar-lead-form-wrapper .terms-field {
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-lead-form-wrapper .terms-checkbox-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .sidebar-lead-form-wrapper .terms-checkbox {
+    margin: 0;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  .sidebar-lead-form-wrapper .terms-text {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .sidebar-lead-form-wrapper .terms-link {
+    color: var(--color-primary-accessible);
+    text-decoration: underline;
+  }
+
+  .sidebar-lead-form-wrapper .terms-link:hover {
+    text-decoration: none;
   }
 
   @media (max-width: 768px) {

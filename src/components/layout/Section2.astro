@@ -7,6 +7,7 @@ import { formatDate } from '../../core/blogLogic';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 import SimpleBannerAd from '../ads/SimpleBannerAd.astro';
 import { getBadgeStyleString } from '../../core/utils/colorUtils';
+import { getPostUrl } from '../../core/urlRouting';
 
 
 const posts = await getAllPosts();
@@ -54,11 +55,17 @@ const topStories = posts
   .slice(0, 5);
 
 
-const previewPost = posts.find(post => 
-  post.id !== featuredPoliticsPost.id && 
+const previewPost = posts.find(post =>
+  post.id !== featuredPoliticsPost.id &&
   !hotSpotPosts.some(hp => hp.id === post.id) &&
   !topStories.some(ts => ts.id === post.id)
 ) || posts[posts.length - 1];
+
+// Generate URLs for all posts used in this component
+const featuredPoliticsPostUrl = await getPostUrl(featuredPoliticsPost.id);
+const hotSpotPostUrls = await Promise.all(hotSpotPosts.map(post => getPostUrl(post.id)));
+const topStoriesUrls = await Promise.all(topStories.map(post => getPostUrl(post.id)));
+const previewPostUrl = await getPostUrl(previewPost.id);
 ---
 
 <section class="magazine-sections py-12 lg:py-16" style="background: var(--bg-primary)">
@@ -130,9 +137,9 @@ const previewPost = posts.find(post =>
           </div>
           
           <div class="magazine-hotspot-grid">
-            {hotSpotPosts.map((post) => (
+            {hotSpotPosts.map((post, index) => (
               <article class="magazine-hotspot-card">
-                <a href={`/${post.id}`} class="magazine-hotspot-link">
+                <a href={hotSpotPostUrls[index]} class="magazine-hotspot-link">
                   
                   {post.data.image?.url && (
                     <div class="magazine-hotspot-image">
@@ -198,7 +205,7 @@ const previewPost = posts.find(post =>
           <div class="magazine-stories-list">
             {topStories.map((post, index) => (
               <article class="magazine-story-item">
-                <a href={`/${post.id}`} class="magazine-story-link">
+                <a href={topStoriesUrls[index]} class="magazine-story-link">
                   
                   <div class="magazine-story-number">
                     {index + 1}

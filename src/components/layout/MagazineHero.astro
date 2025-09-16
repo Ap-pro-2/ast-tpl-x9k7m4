@@ -4,6 +4,7 @@
 import { getAllPosts, getSiteSettings, getFeaturedPosts, formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
+import { getPostUrl } from '../../core/urlRouting';
 
 
 const posts = await getAllPosts();
@@ -17,9 +18,13 @@ if (featuredPosts.length === 0) {
 }
 
 
-const sidebarPosts = posts.filter(post => 
+const sidebarPosts = posts.filter(post =>
   !featuredPosts.some(fp => fp.id === post.id)
 ).slice(0, 4);
+
+// Generate URLs for all posts used in this component
+const mainFeaturedPostUrl = await getPostUrl(featuredPosts[0].id);
+const sidebarPostUrls = await Promise.all(sidebarPosts.map(post => getPostUrl(post.id)));
 
 
 const allAuthors = await getCollection('authors');
@@ -70,7 +75,7 @@ const rightPosts = sidebarPosts.slice(2, 4);
         <div class="magazine-sidebar-cards">
           {leftPosts.map((post) => (
             <article class="magazine-sidebar-card">
-              <a href={`/${post.id}`} class="magazine-sidebar-link">
+              <a href={sidebarPostUrls[index]} class="magazine-sidebar-link">
                 
                 {post.data.image?.url && (
                   <div class="magazine-sidebar-image">
@@ -166,7 +171,7 @@ const rightPosts = sidebarPosts.slice(2, 4);
         <div class="magazine-sidebar-cards">
           {rightPosts.map((post, index) => (
             <article class="magazine-sidebar-card">
-              <a href={`/${post.id}`} class="magazine-sidebar-link">
+              <a href={sidebarPostUrls[index]} class="magazine-sidebar-link">
                 
                 {post.data.image?.url && (
                   <div class="magazine-sidebar-image">

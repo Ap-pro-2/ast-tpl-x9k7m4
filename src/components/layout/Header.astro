@@ -3,6 +3,7 @@
 
 import { getSiteSettings, getCategoriesWithPostCounts, getPostsByCategory } from "../../core/blogLogic";
 import OptimizedImage from "../ui/OptimizedImage.astro";
+import { getPostUrl } from "../../core/urlRouting";
 
 
 const settings = await getSiteSettings();
@@ -17,9 +18,11 @@ const topCategories = categories
 const categoriesWithPosts = await Promise.all(
   topCategories.map(async (category) => {
     const posts = await getPostsByCategory(category.id);
+    const postUrls = await Promise.all(posts.slice(0, 4).map(post => getPostUrl(post.id)));
     return {
       ...category,
-      posts: posts.slice(0, 4) 
+      posts: posts.slice(0, 4),
+      postUrls
     };
   })
 );
@@ -106,9 +109,9 @@ const categoriesWithPosts = await Promise.all(
                   <div class="mb-4">
                     <h4 class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Recent Posts:</h4>
                     <div class="grid grid-cols-2 gap-3">
-                      {category.posts.slice(0, 4).map((post) => (
-                        <a 
-                          href={`/${post.id}`}
+                      {category.posts.slice(0, 4).map((post, postIndex) => (
+                        <a
+                          href={category.postUrls[postIndex]}
                           class="block rounded-lg transition-all duration-200 hover:shadow-md overflow-hidden"
                           style="border: 1px solid var(--border-light);"
                           onmouseover="this.style.background='var(--bg-secondary)'; this.style.transform='translateY(-1px)'"

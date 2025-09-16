@@ -7,11 +7,15 @@ import {
   getTopCategories,
 } from "../../core/blogLogic";
 import OptimizedImage from "../ui/OptimizedImage.astro";
+import { getPostUrl } from "../../core/urlRouting";
 
 
 const settings = await getSiteSettings();
 const currentYear = new Date().getFullYear();
 const recentPosts = await getRecentPosts(4);
+
+// Generate URLs for recent posts
+const recentPostUrls = await Promise.all(recentPosts.map(post => getPostUrl(post.id)));
 const topCategories = await getTopCategories(4);
 
 
@@ -134,10 +138,10 @@ const activeSocialLinks = Object.entries(settings.social || {})
           </h4>
           <ul class="space-y-3">
             {
-              recentPosts.map((post) => (
+              recentPosts.map((post, index) => (
                 <li>
                   <a
-                    href={`/${post.id}`}
+                    href={recentPostUrls[index]}
                     class="flex items-start gap-3 group transition-all"
                     style="transition: all var(--animation-duration) var(--animation-easing)"
                     aria-label={`Read ${post.data.title}`}

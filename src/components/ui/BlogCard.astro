@@ -4,6 +4,7 @@
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
+import { getPostUrl } from '../../core/urlRouting';
 
 interface Props {
   post: any;
@@ -35,6 +36,9 @@ const tagNames = tags.map((tag: any) => {
   if (tag?.data?.name) return tag.data.name;
   return null;
 }).filter(Boolean);
+
+// Generate the correct URL for this post
+const postUrl = await getPostUrl(post.id);
 ---
 
 <article class="blog-card theme-card overflow-hidden group">
@@ -76,7 +80,7 @@ const tagNames = tags.map((tag: any) => {
     
     <h3 class="text-xl font-bold mb-3 leading-tight line-clamp-2" 
         style="color: var(--text-primary); font-family: var(--font-heading);">
-      <a href={`/${post.id}`} 
+      <a href={postUrl}
          class="hover:opacity-80 transition-opacity duration-300"
          style="color: inherit;"
          aria-label={`Read full article: ${post.data.title}`}>
@@ -134,7 +138,7 @@ const tagNames = tags.map((tag: any) => {
         )}
       </div>
       
-      <a href={`/${post.id}`} 
+      <a href={postUrl}
          class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
          aria-label={`Read the full article: ${post.data.title}`}>
         <span>Read Article</span>

@@ -5,6 +5,7 @@ import { getAllPosts, getSiteSettings, getFeaturedPosts, formatDate } from '../.
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 import { getBadgeStyleString } from '../../core/utils/colorUtils';
+import { getPostUrl } from '../../core/urlRouting';
 
 
 const posts = await getAllPosts();
@@ -18,9 +19,13 @@ if (featuredPosts.length === 0) {
 }
 
 
-const floatingPosts = posts.filter(post => 
+const floatingPosts = posts.filter(post =>
   !featuredPosts.some(fp => fp.id === post.id)
 ).slice(0, 6);
+
+// Generate URLs for all posts used in this component
+const mainFeaturedPostUrl = await getPostUrl(featuredPosts[0].id);
+const floatingPostUrls = await Promise.all(floatingPosts.map(post => getPostUrl(post.id)));
 
 
 const allAuthors = await getCollection('authors');
@@ -75,7 +80,7 @@ const rightCards = floatingPosts.slice(3, 6);
         <div class="hero-v2-floating-cards">
           {leftCards.map((post, index) => (
             <article class={`hero-v2-floating-card hero-v2-card-delay-${index + 1}`}>
-              <a href={`/${post.id}`} class="hero-v2-card-link">
+              <a href={floatingPostUrls[index]} class="hero-v2-card-link">
                 
                 {post.data.image?.url && (
                   <div class="hero-v2-card-image">
@@ -185,7 +190,7 @@ const rightCards = floatingPosts.slice(3, 6);
           <div class="hero-v2-floating-cards hero-v2-right-cards">
             {rightCards.map((post, index) => (
               <article class={`hero-v2-floating-card hero-v2-right-card hero-v2-card-delay-${index + 4}`}>
-                <a href={`/${post.id}`} class="hero-v2-card-link">
+                <a href={floatingPostUrls[index]} class="hero-v2-card-link">
                   
                   {post.data.image?.url && (
                     <div class="hero-v2-card-image">

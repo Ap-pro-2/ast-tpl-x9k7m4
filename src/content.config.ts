@@ -138,6 +138,10 @@ const settings = defineCollection({
       text: z.string().optional(),
     }).optional(),
 
+    blogRouting: z.object({
+      urlStructure: z.enum(['direct', 'prefixed']).default('direct'),
+    }).optional(),
+
 
 
     themeSettings: z.object({

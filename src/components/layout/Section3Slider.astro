@@ -3,6 +3,7 @@ import { getAllPosts, getSiteSettings, formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
 import { getBadgeStyleString } from '../../core/utils/colorUtils';
+import { getPostUrl } from '../../core/urlRouting';
 
 
 const posts = await getAllPosts();
@@ -23,6 +24,9 @@ function getCategoryData(categoryRef: string | { id: string } | undefined) {
 
 
 const sliderPosts = posts.slice(0, 10);
+
+// Generate URLs for slider posts
+const sliderPostUrls = await Promise.all(sliderPosts.map(post => getPostUrl(post.id)));
 ---
 
 <section class="section3-slider py-12 lg:py-16" style="background: var(--bg-primary)">
@@ -50,9 +54,9 @@ const sliderPosts = posts.slice(0, 10);
 
     <div class="slider-container">
       <div class="slider-track" id="editorsPicksTrack">
-        {sliderPosts.map((post) => (
+        {sliderPosts.map((post, index) => (
           <article class="slider-card">
-            <a href={`/${post.id}`} class="slider-card-link">
+            <a href={sliderPostUrls[index]} class="slider-card-link">
               
               {post.data.image?.url && (
                 <div class="slider-card-image">

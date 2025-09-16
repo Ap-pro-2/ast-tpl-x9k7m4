@@ -5,6 +5,7 @@ import { getAllPosts, getSiteSettings, getCategoriesWithPostCounts, getFeaturedP
 import { formatDate } from '../../core/blogLogic';
 import { getCollection } from 'astro:content';
 import OptimizedImage from '../ui/OptimizedImage.astro';
+import { getPostUrl } from '../../core/urlRouting';
 
 
 const posts = await getAllPosts();
@@ -20,6 +21,9 @@ if (featuredPosts.length < 5) {
   const recentPosts = posts.filter(post => !featuredPosts.some(fp => fp.id === post.id));
   featuredPosts = [...featuredPosts, ...recentPosts.slice(0, 5 - featuredPosts.length)];
 }
+
+// Generate URLs for featured posts
+const featuredPostUrls = await Promise.all(featuredPosts.map(post => getPostUrl(post.id)));
 
 
 function getCategoryName(categoryRef: string | { id: string } | undefined): string | null {
@@ -178,7 +182,7 @@ const { showFeaturedPosts = true } = Astro.props;
                         <div class="flex items-start gap-2 mb-2">
                           <h4 class="font-semibold text-sm leading-tight line-clamp-2 group-hover:text-accent transition-colors flex-1" 
                               style="color: var(--text-primary); font-family: var(--font-heading); transition: color var(--animation-duration) var(--animation-easing)">
-                            <a href={`/${post.id}`} 
+                            <a href={featuredPostUrls[index]}
                                style="color: inherit;"
                                aria-label={`Read article: ${post.data.title}`}>
                               {post.data.title}

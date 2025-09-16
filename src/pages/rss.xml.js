@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { generatePostURL } from '../core/urlRouting';
 
 export async function GET(context) {
   try {
@@ -37,7 +38,7 @@ export async function GET(context) {
     const limitedPosts = sortedPosts.slice(0, maxItems);
 
     // Convert to RSS items
-    const rssItems = limitedPosts.map(post => {
+    const rssItems = await Promise.all(limitedPosts.map(async post => {
       const author = authorMap.get(post.data.author.id);
       const category = categoryMap.get(post.data.category.id);
       const tags = post.data.tags.map(tagRef => {
@@ -47,16 +48,16 @@ export async function GET(context) {
 
       return {
         title: post.data.title,
-        link: `/${post.id}`,
+        link: await generatePostURL(post.id),
         description: post.data.description || '',
         pubDate: post.data.pubDate,
         author: author ? `${userSettings.email || 'hello@example.com'} (${author.name})` : userSettings.email || 'hello@example.com',
         categories: [category?.name, ...tags].filter(Boolean),
-        customData: post.data.image ? 
-          `<enclosure url="${userSettings.siteUrl || 'https://example.com'}${post.data.image.url}" type="image/jpeg" />` : 
+        customData: post.data.image ?
+          `<enclosure url="${userSettings.siteUrl || 'https://example.com'}${post.data.image.url}" type="image/jpeg" />` :
           undefined,
       };
-    });
+    }));
 
     // Generate categories XML
     const categoryXml = allCategories

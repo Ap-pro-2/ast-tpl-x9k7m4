@@ -4,6 +4,7 @@
 import { getAllPosts, formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
+import { getPostUrl } from '../../core/urlRouting';
 
 interface Props {
   currentPostId?: string;
@@ -15,15 +16,18 @@ const { currentPostId, limit = 4 } = Astro.props;
 
 const allPosts = await getAllPosts();
 const latestPosts = allPosts
-  .filter(post => post.id !== currentPostId) 
+  .filter(post => post.id !== currentPostId)
   .slice(0, limit);
+
+// Generate URLs for latest posts
+const latestPostUrls = await Promise.all(latestPosts.map(post => getPostUrl(post.id)));
 ---
 
 {latestPosts.length > 0 && (
   <div class="theme-card p-6">
     <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary)">Latest Articles</h3>
     <div class="space-y-4">
-      {latestPosts.map(async (post) => {
+      {latestPosts.map(async (post, index) => {
         
         let category = null;
         try {
@@ -59,7 +63,7 @@ const latestPosts = allPosts
               )}
               
               <h4 class="text-sm font-semibold leading-tight mb-1" style="color: var(--text-primary)">
-                <a href={`/${post.id}`} 
+                <a href={latestPostUrls[index]} 
                    style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
                    onmouseover="this.style.color='var(--text-accent)'"
                    onmouseout="this.style.color='var(--text-primary)'"

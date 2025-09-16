@@ -4,9 +4,13 @@ export const prerender = true;
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { getPublishedPosts } from "../core/blogLogic";
+import { getPostUrl } from "../core/urlRouting";
 
 // Get all content collections - using getPublishedPosts to exclude drafts
 const allPosts = await getPublishedPosts();
+
+// Generate URLs for all posts
+const postUrls = await Promise.all(allPosts.map(post => getPostUrl(post.id)));
 const allAuthors = await getCollection("authors");
 const allCategories = await getCollection("categories");
 const allTags = await getCollection("tags");
@@ -362,8 +366,8 @@ const description = `Navigate through all content on ${userSettings.siteName}. F
               All Articles
             </a>
             {
-              allPosts.slice(0, 5).map((post) => (
-                <a href={`/${post.id}`} class="sitemap-link truncate">
+              allPosts.slice(0, 5).map((post, index) => (
+                <a href={postUrls[index]} class="sitemap-link truncate">
                   {post.data.title}
                 </a>
               ))

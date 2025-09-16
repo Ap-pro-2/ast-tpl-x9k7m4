@@ -5,34 +5,34 @@ import {
   getAllPosts,
   extractFrontmatter,
   getSiteSettings,
-} from "../core/blogLogic";
-import { shouldGenerateDirectRoutes, generatePostFullURL } from "../core/urlRouting";
+} from "../../core/blogLogic";
+import { shouldGeneratePrefixedRoutes, generatePostFullURL } from "../../core/urlRouting";
 import { getCollection, render } from "astro:content";
-import MarkdownPostLayout from "../layouts/MarkdownPostLayout.astro";
-import { generateBlogPostSchemaData } from "../core/seo";
+import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
+import { generateBlogPostSchemaData } from "../../core/seo";
 
 // Import affiliate marketing components to make them globally available
-import Product from "../components/Product.astro";
-import ProductCard from "../components/ProductCard.astro";
-import Comparison from "../components/Comparison.astro";
-import ComparisonTable from "../components/ComparisonTable.astro";
-import YouTube from "../components/ui/YouTube.astro";
+import Product from "../../components/Product.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import Comparison from "../../components/Comparison.astro";
+import ComparisonTable from "../../components/ComparisonTable.astro";
+import YouTube from "../../components/ui/YouTube.astro";
 
 
 // Import new affiliate block components
-import ProductBlock from "../components/blocks/ProductBlock.astro";
-import ProductBlock2 from "../components/blocks/ProductBlock2.astro";
-import ProductBlock3 from "../components/blocks/ProductBlock3.astro";
-import ProductBlock4 from "../components/blocks/ProductBlock4.astro";
-import ProductBlock5 from "../components/blocks/ProductBlock5.astro";
-import ProductBlock6 from "../components/blocks/ProductBlock6.astro";
-import ProductBlock7 from "../components/blocks/ProductBlock7.astro";
-import ComparisonBlock from "../components/blocks/ComparisonBlock.astro";
-import CategoryBlock from "../components/blocks/CategoryBlock.astro";
+import ProductBlock from "../../components/blocks/ProductBlock.astro";
+import ProductBlock2 from "../../components/blocks/ProductBlock2.astro";
+import ProductBlock3 from "../../components/blocks/ProductBlock3.astro";
+import ProductBlock4 from "../../components/blocks/ProductBlock4.astro";
+import ProductBlock5 from "../../components/blocks/ProductBlock5.astro";
+import ProductBlock6 from "../../components/blocks/ProductBlock6.astro";
+import ProductBlock7 from "../../components/blocks/ProductBlock7.astro";
+import ComparisonBlock from "../../components/blocks/ComparisonBlock.astro";
+import CategoryBlock from "../../components/blocks/CategoryBlock.astro";
 
 export async function getStaticPaths() {
-  // Only generate direct routes if direct structure is enabled
-  const shouldGenerate = await shouldGenerateDirectRoutes();
+  // Only generate prefixed routes if prefixed structure is enabled
+  const shouldGenerate = await shouldGeneratePrefixedRoutes();
   if (!shouldGenerate) return [];
 
   const posts = await getAllPosts();

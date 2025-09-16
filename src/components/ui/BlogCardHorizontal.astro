@@ -4,12 +4,16 @@
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
+import { getPostUrl } from '../../core/urlRouting';
 
 interface Props {
   post: any;
 }
 
 const { post } = Astro.props;
+
+// Generate URL for this post
+const postUrl = await getPostUrl(post.id);
 
 
 let category = null;
@@ -73,7 +77,7 @@ const tagNames = tags.map((tag: any) => {
       
       <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-2" 
           style="color: var(--text-primary); font-family: var(--font-heading);">
-        <a href={`/${post.id}`} 
+        <a href={postUrl} 
            class="hover:opacity-80 transition-opacity duration-300"
            style="color: inherit;"
            aria-label={`Read full article: ${post.data.title}`}>
@@ -89,7 +93,7 @@ const tagNames = tags.map((tag: any) => {
       )}
       
       <div class="mt-auto pt-4">
-        <a href={`/${post.id}`} 
+        <a href={postUrl} 
            class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <span>Read Article</span>
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

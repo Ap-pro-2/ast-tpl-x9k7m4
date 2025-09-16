@@ -4,6 +4,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { filterDrafts, filterPublishedOnly } from '../utils/draftFilter';
+import { generatePostFullURL } from './urlRouting';
 
 
 
@@ -74,6 +75,9 @@ export interface SiteSettings {
     enabled: boolean;
     text?: string;
   };
+  blogRouting?: {
+    urlStructure: 'direct' | 'prefixed';
+  };
 }
 
 
@@ -120,7 +124,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     author: settingsData.author || 'Author',
     email: settingsData.email || 'author@example.com',
     defaultOgImage: settingsData.defaultOgImage || '/og-image.jpg',
-    
+
     id: settingsData.id,
     siteTitle: settingsData.siteTitle,
     logo: settingsData.logo,
@@ -130,6 +134,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     disclaimer: settingsData.disclaimer ? {
       enabled: settingsData.disclaimer.enabled ?? false,
       text: settingsData.disclaimer.text,
+    } : undefined,
+    blogRouting: settingsData.blogRouting ? {
+      urlStructure: settingsData.blogRouting.urlStructure || 'direct',
     } : undefined,
   };
 }
@@ -648,7 +655,30 @@ export async function generateHomepageSEO(): Promise<SEOData> {
 
 export async function generateBlogListingSchema(posts: BlogPost[], currentPage: number = 1) {
   const settings = await getSiteSettings();
-  
+
+  // Generate URLs for all posts
+  const itemListElement = await Promise.all(
+    posts.map(async (post, index) => ({
+      "@type": "ListItem",
+      "position": ((currentPage - 1) * 5) + index + 1,
+      "item": {
+        "@type": "BlogPosting",
+        "headline": post.data.title,
+        "description": post.data.description,
+        "url": await generatePostFullURL(post.id, settings.siteUrl),
+        "datePublished": post.data.pubDate.toISOString(),
+        "author": {
+          "@type": "Person",
+          "name": settings.author
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": settings.siteName
+        }
+      }
+    }))
+  );
+
   return {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -660,7 +690,7 @@ export async function generateBlogListingSchema(posts: BlogPost[], currentPage: 
       "name": settings.author
     },
     "publisher": {
-      "@type": "Organization", 
+      "@type": "Organization",
       "name": settings.siteName,
       "url": settings.siteUrl
     },
@@ -668,25 +698,7 @@ export async function generateBlogListingSchema(posts: BlogPost[], currentPage: 
       "@type": "ItemList",
       "numberOfItems": posts.length,
       "itemListOrder": "https://schema.org/Descending",
-      "itemListElement": posts.map((post, index) => ({
-        "@type": "ListItem",
-        "position": ((currentPage - 1) * 5) + index + 1,
-        "item": {
-          "@type": "BlogPosting",
-          "headline": post.data.title,
-          "description": post.data.description,
-          "url": `${settings.siteUrl}/${post.id}`,
-          "datePublished": post.data.pubDate.toISOString(),
-          "author": {
-            "@type": "Person",
-            "name": settings.author
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": settings.siteName
-          }
-        }
-      }))
+      "itemListElement": itemListElement
     }
   };
 }

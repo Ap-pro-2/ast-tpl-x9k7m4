@@ -5,12 +5,16 @@ import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
 import { getBadgeStyleString } from '../../core/utils/colorUtils';
+import { getPostUrl } from '../../core/urlRouting';
 
 interface Props {
   post: any;
 }
 
 const { post } = Astro.props;
+
+// Generate URL for this post
+const postUrl = await getPostUrl(post.id);
 
 
 let author = null;
@@ -30,7 +34,7 @@ try {
 ---
 
 <article class="related-post-card">
-  <a href={`/${post.id}`} class="card-link">
+  <a href={postUrl} class="card-link">
     
     <div class="card-container">
       

@@ -38,53 +38,55 @@ function getAuthorName(authorRef: string | { id: string } | undefined): string {
 }
 
 
-const politicsCategory = 'business'; 
-const featuredPoliticsPost = posts.find(post => 
+// Check if we have any posts at all
+const hasAnyPosts = posts.length > 0;
+
+const politicsCategory = 'business';
+const featuredPoliticsPost = hasAnyPosts ? (posts.find(post =>
   (typeof post.data.category === 'string' ? post.data.category : post.data.category?.id) === politicsCategory
-) || posts[0];
+) || posts[0]) : null;
 
-
-const hotSpotPosts = posts
+const hotSpotPosts = hasAnyPosts && featuredPoliticsPost ? posts
   .filter(post => post.id !== featuredPoliticsPost.id)
-  .slice(0, 3);
+  .slice(0, 3) : [];
 
-
-const topStories = posts
-  .filter(post => post.id !== featuredPoliticsPost.id && 
+const topStories = hasAnyPosts && featuredPoliticsPost ? posts
+  .filter(post => post.id !== featuredPoliticsPost.id &&
                   !hotSpotPosts.some(hp => hp.id === post.id))
-  .slice(0, 5);
+  .slice(0, 5) : [];
 
-
-const previewPost = posts.find(post =>
+const previewPost = hasAnyPosts && featuredPoliticsPost ? (posts.find(post =>
   post.id !== featuredPoliticsPost.id &&
   !hotSpotPosts.some(hp => hp.id === post.id) &&
   !topStories.some(ts => ts.id === post.id)
-) || posts[posts.length - 1];
+) || posts[posts.length - 1]) : null;
 
-// Generate URLs for all posts used in this component
-const featuredPoliticsPostUrl = await getPostUrl(featuredPoliticsPost.id);
-const hotSpotPostUrls = await Promise.all(hotSpotPosts.map(post => getPostUrl(post.id)));
-const topStoriesUrls = await Promise.all(topStories.map(post => getPostUrl(post.id)));
-const previewPostUrl = await getPostUrl(previewPost.id);
+// Generate URLs for all posts used in this component (only if posts exist)
+const featuredPoliticsPostUrl = featuredPoliticsPost ? await getPostUrl(featuredPoliticsPost.id) : '';
+const hotSpotPostUrls = hotSpotPosts.length > 0 ? await Promise.all(hotSpotPosts.map(post => getPostUrl(post.id))) : [];
+const topStoriesUrls = topStories.length > 0 ? await Promise.all(topStories.map(post => getPostUrl(post.id))) : [];
+const previewPostUrl = previewPost ? await getPostUrl(previewPost.id) : '';
 ---
 
 <section class="magazine-sections py-12 lg:py-16" style="background: var(--bg-primary)">
   <div class="container max-w-7xl">
-    
-    <div class="magazine-sections-grid">
+
+    {hasAnyPosts ? (
+      <div class="magazine-sections-grid">
       
       <div class="magazine-main-column">
         
-        <div class="magazine-category-section mb-12">
-          <div class="magazine-section-header">
-            <div class="magazine-section-line"></div>
-            <h2 class="magazine-section-title">
-              {getCategoryData(featuredPoliticsPost.data.category).name || 'Featured'}
-            </h2>
-          </div>
-          
-          <article class="magazine-featured-politics">
-            <a href={`/${featuredPoliticsPost.id}`} class="magazine-politics-link">
+        {featuredPoliticsPost && (
+          <div class="magazine-category-section mb-12">
+            <div class="magazine-section-header">
+              <div class="magazine-section-line"></div>
+              <h2 class="magazine-section-title">
+                {getCategoryData(featuredPoliticsPost.data.category).name || 'Featured'}
+              </h2>
+            </div>
+
+            <article class="magazine-featured-politics">
+              <a href={featuredPoliticsPostUrl} class="magazine-politics-link">
               
               {featuredPoliticsPost.data.image?.url && (
                 <div class="magazine-politics-image">
@@ -129,15 +131,17 @@ const previewPostUrl = await getPostUrl(previewPost.id);
             </a>
           </article>
         </div>
+        )}
         
-        <div class="magazine-category-section">
-          <div class="magazine-section-header">
-            <div class="magazine-section-line"></div>
-            <h2 class="magazine-section-title">Today's Hot Spot</h2>
-          </div>
-          
-          <div class="magazine-hotspot-grid">
-            {hotSpotPosts.map((post, index) => (
+        {hotSpotPosts.length > 0 && (
+          <div class="magazine-category-section">
+            <div class="magazine-section-header">
+              <div class="magazine-section-line"></div>
+              <h2 class="magazine-section-title">Today's Hot Spot</h2>
+            </div>
+
+            <div class="magazine-hotspot-grid">
+              {hotSpotPosts.map((post, index) => (
               <article class="magazine-hotspot-card">
                 <a href={hotSpotPostUrls[index]} class="magazine-hotspot-link">
                   
@@ -177,14 +181,15 @@ const previewPostUrl = await getPostUrl(previewPost.id);
               </article>
             ))}
           </div>
-          
+
           <div class="magazine-hotspot-ad">
-            <SimpleBannerAd 
+            <SimpleBannerAd
               placement="ad-section-2-horizontal"
               className="magazine-horizontal-ad"
             />
           </div>
         </div>
+        )}
       </div>
       
       <div class="magazine-sections-sidebar">
@@ -196,14 +201,15 @@ const previewPostUrl = await getPostUrl(previewPost.id);
           />
         </div>
         
-        <div class="magazine-top-stories">
-          <div class="magazine-section-header">
-            <div class="magazine-section-line"></div>
-            <h2 class="magazine-section-title">Top Stories</h2>
-          </div>
-          
-          <div class="magazine-stories-list">
-            {topStories.map((post, index) => (
+        {topStories.length > 0 && (
+          <div class="magazine-top-stories">
+            <div class="magazine-section-header">
+              <div class="magazine-section-line"></div>
+              <h2 class="magazine-section-title">Top Stories</h2>
+            </div>
+
+            <div class="magazine-stories-list">
+              {topStories.map((post, index) => (
               <article class="magazine-story-item">
                 <a href={topStoriesUrls[index]} class="magazine-story-link">
                   
@@ -241,8 +247,20 @@ const previewPostUrl = await getPostUrl(previewPost.id);
             ))}
           </div>
         </div>
+        )}
       </div>
     </div>
+    ) : (
+      <div class="magazine-empty-state">
+        <div class="magazine-empty-content">
+          <h2 class="magazine-empty-title">No Content Available</h2>
+          <p class="magazine-empty-description">
+            There are no posts to display at the moment. Check back soon for new content!
+          </p>
+          <div class="magazine-empty-icon">📄</div>
+        </div>
+      </div>
+    )}
   </div>
 </section>
 
@@ -268,13 +286,66 @@ const previewPostUrl = await getPostUrl(previewPost.id);
 }
 
 @media (max-width: 480px) {
-  
+
   .magazine-hotspot-ad {
-    margin: 1rem -1rem; 
+    margin: 1rem -1rem;
   }
-  
+
   .magazine-horizontal-ad {
-    border-radius: 0; 
+    border-radius: 0;
+  }
+}
+
+.magazine-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  padding: 2rem;
+}
+
+.magazine-empty-content {
+  text-align: center;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.magazine-empty-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.magazine-empty-description {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.magazine-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .magazine-empty-title {
+    font-size: 1.5rem;
+  }
+
+  .magazine-empty-description {
+    font-size: 0.875rem;
+  }
+
+  .magazine-empty-content {
+    padding: 2rem 1.5rem;
   }
 }
 </style>

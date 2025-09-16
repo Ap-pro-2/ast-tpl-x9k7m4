@@ -18,14 +18,17 @@ if (featuredPosts.length === 0) {
   featuredPosts = posts.slice(0, 1);
 }
 
+// Check if we have any posts at all
+const hasAnyPosts = posts.length > 0;
+const mainPost = hasAnyPosts ? featuredPosts[0] : null;
 
-const floatingPosts = posts.filter(post =>
+const floatingPosts = hasAnyPosts ? posts.filter(post =>
   !featuredPosts.some(fp => fp.id === post.id)
-).slice(0, 6);
+).slice(0, 6) : [];
 
-// Generate URLs for all posts used in this component
-const mainFeaturedPostUrl = await getPostUrl(featuredPosts[0].id);
-const floatingPostUrls = await Promise.all(floatingPosts.map(post => getPostUrl(post.id)));
+// Generate URLs for all posts used in this component (only if posts exist)
+const mainFeaturedPostUrl = mainPost ? await getPostUrl(mainPost.id) : '';
+const floatingPostUrls = floatingPosts.length > 0 ? await Promise.all(floatingPosts.map(post => getPostUrl(post.id))) : [];
 
 
 const allAuthors = await getCollection('authors');
@@ -59,21 +62,21 @@ function getAuthorName(authorRef: string | { id: string } | undefined): string {
   return getAuthorData(authorRef).name;
 }
 
-const mainPost = featuredPosts[0];
 const leftCards = floatingPosts.slice(0, 3);
 const rightCards = floatingPosts.slice(3, 6);
 ---
 
 <section class="hero-v2-section" style="background: var(--bg-primary)">
   <div class="hero-v2-container">
-    
+
     <div class="hero-v2-bg-elements">
       <div class="hero-v2-bg-circle hero-v2-bg-circle-1"></div>
       <div class="hero-v2-bg-circle hero-v2-bg-circle-2"></div>
       <div class="hero-v2-bg-gradient"></div>
     </div>
 
-    <div class="hero-v2-grid">
+    {hasAnyPosts ? (
+      <div class="hero-v2-grid">
       
       <div class="hero-v2-left-column">
         
@@ -123,8 +126,9 @@ const rightCards = floatingPosts.slice(3, 6);
       </div>
 
       <div class="hero-v2-center-column">
-        <article class="hero-v2-featured-post">
-          <a href={`/${mainPost.id}`} class="hero-v2-featured-link">
+        {mainPost && (
+          <article class="hero-v2-featured-post">
+            <a href={mainFeaturedPostUrl} class="hero-v2-featured-link">
             
             {mainPost.data.image?.url && (
               <div class="hero-v2-featured-image">
@@ -182,6 +186,7 @@ const rightCards = floatingPosts.slice(3, 6);
             </div>
           </a>
         </article>
+        )}
       </div>
 
       <div class="hero-v2-right-column">
@@ -190,7 +195,7 @@ const rightCards = floatingPosts.slice(3, 6);
           <div class="hero-v2-floating-cards hero-v2-right-cards">
             {rightCards.map((post, index) => (
               <article class={`hero-v2-floating-card hero-v2-right-card hero-v2-card-delay-${index + 4}`}>
-                <a href={floatingPostUrls[index]} class="hero-v2-card-link">
+                <a href={floatingPostUrls[index + 3]} class="hero-v2-card-link">
                   
                   {post.data.image?.url && (
                     <div class="hero-v2-card-image">
@@ -233,6 +238,13 @@ const rightCards = floatingPosts.slice(3, 6);
         </div>
       </div>
     </div>
+    ) : (
+      <div class="hero-v2-empty-state">
+        <div class="hero-v2-empty-content">
+          <h1 class="hero-v2-empty-title">No content yet</h1>
+        </div>
+      </div>
+    )}
   </div>
 </section>
 
@@ -276,10 +288,67 @@ const rightCards = floatingPosts.slice(3, 6);
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .hero-v2-read-icon-inline {
     margin-left: auto;
     margin-top: 0;
+  }
+}
+
+.hero-v2-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 2rem;
+}
+
+.hero-v2-empty-content {
+  text-align: center;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.hero-v2-empty-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary, #e11d48));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-v2-empty-description {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-v2-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .hero-v2-empty-title {
+    font-size: 2rem;
+  }
+
+  .hero-v2-empty-description {
+    font-size: 1rem;
+  }
+
+  .hero-v2-empty-content {
+    padding: 2rem 1.5rem;
   }
 }
 </style>

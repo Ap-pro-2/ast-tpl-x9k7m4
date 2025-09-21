@@ -150,6 +150,13 @@ const settings = defineCollection({
       showFeaturedImageInArticle: z.boolean().default(true),
     }).optional(),
 
+    contentProtection: z.object({
+      enabled: z.boolean().default(false),
+      disableRightClick: z.boolean().default(true),
+      disableTextSelection: z.boolean().default(true),
+      disableKeyboardShortcuts: z.boolean().default(true),
+    }).optional(),
+
     themeSettings: z.object({
       colors: z.object({
         primary: z.string(),

@@ -55,6 +55,12 @@
     "blogSettings": {
       "showFeaturedImageInArticle": false
     },
+    "contentProtection": {
+      "enabled": true,
+      "disableRightClick": true,
+      "disableTextSelection": true,
+      "disableKeyboardShortcuts": true
+    },
     "themeSettings": {
       "colors": {
         "primary": "#8B4513",

@@ -339,6 +339,19 @@ const preconnectUrls = getGoogleFontsPreconnects();
       });
     </script>
 
+    <!-- Content Protection Script -->
+    {userSettings.contentProtection?.enabled && (
+      <>
+        <script is:inline define:vars={{
+          contentProtectionSettings: userSettings.contentProtection
+        }}>
+          // Set global content protection settings for the script to use
+          window.contentProtectionSettings = contentProtectionSettings;
+        </script>
+        <script src="/src/scripts/content-protection.ts" type="module"></script>
+      </>
+    )}
+
     <slot name="head" />
   </head>
 

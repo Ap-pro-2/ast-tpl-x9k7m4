@@ -30,6 +30,9 @@
     "name": "Coffee Culture",
     "description": "Stories about coffee culture and traditions worldwide",
     "color": "#0f172a",
+    "iconUrl": "/c/weight-management.png",
+    "bannerUrl": "https://images.pexels.com/photos/531754/pexels-photo-531754.jpeg",
+    "bannerAlt": "Stories about coffee culture and traditions worldwide",
     "slug": "coffee-culture",
     "seo": {
       "title": "Coffee Culture & Traditions Around the World",
@@ -37,7 +40,7 @@
       "keywords": ["coffee culture", "coffee traditions", "coffee history", "coffee origins", "specialty coffee"],
       "ogImageAlt": "Coffee culture and traditions worldwide"
     }
-  },
+  }, 
   {
     "id": "bean-spotlight",
     "name": "Bean Spotlight",

@@ -1,0 +1,188 @@
+---
+import { generateFAQSchema } from '../../core/seo';
+
+export interface Props {
+  title?: string;
+  questions: Array<{
+    question: string;
+    answer: string;
+  }>;
+}
+
+const { title = "Frequently Asked Questions", questions } = Astro.props;
+
+// Generate FAQ schema
+const faqData = {
+  title,
+  items: questions
+};
+
+const faqSchema = generateFAQSchema(faqData);
+---
+
+<div class="faq-block" style="margin: 3rem 0;">
+  <!-- FAQ Header -->
+  <div class="faq-header" style="text-align: center; margin-bottom: 2rem;">
+    <div
+      class="faq-icon"
+      style="
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+        width: 4rem;
+        height: 4rem;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        box-shadow: var(--shadow-lg);
+      "
+    >
+      <svg
+        style="width: 2rem; height: 2rem; color: white;"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+      </svg>
+    </div>
+    <h2
+      class="faq-title"
+      style="
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        font-family: var(--font-heading);
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+      "
+    >
+      {title}
+    </h2>
+  </div>
+
+  <!-- FAQ Items -->
+  <div class="faq-container" style="max-width: 48rem; margin: 0 auto;">
+    {questions.map((item, index) => (
+      <div
+        class="faq-item"
+        style="
+          background: var(--surface-card);
+          border: 1px solid var(--border-default);
+          border-radius: var(--radius-xl);
+          margin-bottom: 1rem;
+          overflow: hidden;
+          box-shadow: var(--shadow-sm);
+          transition: all var(--animation-duration) var(--animation-easing);
+        "
+        onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)'"
+      >
+        <!-- Question -->
+        <button
+          class="faq-question"
+          onclick={`document.getElementById('faq-answer-${index}').style.display = document.getElementById('faq-answer-${index}').style.display === 'none' ? 'block' : 'none'; this.querySelector('.faq-chevron').style.transform = document.getElementById('faq-answer-${index}').style.display === 'none' ? 'rotate(0deg)' : 'rotate(180deg)';`}
+          style="
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            line-height: 1.4;
+            transition: color var(--animation-duration) var(--animation-easing);
+          "
+          onmouseover="this.style.color='var(--color-primary)'"
+          onmouseout="this.style.color='var(--text-primary)'"
+        >
+          <span>{item.question}</span>
+          <svg
+            class="faq-chevron"
+            style="
+              width: 1.25rem;
+              height: 1.25rem;
+              flex-shrink: 0;
+              margin-left: 1rem;
+              transition: transform var(--animation-duration) var(--animation-easing);
+              color: var(--text-muted);
+            "
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Answer -->
+        <div
+          id={`faq-answer-${index}`}
+          class="faq-answer"
+          style="
+            display: none;
+            padding: 0 2rem 1.5rem 2rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-family: var(--font-body);
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+          "
+        >
+          <p style="margin: 1rem 0 0 0;">{item.answer}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<!-- FAQ Schema -->
+{faqSchema && (
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(faqSchema, null, 0)}
+  />
+)}
+
+<style>
+  .faq-block {
+    margin: 3rem 0;
+  }
+
+  .faq-item:first-child {
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+  }
+
+  .faq-item:last-child {
+    border-bottom-left-radius: var(--radius-xl);
+    border-bottom-right-radius: var(--radius-xl);
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    .faq-title {
+      font-size: 2rem !important;
+    }
+
+    .faq-question {
+      font-size: 1rem !important;
+      padding: 1.25rem 1.5rem !important;
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem 1.25rem 1.5rem !important;
+    }
+  }
+</style>

@@ -1,8 +1,6 @@
 import { getEntry } from 'astro:content';
 import { generateArticleSchema, generateBlogPostingSchema }from './schema';
 import type { AuthorData, BlogFrontmatter, SiteSettings } from './schema';
-import { parseFAQFromContent, validateFAQData } from '../../utils/faqParser';
-import { generateFAQSchema } from './generateFAQSchema';
 
 
 export async function generateBlogPostSchemaData(
@@ -21,8 +19,7 @@ export async function generateBlogPostSchemaData(
     status?: 'draft' | 'published';
   },
   url: string,
-  schemaType: 'Article' | 'BlogPosting' = 'Article',
-  content?: string 
+  schemaType: 'Article' | 'BlogPosting' = 'Article' 
 ) {
   
   if (!frontmatter) {
@@ -175,45 +172,25 @@ export async function generateBlogPostSchemaData(
       status: frontmatter.status || 'published',
     };
 
-    
-    let faqSchema = null;
-    if (content) {
-      try {
-        const faqData = parseFAQFromContent(content);
-        if (faqData && validateFAQData(faqData)) {
-          faqSchema = generateFAQSchema(faqData);
-        }
-      } catch (error) {
-      }
-    }
 
-    
     try {
-      let mainSchema;
       if (schemaType === 'BlogPosting') {
-        mainSchema = generateBlogPostingSchema({
+        return generateBlogPostingSchema({
           frontmatter: enhancedFrontmatter,
           url,
           settings: safeSiteSettings,
         });
       } else {
-        mainSchema = generateArticleSchema({
+        return generateArticleSchema({
           frontmatter: enhancedFrontmatter,
           url,
           settings: safeSiteSettings,
         });
       }
-
-      
-      if (faqSchema) {
-        return [mainSchema, faqSchema];
-      }
-      
-      return mainSchema;
     } catch (error) {
       
       
-      const fallbackSchema = {
+      return {
         "@context": "https://schema.org",
         "@type": schemaType,
         "headline": frontmatter.title,
@@ -231,13 +208,6 @@ export async function generateBlogPostSchemaData(
         "dateModified": frontmatter.pubDate.toISOString(),
         "url": url
       };
-
-      
-      if (faqSchema) {
-        return [fallbackSchema, faqSchema];
-      }
-      
-      return fallbackSchema;
     }
 
   } catch (error) {

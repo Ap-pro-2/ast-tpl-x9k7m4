@@ -29,6 +29,7 @@ import ProductBlock6 from "../components/blocks/ProductBlock6.astro";
 import ProductBlock7 from "../components/blocks/ProductBlock7.astro";
 import ComparisonBlock from "../components/blocks/ComparisonBlock.astro";
 import CategoryBlock from "../components/blocks/CategoryBlock.astro";
+import FAQBlock from "../components/blocks/FAQBlock.astro";
 
 export async function getStaticPaths() {
   // Only generate direct routes if direct structure is enabled
@@ -60,11 +61,10 @@ const { Content, headings } = await render(post);
 // ✅ CLEAN: Use core function for frontmatter
 const frontmatter = extractFrontmatter(post);
 
-// Generate SEO data with FAQ support
+// Generate SEO data
 const settings = await getSiteSettings();
 const currentUrl = await generatePostFullURL(post.id, settings.siteUrl);
-const rawContent = post.body; // Get raw MDX content for FAQ parsing
-const schemaData = await generateBlogPostSchemaData(frontmatter, currentUrl, 'Article', rawContent);
+const schemaData = await generateBlogPostSchemaData(frontmatter, currentUrl, 'Article');
 ---
 
 <MarkdownPostLayout frontmatter={frontmatter} schemaData={schemaData} headings={headings}>
@@ -84,6 +84,7 @@ const schemaData = await generateBlogPostSchemaData(frontmatter, currentUrl, 'Ar
       ProductBlock7,
       ComparisonBlock,
       CategoryBlock,
+      FAQBlock,
     }}
   />
 </MarkdownPostLayout>

@@ -10,6 +10,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogList from '../../components/blog/BlogList.astro';
 import Breadcrumb from '../../components/navigation/Breadcrumb.astro';
+
 import { getCategoryBreadcrumbs } from '../../core/navigation/breadcrumbUtils';
 
 export const getStaticPaths = generateCategoryPaths;
@@ -29,6 +30,9 @@ const allCategories = await getCollection('categories');
 const categoryData = allCategories.find(cat => cat.data.slug === categorySlug);
 const categoryName = categoryData ? categoryData.data.name : categorySlug;
 const categoryDescription = categoryData ? categoryData.data.description : null;
+const categoryBanner = categoryData ? categoryData.data.bannerUrl : null;
+const categoryBannerAlt = categoryData ? categoryData.data.bannerAlt : null;
+const categoryColor = categoryData ? categoryData.data.color : '#6366f1';
 
 const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
 ---
@@ -45,17 +49,23 @@ const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
     <link rel="preconnect" href={settings.imageDomain} slot="head" />
   )}
 
-  <!-- Hero Section -->
-  <section class="theme-hero-section py-8 lg:py-12">
-    <div class="container max-w-7xl">
-      <Breadcrumb items={breadcrumbs} />
-      
-      <div class="theme-page-header">
-        <h1 class="theme-page-title">
+  <!-- Hero Section with Banner Background -->
+  <section class={`category-hero-section py-12 lg:py-16 ${categoryBanner ? 'has-banner' : ''}`}
+           style={categoryBanner ?
+             `background-image: linear-gradient(135deg, ${categoryColor}33 0%, ${categoryColor}22 100%), url('${categoryBanner}'); background-size: cover; background-position: center; background-repeat: no-repeat;` :
+             `background: linear-gradient(135deg, ${categoryColor} 0%, ${categoryColor}CC 100%);`
+           }>
+    <div class="container max-w-7xl relative z-10">
+      <div class="text-center">
+        <Breadcrumb items={breadcrumbs} variant="banner" />
+      </div>
+
+      <div class="category-page-header">
+        <h1 class="category-page-title">
           {categoryName}
         </h1>
 
-        <p class="theme-page-description">
+        <p class="category-page-description">
           {
             categoryDescription ||
               `Explore all articles in the ${categoryName} category. Discover insights, tips, and stories curated specifically for this topic.`
@@ -71,7 +81,7 @@ const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
     <div class="py-16">
       <div class="container">
         <div class="text-center max-w-md mx-auto">
-          <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4" 
+          <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4"
                style="background: var(--bg-tertiary); border-radius: var(--radius-full)">
             <div class="w-8 h-8" style="background: var(--text-muted); border-radius: var(--radius-sm)"></div>
           </div>
@@ -79,8 +89,8 @@ const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
           <p class="mb-6" style="color: var(--text-secondary)">
             The "{categoryName}" category is still being filled with content. Check back soon for fresh articles!
           </p>
-          <a href="/categories" 
-             class="inline-flex items-center font-medium transition-colors" 
+          <a href="/categories"
+             class="inline-flex items-center font-medium transition-colors"
              style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
              onmouseover="this.style.color='var(--color-primary-dark)'"
              onmouseout="this.style.color='var(--text-accent)'">
@@ -90,6 +100,91 @@ const breadcrumbs = getCategoryBreadcrumbs(categorySlug, categoryData);
       </div>
     </div>
   )}
-  
 
 </BaseLayout>
+
+<style>
+/* Category Banner Header Styles */
+.category-hero-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+}
+
+.category-hero-section.has-banner {
+  min-height: 500px;
+}
+
+.category-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%);
+  z-index: 1;
+}
+
+.category-page-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.category-page-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-heading);
+}
+
+.category-page-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .category-hero-section {
+    min-height: 300px;
+    padding: 2rem 0;
+  }
+
+  .category-hero-section.has-banner {
+    min-height: 350px;
+  }
+
+  .category-page-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .category-page-description {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-page-title {
+    font-size: 1.75rem;
+  }
+
+  .category-page-description {
+    font-size: 1rem;
+  }
+}
+
+/* Breadcrumb styling is now handled in the Breadcrumb component itself */
+</style>

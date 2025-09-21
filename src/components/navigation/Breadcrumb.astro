@@ -6,37 +6,85 @@ interface Props {
     name: string;
     url?: string;
   }>;
+  variant?: 'default' | 'banner';
 }
 
-const { items } = Astro.props;
+const { items, variant = 'default' } = Astro.props;
 ---
 
-<nav class="mb-6">
+<nav class={`mb-6 ${variant === 'banner' ? 'breadcrumb-banner' : 'breadcrumb-default'}`}>
   <ol class="flex items-center space-x-2 text-sm">
     {items.map((item, index) => {
       const isLast = index === items.length - 1;
       return (
         <li class="flex items-center">
           {!isLast ? (
-            <a 
-              href={item.url} 
-              class="transition-colors"
-              style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
-              onmouseover="this.style.color='var(--color-primary-dark)'"
-              onmouseout="this.style.color='var(--text-accent)'"
+            <a
+              href={item.url}
+              class={`transition-colors ${variant === 'banner' ? 'breadcrumb-link-banner' : 'breadcrumb-link-default'}`}
             >
               {item.name}
             </a>
           ) : (
-            <span class="font-medium" style="color: var(--text-muted)">
+            <span class={`font-medium ${variant === 'banner' ? 'breadcrumb-current-banner' : 'breadcrumb-current-default'}`}>
               {item.name}
             </span>
           )}
           {!isLast && (
-            <span class="mx-2" style="color: var(--text-muted)">›</span>
+            <span class={`mx-2 ${variant === 'banner' ? 'breadcrumb-separator-banner' : 'breadcrumb-separator-default'}`}>›</span>
           )}
         </li>
       );
     })}
   </ol>
 </nav>
+
+<style>
+/* Default breadcrumb styling */
+.breadcrumb-default {
+  /* Uses CSS variables for regular pages */
+}
+
+.breadcrumb-link-default {
+  color: var(--text-accent);
+  transition: color var(--animation-duration) var(--animation-easing);
+}
+
+.breadcrumb-link-default:hover {
+  color: var(--color-primary-dark);
+}
+
+.breadcrumb-current-default {
+  color: var(--text-muted);
+}
+
+.breadcrumb-separator-default {
+  color: var(--text-muted);
+}
+
+/* Banner breadcrumb styling */
+.breadcrumb-banner {
+  background: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  display: inline-block;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.breadcrumb-link-banner {
+  color: #374151;
+  font-weight: 500;
+}
+
+.breadcrumb-link-banner:hover {
+  color: #6366f1;
+}
+
+.breadcrumb-current-banner {
+  color: #6b7280;
+}
+
+.breadcrumb-separator-banner {
+  color: #9ca3af;
+}
+</style>

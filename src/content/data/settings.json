@@ -50,13 +50,13 @@
       "text": "This website may contain affiliate links. When you click on these links and make a purchase, we may earn a commission at no additional cost to you. We only recommend products and services we believe in and think will be valuable to our readers."
     },
     "blogRouting": {
-      "urlStructure": "prefixed"
+      "urlStructure": "direct"
     },
     "blogSettings": {
       "showFeaturedImageInArticle": false
     },
     "contentProtection": {
-      "enabled": true,
+      "enabled": false,
       "disableRightClick": true,
       "disableTextSelection": true,
       "disableKeyboardShortcuts": true

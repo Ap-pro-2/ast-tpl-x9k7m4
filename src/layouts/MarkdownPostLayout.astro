@@ -41,6 +41,7 @@ try {
 }
 
 const formattedDate = formatDate(frontmatter.pubDate);
+const slug = Astro.url.pathname.split('/').filter(Boolean).pop() || '';
 
 
 const pageData = {
@@ -159,7 +160,7 @@ if (
         <div class="share-sidebar hidden xl:block">
           <ShareArticle 
             title={frontmatter.title}
-            url={`${settings.siteUrl}/${frontmatter.title}`}
+            url={slug}
             description={frontmatter.description}
             isVertical={true}
           />
@@ -370,7 +371,7 @@ if (
         <div class="mt-8 xl:hidden">
           <ShareArticle 
             title={frontmatter.title}
-            url={`${settings.siteUrl}/${frontmatter.title}`}
+            url={slug}
             description={frontmatter.description}
           />
         </div>
@@ -619,6 +620,14 @@ if (
   </script>
 
   <!-- Social Sidebar Boundary Control -->
+  <script src="../scripts/social-sidebar.ts"></script>
+
+</BaseLayout>
+cial Sidebar Boundary Control -->
+  <script src="../scripts/social-sidebar.ts"></script>
+
+</BaseLayout>
+cial Sidebar Boundary Control -->
   <script src="../scripts/social-sidebar.ts"></script>
 
 </BaseLayout>

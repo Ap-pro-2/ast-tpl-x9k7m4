@@ -15,9 +15,22 @@ const { title, url, description = "", className = "", isVertical = false } = Ast
 import settingsData from '../../content/data/settings.json';
 const siteSettings = settingsData?.[0] || {};
 const siteUrl = siteSettings.siteUrl?.replace(/\/$/, '') || 'https://example.com';
+const useBlogPrefix = siteSettings.blogRouting?.urlStructure === 'prefixed';
 
+let fullUrl: string;
 
-const fullUrl = url?.startsWith('http') ? url : `${siteUrl}${url || Astro.url.pathname}`;
+if (url?.startsWith('http')) {
+  fullUrl = url;
+} else {
+  let path;
+  if (url) {
+    const slug = url.startsWith('/') ? url.slice(1) : url;
+    path = useBlogPrefix ? `/blog/${slug}` : `/${slug}`;
+  } else {
+    path = Astro.url.pathname;
+  }
+  fullUrl = `${siteUrl}${path}`;
+}
 
 
 const encodedTitle = encodeURIComponent(title);

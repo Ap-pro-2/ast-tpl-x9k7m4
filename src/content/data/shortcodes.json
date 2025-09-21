@@ -1,0 +1,112 @@
+[
+  {
+    "id": "alpha-tonic-sidebar-products",
+    "articleSlug": "Alpha Tonic Review",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "Related Supplements",
+    "products": [
+      {
+        "productId": "alpha-tonic",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      },
+      {
+        "productId": "java-burn",
+        "variant": "sidebar",
+        "title": "Also Popular"
+      }
+    ]
+  },
+  {
+    "id": "java-burn-sidebar-products",
+    "articleSlug": "Java Burn Review",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "You Might Also Like",
+    "products": [
+      {
+        "productId": "java-burn",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      },
+      {
+        "productId": "tea-burn",
+        "variant": "sidebar",
+        "title": "Similar Product"
+      }
+    ]
+  },
+  {
+    "id": "weight-loss-general-sidebar",
+    "articleSlug": "Puravive Review",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "Top Weight Loss Picks",
+    "products": [
+      {
+        "productId": "puravive",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      },
+      {
+        "productId": "ikaria-juice",
+        "variant": "sidebar",
+        "title": "Editor's Choice"
+      },
+      {
+        "productId": "leanbiome",
+        "variant": "sidebar",
+        "title": "Best Seller"
+      }
+    ]
+  },
+  {
+    "id": "igenics-sidebar-products",
+    "articleSlug": "iGenics Review : Does It Really Work?",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "Eye Health Supplements",
+    "products": [
+      {
+        "productId": "igenics",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      }
+    ]
+  },
+  {
+    "id": "sleeplean-sidebar-products",
+    "articleSlug": "SleepLean Review: Sleep & Weight Loss - Real Science?",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "Sleep & Recovery Supplements",
+    "products": [
+      {
+        "productId": "sleeplean",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      }
+    ]
+  },
+  {
+    "id": "audifort-sidebar-products",
+    "articleSlug": "Audifort Review : Real Hearing Support",
+    "placement": "sidebar",
+    "priority": 1,
+    "enabled": true,
+    "title": "Hearing Health Supplements",
+    "products": [
+      {
+        "productId": "audifort",
+        "variant": "sidebar",
+        "title": "Featured Product"
+      }
+    ]
+  }
+]

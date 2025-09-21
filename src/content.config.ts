@@ -43,6 +43,10 @@ const categories = defineCollection({
     description: z.string().optional(),
     color: z.string().optional(),
     slug: z.string().optional(),
+    icon: z.string().optional(),
+    iconUrl: z.string().optional(),
+    bannerUrl: z.string().optional(),
+    bannerAlt: z.string().optional(),
     seo: z.object({
       title: z.string().optional(),
       description: z.string().optional(),
@@ -142,7 +146,9 @@ const settings = defineCollection({
       urlStructure: z.enum(['direct', 'prefixed']).default('direct'),
     }).optional(),
 
-
+    blogSettings: z.object({
+      showFeaturedImageInArticle: z.boolean().default(true),
+    }).optional(),
 
     themeSettings: z.object({
       colors: z.object({
@@ -363,6 +369,23 @@ const forms = defineCollection({
   })
 });
 
+const shortcodes = defineCollection({
+  loader: file("src/content/data/shortcodes.json"),
+  schema: z.object({
+    id: z.string(),
+    articleSlug: z.string(),
+    placement: z.enum(['sidebar', 'content']).default('sidebar'),
+    priority: z.number().default(1),
+    enabled: z.boolean().default(true),
+    title: z.string().optional(),
+    products: z.array(z.object({
+      productId: z.string(),
+      variant: z.enum(['sidebar', 'card', 'compact']).default('sidebar'),
+      title: z.string().optional()
+    }))
+  })
+});
+
 export const collections = {
   blog,
   authors,
@@ -374,5 +397,6 @@ export const collections = {
   affiliateProducts,
   affiliateComparisons,
   ads,
-  forms
+  forms,
+  shortcodes
 };

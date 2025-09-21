@@ -6,6 +6,7 @@ export { generateAuthorSchemaData } from './generateAuthorSchema';
 export { generateAuthorsListSchemaData } from './generateAuthorsListSchema';
 export { generateBlogPostSchemaData } from './generateBlogPostSchema';
 export { generateFAQSchema, generateFAQSchemaItems } from './generateFAQSchema';
+export { generateProductSchema } from './generateProductSchema';
 export { default as Schema } from './Schema.astro';
 
 
@@ -23,6 +24,11 @@ export type {
   BlogFrontmatter,
   BlogSchemaProps
 } from './schema';
+
+export type {
+  ProductData,
+  ProductSchemaProps
+} from './generateProductSchema';
 
 
 export type { SiteSettings } from '../blogLogic';

@@ -78,6 +78,9 @@ export interface SiteSettings {
   blogRouting?: {
     urlStructure: 'direct' | 'prefixed';
   };
+  blogSettings?: {
+    showFeaturedImageInArticle: boolean;
+  };
 }
 
 
@@ -137,6 +140,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     } : undefined,
     blogRouting: settingsData.blogRouting ? {
       urlStructure: settingsData.blogRouting.urlStructure || 'direct',
+    } : undefined,
+    blogSettings: settingsData.blogSettings ? {
+      showFeaturedImageInArticle: settingsData.blogSettings.showFeaturedImageInArticle ?? true,
     } : undefined,
   };
 }

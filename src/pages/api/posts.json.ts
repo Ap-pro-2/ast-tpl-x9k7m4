@@ -1,6 +1,8 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import type { APIRoute } from 'astro';
 import { BLOG_API_KEY } from "astro:env/server";
+import { extractInternalLinks, enrichInternalLinks, type InternalLink } from "../../core/internalLinksExtractor";
+import { getSiteSettings } from "../../core/blogLogic";
 
 // Define the blog post type from your content collection
 type BlogPost = CollectionEntry<'blog'>;
@@ -46,6 +48,12 @@ interface PostMetadata {
     alt: string;
   };
   sha: string;
+  internalLinks: {
+    links: InternalLink[];
+    totalCount: number;
+    validLinks: number;
+    brokenLinks: number;
+  };
 }
 
 interface ApiResponse {
@@ -147,6 +155,9 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
       }
       return true; // For dashboard API, show all
     });
+
+    // 🌐 Get site settings for internal links processing
+    const siteSettings = await getSiteSettings();
 
     // 🔍 Server-side filtering with proper typing
     let filteredPosts: BlogPost[] = allPosts;
@@ -254,7 +265,11 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
             }
           })
         );
-        
+
+        // 🔗 Extract internal links from post content
+        const internalLinksData = extractInternalLinks(post.body || '', siteSettings.siteUrl);
+        const enrichedLinksData = enrichInternalLinks(internalLinksData, allPosts);
+
         return {
           slug: post.id,
           title: post.data.title || '',
@@ -295,6 +310,14 @@ export const GET: APIRoute = async ({ request, url }): Promise<Response> => {
           excerpt: post.data.description || (post.body?.substring(0, 160).replace(/[#*`]/g, '').trim() + '...') || '',
           image: post.data.image,
           sha: post.id,
+
+          // 🔗 Internal links data
+          internalLinks: {
+            links: enrichedLinksData.internalLinks,
+            totalCount: enrichedLinksData.totalInternalLinks,
+            validLinks: enrichedLinksData.validLinks || 0,
+            brokenLinks: enrichedLinksData.brokenLinks || 0,
+          },
         };
       })
     );

@@ -1,0 +1,42 @@
+---
+import { getEntry } from 'astro:content';
+import ProductCardSidebar from '../ProductCardSidebar.astro';
+
+export interface Props {
+  productId: string;
+  sectionTitle?: string;
+  isFirstProduct?: boolean;
+}
+
+const { productId, sectionTitle, isFirstProduct = false } = Astro.props;
+
+// Load product data
+const product = await getEntry('affiliateProducts', productId);
+const data = product?.data;
+---
+
+{product && data ? (
+  <ProductCardSidebar
+    title={data.title}
+    description={data.description}
+    price={data.price}
+    originalPrice={data.originalPrice}
+    image={data.image}
+    imageAlt={data.imageAlt}
+    affiliateUrl={data.affiliateUrl}
+    rating={data.rating}
+    reviewCount={data.reviewCount}
+    brand={data.brand}
+    features={data.features}
+    pros={data.pros}
+    cons={data.cons}
+    badge={data.badge}
+    buttonText={data.buttonText}
+    category={typeof data.category === 'string' ? data.category : data.category?.id}
+    id={productId}
+    sectionTitle={sectionTitle}
+    isFirstProduct={isFirstProduct}
+  />
+) : (
+  <div class="sidebar-product-error" style="display: none;"></div>
+)}

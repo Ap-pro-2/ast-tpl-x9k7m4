@@ -68,17 +68,19 @@ const sliderPostUrls = await Promise.all(sliderPosts.map(post => getPostUrl(post
                     class="w-full h-full object-cover"
                   />
                   
-                  <div class="slider-category-overlay">
-                    <span class="slider-category-badge" 
-                          style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
-                      {(getCategoryData(post.data.category).name || 'General').toUpperCase()}
-                    </span>
-                  </div>
-                  
                 </div>
               )}
               
               <div class="slider-card-content">
+                {getCategoryData(post.data.category).name && (
+                  <div class="slider-category-section">
+                    <span class="slider-category-badge"
+                          style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
+                      {(getCategoryData(post.data.category).name || 'General').toUpperCase()}
+                    </span>
+                  </div>
+                )}
+
                 <h3 class="slider-card-title">
                   {post.data.title}
                 </h3>
@@ -104,5 +106,49 @@ const sliderPostUrls = await Promise.all(sliderPosts.map(post => getPostUrl(post
     </div>
   </div>
 </section>
+
+<style>
+/* Professional category styling for slider - positioned in content, not over images */
+.slider-category-section {
+  margin-bottom: 0.75rem;
+}
+
+.slider-category-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.slider-category-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .slider-category-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .slider-category-section {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider-category-badge {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.6rem;
+  }
+}
+</style>
 
 <script src="../../scripts/section3-slider.ts"></script>

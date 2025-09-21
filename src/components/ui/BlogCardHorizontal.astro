@@ -42,9 +42,9 @@ const tagNames = tags.map((tag: any) => {
     
     {post.data.image?.url && (
       <div class="relative md:w-2/5 flex-shrink-0">
-        <div class="w-full h-48 md:h-full overflow-hidden rounded-l-lg md:rounded-l-lg md:rounded-r-none">
-          <OptimizedImage 
-            src={post.data.image.url} 
+        <div class="w-full h-48 md:h-60 overflow-hidden rounded-l-lg md:rounded-l-lg md:rounded-r-none">
+          <OptimizedImage
+            src={post.data.image.url}
             alt={post.data.image.alt || post.data.title}
             width={400}
             height={300}
@@ -55,7 +55,7 @@ const tagNames = tags.map((tag: any) => {
       </div>
     )}
     
-    <div class="flex-1 p-4 pb-6 flex flex-col">
+    <div class="flex-1 p-5 pb-6 flex flex-col justify-between">
       
       <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
         {!post.data.image?.url && category && (
@@ -75,18 +75,18 @@ const tagNames = tags.map((tag: any) => {
         <span class="theme-reading-time">5 min read</span>
       </div>
       
-      <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-2" 
+      <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-3"
           style="color: var(--text-primary); font-family: var(--font-heading);">
-        <a href={postUrl} 
+        <a href={postUrl}
            class="hover:opacity-80 transition-opacity duration-300"
            style="color: inherit;"
            aria-label={`Read full article: ${post.data.title}`}>
           {post.data.title}
         </a>
       </h2>
-      
+
       {post.data.description && (
-        <p class="text-sm leading-relaxed mb-4 line-clamp-2 flex-grow" 
+        <p class="text-sm leading-relaxed mb-4 line-clamp-3 flex-grow"
            style="color: var(--text-secondary);">
           {post.data.description}
         </p>
@@ -124,22 +124,26 @@ const tagNames = tags.map((tag: any) => {
   
   .horizontal-blog-card {
     transition: all var(--animation-duration) var(--animation-easing);
-    height: 280px;
+    min-height: 280px;
   }
-  
+
   .horizontal-blog-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   }
-  
-  
+
   .horizontal-blog-card .flex-col {
-    height: 100%;
+    height: auto;
+    min-height: 100%;
   }
-  
+
   @media (min-width: 768px) {
     .horizontal-blog-card {
-      height: 240px;
+      min-height: 240px;
+    }
+
+    .horizontal-blog-card .flex {
+      height: auto;
     }
   }
   
@@ -155,13 +159,21 @@ const tagNames = tags.map((tag: any) => {
   
   
   @media (max-width: 768px) {
+    .horizontal-blog-card {
+      min-height: auto;
+    }
+
     .horizontal-blog-card .flex-col {
       gap: 1rem;
     }
-    
+
     .horizontal-blog-card .theme-button-primary {
       padding: 0.5rem 1rem;
       font-size: 0.875rem;
+    }
+
+    .horizontal-blog-card .line-clamp-3 {
+      -webkit-line-clamp: 2;
     }
   }
 </style>

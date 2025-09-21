@@ -6,7 +6,6 @@ import {
   getRecentPosts,
   getTopCategories,
 } from "../../core/blogLogic";
-import OptimizedImage from "../ui/OptimizedImage.astro";
 import { getPostUrl } from "../../core/urlRouting";
 
 
@@ -136,63 +135,33 @@ const activeSocialLinks = Object.entries(settings.social || {})
           >
             Recent Posts
           </h4>
-          <ul class="space-y-3">
+          <ul class="space-y-2">
             {
               recentPosts.map((post, index) => (
                 <li>
                   <a
                     href={recentPostUrls[index]}
-                    class="flex items-start gap-3 group transition-all"
+                    class="block group transition-all"
                     style="transition: all var(--animation-duration) var(--animation-easing)"
                     aria-label={`Read ${post.data.title}`}
                   >
-                    {post.data.image?.url ? (
-                      <OptimizedImage
-                        src={post.data.image.url}
-                        alt={post.data.image.alt || post.data.title}
-                        width={48}
-                        height={48}
-                        class="w-12 h-12 object-cover flex-shrink-0"
-                        style="border-radius: var(--radius-md)"
-                      />
-                    ) : (
-                      <div
-                        class="w-12 h-12 flex items-center justify-center flex-shrink-0"
-                        style="background: var(--bg-tertiary); border-radius: var(--radius-md)"
-                      >
-                        <svg
-                          class="w-5 h-5"
-                          style="color: var(--text-muted)"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                    <div class="flex-1 min-w-0">
-                      <h5
-                        class="text-sm font-medium leading-tight mb-1 group-hover:text-primary transition-colors"
-                        style="color: var(--text-primary); transition: color var(--animation-duration) var(--animation-easing)"
-                      >
-                        {post.data.title.length > 35
-                          ? post.data.title.substring(0, 35) + "..."
-                          : post.data.title}
-                      </h5>
-                      <p class="text-xs" style="color: var(--text-muted)">
-                        {new Date(post.data.pubDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )}
-                      </p>
-                    </div>
+                    <h5
+                      class="text-sm font-medium leading-tight mb-1 group-hover:text-primary transition-colors"
+                      style="color: var(--text-primary); transition: color var(--animation-duration) var(--animation-easing)"
+                    >
+                      {post.data.title.length > 50
+                        ? post.data.title.substring(0, 50) + "..."
+                        : post.data.title}
+                    </h5>
+                    <p class="text-xs" style="color: var(--text-muted)">
+                      {new Date(post.data.pubDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
+                    </p>
                   </a>
                 </li>
               ))

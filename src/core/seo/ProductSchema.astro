@@ -1,0 +1,38 @@
+---
+import { generateProductSchema } from './generateProductSchema';
+import type { ProductData, ProductSchemaProps } from './generateProductSchema';
+import type { SiteSettings } from '../blogLogic';
+
+export interface Props {
+  product: ProductData;
+  url?: string;
+  settings?: SiteSettings;
+  forceRender?: boolean;
+}
+
+const { product, url, settings, forceRender = false } = Astro.props;
+
+// Get current URL if not provided
+const currentUrl = url || Astro.url.href;
+
+// Get settings from props or use default
+const siteSettings = settings || {
+  siteName: "SupplementCrew",
+  siteUrl: "https://supplementcrew.com",
+  siteDescription: "Supplement reviews and health tips",
+  email: "hello@supplementcrew.com",
+  author: "SupplementCrew",
+  defaultOgImage: "/og-image.jpg"
+};
+
+// For now, let's always render the schema and let the browser/crawlers handle duplicates
+// This ensures SEO benefits while we can add client-side deduplication later if needed
+const productSchema = generateProductSchema({
+  product,
+  url: currentUrl,
+  settings: siteSettings
+});
+
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(productSchema, null, 2)} />

@@ -1,0 +1,106 @@
+---
+import { getSidebarShortcodesForArticle } from '../core/shortcodeLogic';
+import ProductBlockSidebar from './blocks/ProductBlockSidebar.astro';
+
+export interface Props {
+  articleSlug: string;
+  placement?: 'sidebar' | 'content';
+}
+
+const { articleSlug, placement = 'sidebar' } = Astro.props;
+
+// Get shortcodes for this article and placement
+const shortcodes = placement === 'sidebar'
+  ? await getSidebarShortcodesForArticle(articleSlug)
+  : await getSidebarShortcodesForArticle(articleSlug); // We'll add content later
+
+// Don't render anything if no shortcodes
+if (!shortcodes || shortcodes.length === 0) {
+  return null;
+}
+
+// Calculate global product index for isFirstProduct
+let globalProductIndex = 0;
+---
+
+{shortcodes.map((shortcode) => (
+  <div class="shortcode-section">
+    {/* Section Header */}
+    {shortcode.title && (
+      <div class="post-section-header">
+        <div class="post-section-line"></div>
+        <h3 class="post-section-title">{shortcode.title}</h3>
+      </div>
+    )}
+
+    {/* Product Cards */}
+    <div class="shortcode-products">
+      {shortcode.products.map((product, productIndex) => {
+        const isFirstProduct = globalProductIndex === 0;
+        globalProductIndex++;
+        return (
+          <ProductBlockSidebar
+            productId={product.productId}
+            sectionTitle={product.title}
+            isFirstProduct={isFirstProduct}
+          />
+        );
+      })}
+    </div>
+  </div>
+))}
+
+<style>
+/* Shortcode Section Styles */
+.shortcode-section {
+  margin-bottom: 2rem;
+}
+
+.shortcode-products {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Match the existing post sidebar styles */
+.post-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.post-section-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, transparent 100%);
+  border-radius: 1px;
+}
+
+.post-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .shortcode-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .shortcode-products {
+    gap: 0.75rem;
+  }
+
+  .post-section-title {
+    font-size: 0.9rem;
+  }
+}
+</style>

@@ -52,6 +52,9 @@
     "blogRouting": {
       "urlStructure": "prefixed"
     },
+    "blogSettings": {
+      "showFeaturedImageInArticle": false
+    },
     "themeSettings": {
       "colors": {
         "primary": "#8B4513",

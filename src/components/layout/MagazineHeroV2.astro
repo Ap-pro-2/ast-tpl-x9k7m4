@@ -96,24 +96,28 @@ const rightCards = floatingPosts.slice(3, 6);
                     />
                     
                     <div class="hero-v2-card-overlay"></div>
-                    
-                    {getCategoryData(post.data.category).name && (
-                      <div class="hero-v2-card-category">
-                        <span class="hero-v2-category-pill" 
-                              style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
-                          {getCategoryData(post.data.category).name}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 )}
                 
                 <div class="hero-v2-card-content">
+                  {getCategoryData(post.data.category).name && (
+                    <div class="hero-v2-card-category-bottom">
+                      <span class="hero-v2-category-tag"
+                            style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
+                        {getCategoryData(post.data.category).name}
+                      </span>
+                    </div>
+                  )}
+
                   <h2 class="hero-v2-card-title">
                     {post.data.title}
                   </h2>
-                  
+
                   <div class="hero-v2-card-meta">
+                    <span class="hero-v2-meta-author">
+                      By {getAuthorName(post.data.author)}
+                    </span>
+                    <span class="hero-v2-meta-separator">•</span>
                     <span class="hero-v2-meta-date">
                       {formatDate(post.data.pubDate)}
                     </span>
@@ -143,27 +147,26 @@ const rightCards = floatingPosts.slice(3, 6);
                 
                 <div class="hero-v2-diagonal-overlay"></div>
                 
+              </div>
+            )}
+            
+            <div class="hero-v2-featured-content">
+              <div class="hero-v2-content-glass">
+
                 {getCategoryData(mainPost.data.category).name && (
-                  <div class="hero-v2-featured-category">
-                    <span class="hero-v2-featured-badge" 
+                  <div class="hero-v2-featured-category-tag">
+                    <span class="hero-v2-featured-badge-clean"
                           style={getBadgeStyleString(getCategoryData(mainPost.data.category).color)}>
                       <span class="hero-v2-badge-icon">⚡</span>
                       {getCategoryData(mainPost.data.category).name.toUpperCase()}
                     </span>
                   </div>
                 )}
-                
-              </div>
-            )}
-            
-            <div class="hero-v2-featured-content">
-              <div class="hero-v2-content-glass">
-                
-                
+
                 <h1 class="hero-v2-featured-title">
                   {mainPost.data.title}
                 </h1>
-                
+
                 {mainPost.data.description && (
                   <p class="hero-v2-featured-description">
                     {mainPost.data.description}
@@ -172,6 +175,10 @@ const rightCards = floatingPosts.slice(3, 6);
                 
                 <div class="hero-v2-featured-meta">
                   <div class="hero-v2-meta-details">
+                    <span class="hero-v2-featured-author">
+                      By {getAuthorName(mainPost.data.author)}
+                    </span>
+                    <span class="hero-v2-meta-separator">•</span>
                     <time datetime={mainPost.data.pubDate.toISOString()}>
                       {formatDate(mainPost.data.pubDate)}
                     </time>
@@ -208,24 +215,28 @@ const rightCards = floatingPosts.slice(3, 6);
                       />
                       
                       <div class="hero-v2-card-overlay"></div>
-                      
-                      {getCategoryData(post.data.category).name && (
-                        <div class="hero-v2-card-category">
-                          <span class="hero-v2-category-pill" 
-                                style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
-                            {getCategoryData(post.data.category).name}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   )}
                   
                   <div class="hero-v2-card-content">
+                    {getCategoryData(post.data.category).name && (
+                      <div class="hero-v2-card-category-bottom">
+                        <span class="hero-v2-category-tag"
+                              style={getBadgeStyleString(getCategoryData(post.data.category).color)}>
+                          {getCategoryData(post.data.category).name}
+                        </span>
+                      </div>
+                    )}
+
                     <h2 class="hero-v2-card-title">
                       {post.data.title}
                     </h2>
-                    
+
                     <div class="hero-v2-card-meta">
+                      <span class="hero-v2-meta-author">
+                        By {getAuthorName(post.data.author)}
+                      </span>
+                      <span class="hero-v2-meta-separator">•</span>
                       <span class="hero-v2-meta-date">
                         {formatDate(post.data.pubDate)}
                       </span>
@@ -349,6 +360,100 @@ const rightCards = floatingPosts.slice(3, 6);
 
   .hero-v2-empty-content {
     padding: 2rem 1.5rem;
+  }
+}
+
+/* New category and author styling */
+.hero-v2-card-category-bottom {
+  margin-bottom: 0.75rem;
+}
+
+.hero-v2-category-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  line-height: 1;
+}
+
+.hero-v2-meta-author {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.hero-v2-meta-separator {
+  color: var(--text-muted);
+  margin: 0 0.5rem;
+}
+
+.hero-v2-meta-date {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* Mobile adjustments for new elements */
+@media (max-width: 768px) {
+  .hero-v2-category-tag {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .hero-v2-meta-author,
+  .hero-v2-meta-date {
+    font-size: 0.8rem;
+  }
+
+  .hero-v2-card-category-bottom {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Featured post category and author styling */
+.hero-v2-featured-category-tag {
+  margin-bottom: 1rem;
+}
+
+.hero-v2-featured-badge-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hero-v2-badge-icon {
+  font-size: 1rem;
+}
+
+.hero-v2-featured-author {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+/* Mobile adjustments for featured post */
+@media (max-width: 768px) {
+  .hero-v2-featured-badge-clean {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .hero-v2-featured-author {
+    font-size: 0.85rem;
+  }
+
+  .hero-v2-featured-category-tag {
+    margin-bottom: 0.75rem;
   }
 }
 </style>

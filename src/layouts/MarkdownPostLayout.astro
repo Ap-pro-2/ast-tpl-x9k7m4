@@ -66,9 +66,6 @@ const recentPosts = allPosts
 const recentPostUrls = await Promise.all(recentPosts.map(post => getPostUrl(post.id)));
 
 
-const hotCategories = categories
-  .sort((a, b) => (b.postCount || 0) - (a.postCount || 0))
-  .slice(0, 4);
 
 
 let tagData: any[] = [];
@@ -209,12 +206,14 @@ if (
               <!-- Author Name -->
               {
                 author && (
-                  <span
-                    class="font-semibold"
+                  <a
+                    href={`/authors/${author.data.slug}`}
+                    class="font-semibold hover:underline transition-colors"
                     style="color: var(--text-primary);"
+                    title={`View all posts by ${author.data.name}`}
                   >
                     {author.data.name}
-                  </span>
+                  </a>
                 )
               }
 
@@ -282,7 +281,7 @@ if (
 
           <!-- Featured Image -->
           {
-            frontmatter.image?.url && (
+            frontmatter.image?.url && settings.blogSettings?.showFeaturedImageInArticle === true && (
               <div class="px-4 sm:px-6 lg:px-8 xl:px-12 mb-6 sm:mb-8">
                 <div
                   class="aspect-[16/9] sm:aspect-[2/1] lg:aspect-[16/9] overflow-hidden"
@@ -413,29 +412,6 @@ if (
               placement="article-sidebar"
               className="post-sidebar-ad-top"
             />
-          </div>
-
-          <!-- Hot Categories Section -->
-          <div class="post-sidebar-section">
-            <div class="post-section-header">
-              <div class="post-section-line"></div>
-              <h3 class="post-section-title">Hot Categories</h3>
-            </div>
-            <div class="post-categories-grid">
-              {hotCategories.map((category) => {
-                const categoryData = allCategories.find(cat => cat.data.id === category.id || cat.id === category.id);
-                const categoryColor = categoryData?.data.color || 'var(--color-primary)';
-                const categorySlug = categoryData?.data.slug || category.id;
-                const categoryName = categoryData?.data.name || category.id;
-                return (
-                  <a href={`/categories/${categorySlug}`} class="post-category-card" style={getBadgeStyleString(categoryColor)}>
-                    <div class="post-category-content">
-                      <span class="post-category-name">{categoryName.toUpperCase()}</span>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
           </div>
 
 

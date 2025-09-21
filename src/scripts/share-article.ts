@@ -92,39 +92,22 @@
   }
   
   function showCopySuccess(button: HTMLButtonElement): void {
+    const originalContent = button.innerHTML;
+    
+    // Add copied class for styling
     button.classList.add('copied');
     
-    // Create tooltip with better feedback
-    const tooltip = document.createElement('div');
-    tooltip.textContent = '✓ Copied to clipboard!';
-    tooltip.setAttribute('role', 'status');
-    tooltip.setAttribute('aria-live', 'polite');
-    tooltip.setAttribute('aria-atomic', 'true');
-    tooltip.style.cssText = `
-      position: absolute;
-      top: -2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #10b981;
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 0.375rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      white-space: nowrap;
-      z-index: 1000;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    // Replace with checkmark SVG
+    button.innerHTML = `
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
     `;
     
-    button.style.position = 'relative';
-    button.appendChild(tooltip);
-    
+    // Revert back after 2 seconds
     setTimeout(() => {
       button.classList.remove('copied');
-      if (tooltip.parentNode) {
-        tooltip.parentNode.removeChild(tooltip);
-      }
+      button.innerHTML = originalContent;
     }, 2000);
   }
   

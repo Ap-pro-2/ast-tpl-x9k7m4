@@ -1,6 +1,4 @@
 ---
-
-
 import { formatDate } from '../../core/blogLogic';
 import { getEntry } from 'astro:content';
 import OptimizedImage from './OptimizedImage.astro';
@@ -37,12 +35,11 @@ const tagNames = tags.map((tag: any) => {
 ---
 
 <article class="horizontal-blog-card theme-card overflow-hidden group">
-  
-  <div class="flex flex-col md:flex-row">
+  <div class="flex flex-col md:flex-row h-full">
     
     {post.data.image?.url && (
       <div class="relative md:w-2/5 flex-shrink-0">
-        <div class="w-full h-48 md:h-60 overflow-hidden rounded-l-lg md:rounded-l-lg md:rounded-r-none">
+        <div class="w-full h-48 md:h-full overflow-hidden rounded-l-lg md:rounded-l-lg md:rounded-r-none">
           <OptimizedImage
             src={post.data.image.url}
             alt={post.data.image.alt || post.data.title}
@@ -56,57 +53,56 @@ const tagNames = tags.map((tag: any) => {
     )}
     
     <div class="flex-1 p-5 pb-6 flex flex-col justify-between">
-      
-      <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
-        {!post.data.image?.url && category && (
-          <>
-            <a href={`/categories/${category.data.slug}`}
-               class="theme-badge font-semibold text-xs px-2 py-1 hover:opacity-80 transition-opacity"
-               aria-label={`View all posts in ${category.data.name} category`}>
-              {category.data.name}
-            </a>
-            <span class="w-1 h-1 rounded-full theme-text-muted"></span>
-          </>
+      <div>
+        <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
+          {category && (
+            <>
+              <a href={`/categories/${category.data.slug}`}
+                 class="category-link theme-badge font-semibold text-xs px-2 py-1 hover:opacity-80 transition-opacity"
+                 aria-label={`View all posts in ${category.data.name} category`}>
+                {category.data.name}
+              </a>
+              <span class="w-1 h-1 rounded-full theme-text-muted"></span>
+            </>
+          )}
+          <time datetime={post.data.pubDate.toISOString()} class="theme-date">
+            {formatDate(post.data.pubDate)}
+          </time>
+          <span class="w-1 h-1 rounded-full theme-text-muted"></span>
+          <span class="theme-reading-time">5 min read</span>
+        </div>
+        
+        <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-3"
+            style="color: var(--text-primary); font-family: var(--font-heading);">
+          <a href={postUrl}
+             class="stretched-link transition-opacity duration-300 group-hover:opacity-80"
+             style="color: inherit;"
+             aria-label={`Read full article: ${post.data.title}`}>
+            {post.data.title}
+          </a>
+        </h2>
+
+        {post.data.description && (
+          <p class="text-sm leading-relaxed mb-4 line-clamp-3 flex-grow"
+             style="color: var(--text-secondary);">
+            {post.data.description}
+          </p>
         )}
-        <time datetime={post.data.pubDate.toISOString()} class="theme-date">
-          {formatDate(post.data.pubDate)}
-        </time>
-        <span class="w-1 h-1 rounded-full theme-text-muted"></span>
-        <span class="theme-reading-time">5 min read</span>
       </div>
       
-      <h2 class="text-lg md:text-xl font-bold leading-tight mb-3 line-clamp-3"
-          style="color: var(--text-primary); font-family: var(--font-heading);">
-        <a href={postUrl}
-           class="hover:opacity-80 transition-opacity duration-300"
-           style="color: inherit;"
-           aria-label={`Read full article: ${post.data.title}`}>
-          {post.data.title}
-        </a>
-      </h2>
-
-      {post.data.description && (
-        <p class="text-sm leading-relaxed mb-4 line-clamp-3 flex-grow"
-           style="color: var(--text-secondary);">
-          {post.data.description}
-        </p>
-      )}
-      
       <div class="mt-auto pt-4">
-        <a href={postUrl} 
-           class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div class="theme-button-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold">
           <span>Read Article</span>
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="w-3 h-3 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
           </svg>
-        </a>
+        </div>
       </div>
     </div>
   </div>
 </article>
 
 <style>
-  
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -121,8 +117,8 @@ const tagNames = tags.map((tag: any) => {
     overflow: hidden;
   }
   
-  
   .horizontal-blog-card {
+    position: relative; /* Required for the stretched link to work */
     transition: all var(--animation-duration) var(--animation-easing);
     min-height: 280px;
   }
@@ -130,6 +126,21 @@ const tagNames = tags.map((tag: any) => {
   .horizontal-blog-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: "";
+  }
+
+  .category-link {
+    position: relative; /* Required to be clickable above the stretched link */
+    z-index: 2;
   }
 
   .horizontal-blog-card .flex-col {
@@ -152,11 +163,9 @@ const tagNames = tags.map((tag: any) => {
     vertical-align: top;
   }
   
-  
   .horizontal-blog-card .flex-1 {
     min-height: 0;
   }
-  
   
   @media (max-width: 768px) {
     .horizontal-blog-card {
@@ -177,4 +186,3 @@ const tagNames = tags.map((tag: any) => {
     }
   }
 </style>
-

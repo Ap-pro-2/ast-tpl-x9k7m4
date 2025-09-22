@@ -1,6 +1,4 @@
 ---
-
-
 import { getEntry, getCollection } from 'astro:content';
 import { formatDate } from '../../core/blogLogic';
 import OptimizedImage from '../ui/OptimizedImage.astro';
@@ -59,63 +57,63 @@ const tagNames = postTags.map((tag: any) => {
 const allTags = await getCollection('tags');
 const tagDataMap = new Map(allTags.map(tag => [tag.id, tag.data]));
 ---
-
-<article class="theme-card overflow-hidden group">
-  
-  {postData.data.image?.url && (
-    <div class="relative aspect-video overflow-hidden">
-      <OptimizedImage 
-        src={postData.data.image.url} 
-        alt={postData.data.image.alt || postData.data.title}
-        width={830}
-        height={467}
-        loading="lazy"
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-    </div>
-  )}
-  
-  <div class="p-6">
+<a href={dynamicUrl} class="card-link-wrapper group">
+  <article class="theme-card overflow-hidden h-full flex flex-col">
     
-    {postData.data.pubDate && (
-      <div class="flex items-center gap-2 text-sm mb-3" style="color: var(--text-muted)">
-        <time datetime={postData.data.pubDate.toISOString()}>
-          {formatDate(postData.data.pubDate)}
-        </time>
-        <span>•</span>
-        <span>5 min read</span>
+    {postData.data.image?.url && (
+      <div class="relative aspect-video overflow-hidden">
+        <OptimizedImage 
+          src={postData.data.image.url} 
+          alt={postData.data.image.alt || postData.data.title}
+          width={830}
+          height={467}
+          loading="lazy"
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
     )}
     
-    <h2 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text-primary); font-family: var(--font-heading)">
-      <a href={dynamicUrl} 
-         style="color: inherit; transition: color var(--animation-duration) var(--animation-easing)"
-         onmouseover="this.style.color='var(--text-accent)'"
-         onmouseout="this.style.color='var(--text-primary)'">
+    <div class="p-6 flex flex-col flex-grow">
+      
+      {postData.data.pubDate && (
+        <div class="flex items-center gap-2 text-sm mb-3" style="color: var(--text-muted)">
+          <time datetime={postData.data.pubDate.toISOString()}>
+            {formatDate(postData.data.pubDate)}
+          </time>
+          <span>•</span>
+          <span>5 min read</span>
+        </div>
+      )}
+      
+      <h2 class="text-xl font-bold mb-3 leading-tight group-hover:text-[var(--text-accent)] transition-colors duration-300" style="color: var(--text-primary); font-family: var(--font-heading)">
         {postData.data.title}
-      </a>
-    </h2>
-    
-    {postData.data.description && (
-      <p class="mb-4 leading-relaxed" style="color: var(--text-secondary); font-family: var(--font-body)">
-        {postData.data.description}
-      </p>
-    )}
-    
-    
-    <div class="mt-auto">
-      <a 
-        href={dynamicUrl}
-        class="inline-flex items-center gap-2 font-medium text-sm"
-        style="color: var(--text-accent); transition: color var(--animation-duration) var(--animation-easing)"
-        onmouseover="this.style.color='var(--color-primary-dark)'"
-        onmouseout="this.style.color='var(--text-accent)'"
-      >
-        <span>Read Article</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-        </svg>
-      </a>
+      </h2>
+      
+      {postData.data.description && (
+        <p class="mb-4 leading-relaxed flex-grow" style="color: var(--text-secondary); font-family: var(--font-body)">
+          {postData.data.description}
+        </p>
+      )}
+      
+      <div class="mt-auto">
+        <div class="inline-flex items-center gap-2 font-medium text-sm" style="color: var(--text-accent);">
+          <span>Read Article</span>
+          <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </div>
+      </div>
     </div>
-  </div>
-</article>
+  </article>
+</a>
+<style>
+  .card-link-wrapper {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+  .card-link-wrapper:hover h2 {
+    color: var(--text-accent);
+  }
+</style>

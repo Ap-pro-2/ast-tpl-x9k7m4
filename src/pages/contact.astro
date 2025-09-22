@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import { getSiteSettings } from '../core/blogLogic';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/forms/ContactForm.astro';
+import SocialIcon from '../components/ui/SocialIcon.astro';
 
 const settings = await getSiteSettings();
 
@@ -61,55 +62,55 @@ const seoData = {
                 <div class="social-links">
                   {settings.social.twitter && settings.social.twitter.trim() && (
                     <a href={settings.social.twitter} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon twitter">𝕏</span>
+                      <span class="social-icon twitter"><SocialIcon platform="twitter" className="w-full h-full p-1" /></span>
                       <span class="social-text">Twitter</span>
                     </a>
                   )}
                   {settings.social.github && settings.social.github.trim() && (
                     <a href={settings.social.github} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon github">⚡</span>
+                      <span class="social-icon github"><SocialIcon platform="github" className="w-full h-full p-1" /></span>
                       <span class="social-text">GitHub</span>
                     </a>
                   )}
                   {settings.social.linkedin && settings.social.linkedin.trim() && (
                     <a href={settings.social.linkedin} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon linkedin">in</span>
+                      <span class="social-icon linkedin"><SocialIcon platform="linkedin" className="w-full h-full p-1" /></span>
                       <span class="social-text">LinkedIn</span>
                     </a>
                   )}
                   {settings.social.facebook && settings.social.facebook.trim() && (
                     <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon facebook">f</span>
+                      <span class="social-icon facebook"><SocialIcon platform="facebook" className="w-full h-full p-1" /></span>
                       <span class="social-text">Facebook</span>
                     </a>
                   )}
                   {settings.social.instagram && settings.social.instagram.trim() && (
                     <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon instagram">📷</span>
+                      <span class="social-icon instagram"><SocialIcon platform="instagram" className="w-full h-full p-1" /></span>
                       <span class="social-text">Instagram</span>
                     </a>
                   )}
                   {settings.social.youtube && settings.social.youtube.trim() && (
                     <a href={settings.social.youtube} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon youtube">▶</span>
+                      <span class="social-icon youtube"><SocialIcon platform="youtube" className="w-full h-full p-1" /></span>
                       <span class="social-text">YouTube</span>
                     </a>
                   )}
                   {settings.social.tiktok && settings.social.tiktok.trim() && (
                     <a href={settings.social.tiktok} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon tiktok">♪</span>
+                      <span class="social-icon tiktok"><SocialIcon platform="tiktok" className="w-full h-full p-1" /></span>
                       <span class="social-text">TikTok</span>
                     </a>
                   )}
                   {settings.social.discord && settings.social.discord.trim() && (
                     <a href={settings.social.discord} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon discord">💬</span>
+                      <span class="social-icon discord"><SocialIcon platform="discord" className="w-full h-full p-1" /></span>
                       <span class="social-text">Discord</span>
                     </a>
                   )}
                   {settings.social.reddit && settings.social.reddit.trim() && (
                     <a href={settings.social.reddit} target="_blank" rel="noopener noreferrer" class="social-link">
-                      <span class="social-icon reddit">r</span>
+                      <span class="social-icon reddit"><SocialIcon platform="reddit" className="w-full h-full p-1" /></span>
                       <span class="social-text">Reddit</span>
                     </a>
                   )}
@@ -285,7 +286,6 @@ const seoData = {
   color: white;
   border-radius: var(--radius-sm, 6px);
   flex-shrink: 0;
-  font-weight: 700;
 }
 
 /* Platform-specific colors */
@@ -299,40 +299,30 @@ const seoData = {
 
 .social-icon.linkedin {
   background: #0077b5;
-  font-size: 0.75rem;
-  font-weight: 800;
 }
 
 .social-icon.facebook {
   background: #1877f2;
-  font-size: 1.25rem;
-  font-weight: 800;
 }
 
 .social-icon.instagram {
   background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-  font-size: 0.875rem;
 }
 
 .social-icon.youtube {
   background: #ff0000;
-  font-size: 0.875rem;
 }
 
 .social-icon.tiktok {
   background: #000;
-  font-size: 1rem;
 }
 
 .social-icon.discord {
   background: #5865f2;
-  font-size: 0.875rem;
 }
 
 .social-icon.reddit {
   background: #ff4500;
-  font-size: 0.875rem;
-  font-weight: 800;
 }
 
 .social-text {

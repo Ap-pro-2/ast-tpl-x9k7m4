@@ -63,6 +63,7 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
+    lastmod: z.coerce.date().optional(), // Last modified date for sitemap
     author: reference('authors'),
     category: reference('categories'),
     tags: z.array(reference('tags')),

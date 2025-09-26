@@ -76,6 +76,73 @@ export default defineConfig({
 
         return true;
       },
+      serialize: async (item) => {
+        // Add lastmod field with proper ISO 8601 formatting as recommended by Bing
+        try {
+          const { getCollection } = await import('astro:content');
+
+          // Get URL path relative to site
+          const urlPath = item.url.replace(siteSettings.siteUrl, '').replace(/\/$/, '') || '/';
+
+          if (urlPath === '/') {
+            // Homepage - use current date
+            item.lastmod = new Date().toISOString();
+            return item;
+          }
+
+          // Get all blog posts and check if this URL matches a blog post
+          const allPosts = await getCollection('blog');
+          let matchingPost = null;
+
+          // Extract slug from URL - handle both direct and prefixed routing
+          let postSlug = '';
+          if (urlPath.startsWith('/blog/')) {
+            // Prefixed routing: /blog/post-slug
+            postSlug = urlPath.replace('/blog/', '');
+          } else if (urlPath.startsWith('/') &&
+                     !urlPath.includes('/', 1) && // No additional slashes after the first one
+                     !urlPath.startsWith('/categories') &&
+                     !urlPath.startsWith('/tags') &&
+                     !urlPath.startsWith('/authors') &&
+                     !urlPath.startsWith('/about') &&
+                     !urlPath.startsWith('/contact') &&
+                     !urlPath.startsWith('/legal') &&
+                     !urlPath.startsWith('/sitemap')) {
+            // Direct routing: /post-slug
+            postSlug = urlPath.substring(1); // Remove leading slash
+          }
+
+          // If we have a potential post slug, look for the matching post
+          if (postSlug) {
+            // Try exact match first, then with .mdx extension
+            matchingPost = allPosts.find(post =>
+              post.id === postSlug ||
+              post.id === `${postSlug}.mdx` ||
+              post.id.replace('.mdx', '') === postSlug
+            );
+          }
+
+          if (matchingPost) {
+            // Use lastmod if available, otherwise use pubDate
+            const modDate = matchingPost.data.lastmod || matchingPost.data.pubDate;
+            item.lastmod = modDate.toISOString();
+          } else {
+            // For other pages (categories, tags, authors, etc.), use current date
+            // but normalize to avoid frequent changes
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            item.lastmod = today.toISOString();
+          }
+
+        } catch (error) {
+          // Fallback in case of any errors
+          const fallbackDate = new Date();
+          fallbackDate.setHours(0, 0, 0, 0);
+          item.lastmod = fallbackDate.toISOString();
+        }
+
+        return item;
+      },
     })
   ],
 

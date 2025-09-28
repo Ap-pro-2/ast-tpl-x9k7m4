@@ -4,6 +4,9 @@
  * Matches the site's design patterns and theme system
  */
 
+// Force this page to be prerendered as static HTML for Cloudflare Pages
+export const prerender = true;
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getSiteSettings } from "../core/blogLogic";
 

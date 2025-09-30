@@ -100,10 +100,8 @@ const enhancedSeoData = {
     )
   }
 
-  <link rel="canonical" href={seoData.canonicalUrl} slot="head" />
   {seoData.prevUrl && <link rel="prev" href={seoData.prevUrl} slot="head" />}
   {seoData.nextUrl && <link rel="next" href={seoData.nextUrl} slot="head" />}
-  <meta property="og:url" content={seoData.canonicalUrl} slot="head" />
   <Schema item={paginationSchema} id="pagination-schema" slot="head" />
 
   <!-- Hero Section -->

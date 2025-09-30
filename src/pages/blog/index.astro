@@ -82,9 +82,7 @@ const enhancedSeoData = {
     )
   }
 
-  <link rel="canonical" href={seoData.canonicalUrl} slot="head" />
   {seoData.nextUrl && <link rel="next" href={seoData.nextUrl} slot="head" />}
-  <meta property="og:url" content={seoData.canonicalUrl} slot="head" />
   <Schema item={blogListingSchema} slot="head" />
 
   <!-- Hero Section -->

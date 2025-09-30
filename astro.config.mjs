@@ -18,6 +18,7 @@ const pagesData = JSON.parse(fs.readFileSync('./src/content/data/pages.json', 'u
 export default defineConfig({
   site: siteSettings.siteUrl,
   output: "server",
+  trailingSlash: "never", // Consistent no trailing slashes for better SEO
   adapter: cloudflare({
     imageService: 'cloudflare'
   }),

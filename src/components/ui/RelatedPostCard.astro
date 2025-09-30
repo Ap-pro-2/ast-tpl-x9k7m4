@@ -40,22 +40,14 @@ try {
       
       {post.data.image?.url && (
         <div class="image-container">
-          <OptimizedImage 
-            src={post.data.image.url} 
+          <OptimizedImage
+            src={post.data.image.url}
             alt={post.data.image.alt || post.data.title}
             width={300}
             height={200}
             loading="lazy"
             class="post-image"
           />
-          
-          {category && (
-            <div class="category-badge-overlay">
-              <span class="px-2 py-1 text-xs font-semibold rounded-md uppercase tracking-wide" style={getBadgeStyleString(category.data.color)}>
-                {category.data.name}
-              </span>
-            </div>
-          )}
         </div>
       )}
       
@@ -151,14 +143,6 @@ try {
   .card-container:hover .post-image {
     transform: scale(1.05);
   }
-  
-  
-  .category-badge-overlay {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-  }
-  
   
   
   .content-container {

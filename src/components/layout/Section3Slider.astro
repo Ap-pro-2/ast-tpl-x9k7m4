@@ -89,8 +89,6 @@ const sliderPostUrls = await Promise.all(sliderPosts.map(post => getPostUrl(post
                   <time datetime={post.data.pubDate.toISOString()}>
                     {formatDate(post.data.pubDate)}
                   </time>
-                  <span class="slider-meta-separator">•</span>
-                  <span class="slider-read-time">5 MINS</span>
                 </div>
               </div>
             </a>
